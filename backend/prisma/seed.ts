@@ -69,31 +69,11 @@ async function main() {
   });
 
   const allPermissions = await prisma.permission.findMany();
- let superAdminRole = await prisma.role.findFirst({
-  where: {
-    organizationId: null,
-    name: RoleName.SUPER_ADMIN,
-  },
-});
-
-if (!superAdminRole) {
-  superAdminRole = await prisma.role.create({
-    data: {
-      organizationId: null,
-      name: RoleName.SUPER_ADMIN,
-      label: ROLE_LABELS.SUPER_ADMIN,
-      isSystem: true,
-    },
+  const superAdminRole = await prisma.role.upsert({
+    where: { organizationId_name: { organizationId: null as unknown as string, name: RoleName.SUPER_ADMIN } },
+    update: { label: ROLE_LABELS.SUPER_ADMIN, isSystem: true },
+    create: { organizationId: null, name: RoleName.SUPER_ADMIN, label: ROLE_LABELS.SUPER_ADMIN, isSystem: true },
   });
-} else {
-  superAdminRole = await prisma.role.update({
-    where: { id: superAdminRole.id },
-    data: {
-      label: ROLE_LABELS.SUPER_ADMIN,
-      isSystem: true,
-    },
-  });
-}
   await prisma.rolePermission.deleteMany({ where: { roleId: superAdminRole.id } });
   await prisma.rolePermission.createMany({
     data: allPermissions.map((p) => ({ roleId: superAdminRole.id, permissionId: p.id })),

@@ -123,6 +123,12 @@ enum AuditAction {
   ROLE_CHANGED
 }
 
+enum VisitStatus {
+  PLANIFIEE
+  REALISEE
+  ANNULEE
+}
+
 // -------------------- CORE --------------------
 
 model Organization {
@@ -149,6 +155,7 @@ model Organization {
   maintenances     MaintenanceRequest[]
   notifications    Notification[]
   auditLogs        AuditLog[]
+  visits           Visit[]
 
   @@index([isActive])
 }
@@ -182,6 +189,7 @@ model User {
   auditLogs         AuditLog[]
   maintenanceAssigned MaintenanceRequest[] @relation("AssignedTechnician")
   tenantProfile     Tenant?               @relation("UserTenantProfile")
+  visitsAsAgent     Visit[]               @relation("VisitAgent")
 
   @@unique([organizationId, email])
   @@index([organizationId])
@@ -274,6 +282,7 @@ model Property {
   maintenances   MaintenanceRequest[]
   history        PropertyHistory[]
   expenses       Expense[]
+  visits         Visit[]
 
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
@@ -526,6 +535,37 @@ model MaintenanceAttachment {
   createdAt   DateTime @default(now())
 
   @@index([requestId])
+}
+
+// -------------------- VISITES --------------------
+
+model Visit {
+  id             String       @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+
+  propertyId     String
+  property       Property     @relation(fields: [propertyId], references: [id])
+
+  agentId        String
+  agent          User         @relation("VisitAgent", fields: [agentId], references: [id])
+
+  clientName     String
+  clientPhone    String?
+  clientEmail    String?
+
+  scheduledAt    DateTime
+  status         VisitStatus  @default(PLANIFIEE)
+  notes          String?
+  outcome        String?
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+
+  @@index([organizationId, status])
+  @@index([propertyId])
+  @@index([agentId])
 }
 
 // -------------------- NOTIFICATIONS & AUDIT --------------------

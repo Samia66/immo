@@ -1,0 +1,17 @@
+// Basic smoke test: the app boots to the splash screen without throwing.
+
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+import 'package:immo_mobile/main.dart';
+
+void main() {
+  testWidgets('App boots to splash screen', (WidgetTester tester) async {
+    await tester.pumpWidget(const ProviderScope(child: ImmoApp()));
+    await tester.pump();
+
+    expect(find.text('ImmoSaaS'), findsOneWidget);
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+  });
+}

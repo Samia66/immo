@@ -18,4 +18,9 @@ export class QueryMaintenanceDto extends PaginationQueryDto {
   @IsOptional()
   @IsUUID()
   propertyId?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsUUID()
+  assignedToId?: string;
 }

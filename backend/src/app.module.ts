@@ -22,6 +22,7 @@ import { LeasesModule } from './modules/leases/leases.module';
 import { PaymentsModule } from './modules/payments/payments.module';
 import { ExpensesModule } from './modules/expenses/expenses.module';
 import { MaintenanceModule } from './modules/maintenance/maintenance.module';
+import { VisitsModule } from './modules/visits/visits.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { AuditLogModule } from './modules/audit-log/audit-log.module';
@@ -64,6 +65,7 @@ import { AuditInterceptor } from './common/interceptors/audit.interceptor';
     PaymentsModule,
     ExpensesModule,
     MaintenanceModule,
+    VisitsModule,
     NotificationsModule,
     DashboardModule,
     AuditLogModule,

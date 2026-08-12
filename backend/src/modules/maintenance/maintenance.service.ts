@@ -36,6 +36,7 @@ export class MaintenanceService {
     if (query.status) where.status = query.status;
     if (query.priority) where.priority = query.priority;
     if (query.propertyId) where.propertyId = query.propertyId;
+    if (query.assignedToId) where.assignedToId = query.assignedToId;
 
     const [items, total] = await Promise.all([
       this.repo.findMany(where, (query.page - 1) * query.limit, query.limit, {
