@@ -1,4 +1,4 @@
-import { RoleName } from './enums';
+git diff --statimport { RoleName } from './enums';
 
 export interface Role {
   id: string;
@@ -32,6 +32,18 @@ export interface User {
   updatedAt: string;
 }
 
-export interface CurrentUser extends User {
+/**
+ * Shape returned by /auth/login, /auth/refresh, /auth/me (AuthUserDto on the backend) —
+ * flatter than the full `User` entity returned by /users: role is a bare `roleName` string,
+ * not a nested `Role` object, and fields like `phone`/`avatarUrl`/`lastLoginAt` aren't included.
+ */
+export interface CurrentUser {
+  id: string;
+  organizationId: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  roleName: RoleName;
   permissions: string[];
+  isEmailVerified: boolean;
 }

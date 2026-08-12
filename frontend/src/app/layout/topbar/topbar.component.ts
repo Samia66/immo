@@ -8,6 +8,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { AuthService } from '../../core/services/auth.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { ThemeService } from '../../core/services/theme.service';
+import { ROLE_LABELS } from '../../core/models/enums';
 
 @Component({
   selector: 'app-topbar',
@@ -26,6 +27,7 @@ export class TopbarComponent {
   readonly toggleSidenav = output<void>();
 
   readonly currentUser = this.authService.currentUser;
+  readonly roleLabels = ROLE_LABELS;
 
   logout(): void {
     this.authService.logout().subscribe(() => this.router.navigate(['/auth/login']));

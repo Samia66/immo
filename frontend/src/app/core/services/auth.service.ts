@@ -35,7 +35,7 @@ export class AuthService {
   readonly currentUser = this._currentUser.asReadonly();
   readonly initialized = this._initialized.asReadonly();
   readonly isAuthenticated = computed(() => this._currentUser() !== null);
-  readonly role = computed<RoleName | null>(() => this._currentUser()?.role.name ?? null);
+  readonly role = computed<RoleName | null>(() => this._currentUser()?.roleName ?? null);
   readonly permissions = computed<string[]>(() => this._currentUser()?.permissions ?? []);
 
   login(payload: LoginPayload): Observable<AuthResponse> {

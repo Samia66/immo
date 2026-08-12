@@ -6,6 +6,16 @@ export enum RoleName {
   LOCATAIRE = 'LOCATAIRE',
 }
 
+/** Mirrors the backend's ROLE_LABELS (common/constants/permissions.constant.ts) — the auth API
+ * only returns the bare `roleName` enum, not a label, so the display string is kept in sync here. */
+export const ROLE_LABELS: Record<RoleName, string> = {
+  [RoleName.SUPER_ADMIN]: 'Super administrateur',
+  [RoleName.ADMIN_AGENCE]: "Administrateur d'agence",
+  [RoleName.GESTIONNAIRE]: 'Gestionnaire',
+  [RoleName.AGENT_IMMOBILIER]: 'Agent immobilier',
+  [RoleName.LOCATAIRE]: 'Locataire',
+};
+
 export enum SubscriptionPlan {
   FREE = 'FREE',
   STARTER = 'STARTER',
