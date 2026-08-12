@@ -1,4 +1,4 @@
-git diff --statimport { RoleName } from './enums';
+import { RoleName } from "./enums";
 
 export interface Role {
   id: string;
