@@ -1,0 +1,16 @@
+<app-page-header title="Statistiques globales" subtitle="Vue d'ensemble toutes organisations" />
+
+@if (loading()) {
+  <div style="display:flex; justify-content:center; padding: 3rem;">
+    <mat-spinner diameter="32" />
+  </div>
+} @else if (stats(); as stats) {
+  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:1rem;">
+    <app-stat-card label="Organisations" [value]="stats.totalOrganizations" icon="apartment" accent="primary" />
+    <app-stat-card label="Organisations actives" [value]="stats.activeOrganizations" icon="check_circle" accent="success" />
+    <app-stat-card label="Utilisateurs" [value]="stats.totalUsers" icon="groups" accent="info" />
+    <app-stat-card label="Biens" [value]="stats.totalProperties" icon="home_work" accent="primary" />
+  </div>
+} @else {
+  <app-empty-state message="Statistiques indisponibles." />
+}

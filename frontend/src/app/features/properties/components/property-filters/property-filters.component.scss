@@ -1,0 +1,15 @@
+.property-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+
+  mat-form-field {
+    width: 170px;
+  }
+}
+
+.property-filters__search {
+  width: 260px;
+}

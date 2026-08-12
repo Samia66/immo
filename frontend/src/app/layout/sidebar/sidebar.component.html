@@ -1,0 +1,47 @@
+<nav class="sidebar" [class.sidebar--collapsed]="collapsed()">
+  <div class="sidebar__brand">
+    <mat-icon>villa</mat-icon>
+    @if (!collapsed()) {
+      <span>Immo SaaS</span>
+    }
+  </div>
+
+  <mat-nav-list class="sidebar__list">
+    @for (item of navItems; track item.link) {
+      <a
+        mat-list-item
+        *appHasPermission="item.permission ?? null"
+        [routerLink]="item.link"
+        routerLinkActive="sidebar__link--active"
+        [matTooltip]="collapsed() ? item.label : ''"
+        class="sidebar__link"
+      >
+        <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+        @if (!collapsed()) {
+          <span matListItemTitle>{{ item.label }}</span>
+        }
+      </a>
+    }
+
+    @if (isAdmin) {
+      <div class="sidebar__section-label">
+        @if (!collapsed()) {
+          <span>Paramètres</span>
+        }
+      </div>
+      @for (item of settingsNavItems; track item.link) {
+        <a
+          mat-list-item
+          [routerLink]="item.link"
+          routerLinkActive="sidebar__link--active"
+          class="sidebar__link"
+        >
+          <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+          @if (!collapsed()) {
+            <span matListItemTitle>{{ item.label }}</span>
+          }
+        </a>
+      }
+    }
+  </mat-nav-list>
+</nav>

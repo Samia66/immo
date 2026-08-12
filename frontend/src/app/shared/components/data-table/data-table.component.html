@@ -1,0 +1,63 @@
+@if (loading()) {
+  <mat-progress-bar mode="indeterminate" class="data-table__progress" />
+}
+
+@if (!loading() && (result() === null || result()!.data.length === 0)) {
+  <app-empty-state [message]="emptyMessage()" />
+} @else {
+  <div class="data-table__scroll">
+    <table class="data-table">
+      <thead>
+        <tr>
+          @for (col of columns(); track col.key) {
+            <th
+              [class.data-table__sortable]="col.sortable"
+              [class.data-table__cell--end]="col.align === 'end'"
+              [class.data-table__cell--center]="col.align === 'center'"
+              (click)="onSort(col)"
+            >
+              {{ col.header }}
+              @if (col.sortable && sortKey() === col.key) {
+                <mat-icon class="data-table__sort-icon">
+                  {{ sortDir() === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+                </mat-icon>
+              }
+            </th>
+          }
+          @if (rowActions()) {
+            <th class="data-table__cell--end">Actions</th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of result()?.data ?? []; track row.id) {
+          <tr class="data-table__row" (click)="rowClick.emit(row)">
+            @for (col of columns(); track col.key) {
+              <td
+                [class.data-table__cell--end]="col.align === 'end'"
+                [class.data-table__cell--center]="col.align === 'center'"
+              >
+                {{ cellValue(col, row) }}
+              </td>
+            }
+            @if (rowActions()) {
+              <td class="data-table__cell--end" (click)="$event.stopPropagation()">
+                <ng-container [ngTemplateOutlet]="rowActions()" [ngTemplateOutletContext]="{ $implicit: row }" />
+              </td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  @if (result(); as res) {
+    <mat-paginator
+      [length]="res.meta.total"
+      [pageSize]="res.meta.limit"
+      [pageIndex]="res.meta.page - 1"
+      [pageSizeOptions]="pageSizeOptions()"
+      (page)="onPage($event)"
+    />
+  }
+}

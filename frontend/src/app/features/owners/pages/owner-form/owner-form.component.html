@@ -1,0 +1,49 @@
+<app-page-header
+  [title]="isEdit ? 'Modifier le propriétaire' : 'Nouveau propriétaire'"
+  [breadcrumbs]="[{ label: 'Propriétaires', link: '/app/owners' }, { label: isEdit ? 'Modifier' : 'Nouveau' }]"
+/>
+
+@if (loading()) {
+  <div style="display:flex; justify-content:center; padding: 3rem;">
+    <mat-spinner diameter="32" />
+  </div>
+} @else {
+  <form [formGroup]="form" (ngSubmit)="submit()" class="card">
+    <div class="form-grid">
+      <mat-form-field appearance="outline">
+        <mat-label>Nom complet</mat-label>
+        <input matInput formControlName="fullName" required />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Téléphone</mat-label>
+        <input matInput formControlName="phone" required />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input matInput type="email" formControlName="email" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Adresse</mat-label>
+        <input matInput formControlName="address" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Banque</mat-label>
+        <input matInput formControlName="bankName" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>IBAN</mat-label>
+        <input matInput formControlName="bankAccountIban" />
+      </mat-form-field>
+    </div>
+    <div class="form-actions">
+      <button mat-button type="button" (click)="cancel()">Annuler</button>
+      <button mat-flat-button color="primary" type="submit" [disabled]="saving()">
+        @if (saving()) {
+          <mat-spinner diameter="20" />
+        } @else {
+          Enregistrer
+        }
+      </button>
+    </div>
+  </form>
+}

@@ -1,0 +1,90 @@
+@if (store.loading() && !store.selected()) {
+  <div class="property-detail__loading">
+    <mat-spinner diameter="36" />
+  </div>
+} @else if (store.selected(); as property) {
+  <app-page-header
+    [title]="property.title"
+    [subtitle]="property.reference"
+    [breadcrumbs]="[{ label: 'Biens', link: '/app/properties' }, { label: property.title }]"
+  >
+    <button mat-stroked-button (click)="openPhotoDialog()" *appHasPermission="'properties:update'">
+      <mat-icon>add_a_photo</mat-icon>
+      Photos
+    </button>
+    <button mat-flat-button color="primary" (click)="edit()" *appHasPermission="'properties:update'">
+      <mat-icon>edit</mat-icon>
+      Modifier
+    </button>
+  </app-page-header>
+
+  <div class="property-detail__grid">
+    <div class="card property-detail__main">
+      <div class="property-detail__badges">
+        <mat-chip>{{ property.type }}</mat-chip>
+        <mat-chip>{{ property.status | statusLabel }}</mat-chip>
+      </div>
+
+      <p class="property-detail__address">
+        <mat-icon inline>place</mat-icon>
+        {{ property.addressLine }}, {{ property.city }}
+        @if (property.district) {
+          ({{ property.district }})
+        }
+      </p>
+
+      @if (property.description) {
+        <p class="property-detail__description">{{ property.description }}</p>
+      }
+
+      <div class="property-detail__facts">
+        <div>
+          <span class="property-detail__fact-label">Loyer mensuel</span>
+          <span class="property-detail__fact-value">{{ property.monthlyRent | currencyXof }}</span>
+        </div>
+        <div>
+          <span class="property-detail__fact-label">Charges</span>
+          <span class="property-detail__fact-value">{{ property.monthlyCharges | currencyXof }}</span>
+        </div>
+        <div>
+          <span class="property-detail__fact-label">Pièces</span>
+          <span class="property-detail__fact-value">{{ property.rooms ?? '—' }}</span>
+        </div>
+        <div>
+          <span class="property-detail__fact-label">Surface</span>
+          <span class="property-detail__fact-value">{{ property.surfaceM2 ? property.surfaceM2 + ' m²' : '—' }}</span>
+        </div>
+      </div>
+
+      @if (property.owner) {
+        <div class="property-detail__owner">
+          <mat-icon>badge</mat-icon>
+          <div>
+            <strong>{{ property.owner.fullName }}</strong>
+            <span>{{ property.owner.phone }}</span>
+          </div>
+        </div>
+      }
+    </div>
+
+    <div class="card property-detail__photos">
+      <h3>Photos</h3>
+      @if (property.images && property.images.length) {
+        <div class="property-detail__photo-grid">
+          @for (image of property.images; track image.id) {
+            <div class="property-detail__photo">
+              <img [src]="image.url" [alt]="property.title" />
+              <button mat-icon-button *appHasPermission="'properties:update'" (click)="deleteImage(image.id)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          }
+        </div>
+      } @else {
+        <app-empty-state message="Aucune photo pour ce bien." icon="photo_camera" />
+      }
+    </div>
+  </div>
+} @else {
+  <app-empty-state message="Bien introuvable." />
+}

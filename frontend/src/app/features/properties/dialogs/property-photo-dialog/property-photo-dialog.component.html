@@ -1,0 +1,14 @@
+<h2 mat-dialog-title>Ajouter des photos</h2>
+<mat-dialog-content>
+  <app-file-upload accept="image/*" [multiple]="true" (filesSelected)="onFilesSelected($event)" />
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="dialogRef.close(false)">Annuler</button>
+  <button mat-flat-button color="primary" [disabled]="!files().length || uploading()" (click)="upload()">
+    @if (uploading()) {
+      <mat-spinner diameter="18" />
+    } @else {
+      Envoyer
+    }
+  </button>
+</mat-dialog-actions>

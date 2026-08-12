@@ -1,0 +1,26 @@
+<app-page-header title="Notifications" subtitle="Centre de notifications in-app">
+  <button mat-stroked-button (click)="markAllAsRead()">
+    <mat-icon>done_all</mat-icon>
+    Tout marquer comme lu
+  </button>
+</app-page-header>
+
+@if (!notificationService.notifications().length) {
+  <app-empty-state message="Aucune notification." icon="notifications_none" />
+} @else {
+  <mat-nav-list class="notification-list">
+    @for (notification of notificationService.notifications(); track notification.id) {
+      <a
+        mat-list-item
+        class="notification-list__item"
+        [class.notification-list__item--unread]="!notification.isRead"
+        (click)="markAsRead(notification)"
+      >
+        <mat-icon matListItemIcon>{{ notification.isRead ? 'mail' : 'mark_email_unread' }}</mat-icon>
+        <div matListItemTitle>{{ notification.title }}</div>
+        <div matListItemLine>{{ notification.message }}</div>
+        <div matListItemMeta class="notification-list__date">{{ notification.createdAt | date: 'dd/MM/yyyy HH:mm' }}</div>
+      </a>
+    }
+  </mat-nav-list>
+}

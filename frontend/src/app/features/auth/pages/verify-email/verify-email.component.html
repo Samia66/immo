@@ -1,0 +1,24 @@
+<div class="auth-page">
+  <mat-card class="auth-card">
+    <div class="auth-card__brand">
+      <mat-icon>villa</mat-icon>
+      <span>Immo SaaS</span>
+    </div>
+
+    @if (loading()) {
+      <div style="display:flex; justify-content:center; padding: 1.5rem 0;">
+        <mat-spinner diameter="32" />
+      </div>
+    } @else if (success()) {
+      <h1 class="auth-card__title">Email vérifié</h1>
+      <p class="auth-card__subtitle">Votre adresse email a été confirmée avec succès.</p>
+    } @else {
+      <h1 class="auth-card__title">Lien invalide</h1>
+      <p class="auth-card__subtitle">Ce lien de vérification est invalide ou a expiré.</p>
+    }
+
+    <div class="auth-form__row">
+      <a routerLink="/auth/login">Retour à la connexion</a>
+    </div>
+  </mat-card>
+</div>

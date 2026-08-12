@@ -1,0 +1,10 @@
+<div class="shell">
+  <app-sidebar class="shell__sidebar" [collapsed]="collapsed()" [class.shell__sidebar--hidden]="isMobile() && collapsed()" />
+
+  <div class="shell__main">
+    <app-topbar (toggleSidenav)="toggleSidebar()" />
+    <main class="shell__content">
+      <router-outlet />
+    </main>
+  </div>
+</div>

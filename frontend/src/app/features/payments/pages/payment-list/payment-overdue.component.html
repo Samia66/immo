@@ -1,0 +1,12 @@
+<app-page-header
+  title="Loyers en retard"
+  subtitle="Paiements dont l'échéance est dépassée"
+  [breadcrumbs]="[{ label: 'Paiements', link: '/app/payments' }, { label: 'Impayés' }]"
+/>
+
+<app-data-table
+  [columns]="columns"
+  [result]="result()"
+  [loading]="loading()"
+  emptyMessage="Aucun impayé pour le moment."
+/>

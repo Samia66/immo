@@ -1,0 +1,31 @@
+<app-page-header
+  title="Maintenance — vue Kanban"
+  subtitle="Vue groupée par statut (lecture seule, sans glisser-déposer)"
+  [breadcrumbs]="[{ label: 'Maintenance', link: '/app/maintenance' }, { label: 'Kanban' }]"
+/>
+
+@if (store.loading()) {
+  <div style="display:flex; justify-content:center; padding: 3rem;">
+    <mat-spinner diameter="36" />
+  </div>
+} @else {
+  <div class="board">
+    @for (column of columns; track column.status) {
+      <div class="board__column">
+        <h3 class="board__column-title">
+          {{ column.label }}
+          <span class="board__count">{{ grouped().get(column.status)?.length ?? 0 }}</span>
+        </h3>
+        <div class="board__cards">
+          @for (request of grouped().get(column.status); track request.id) {
+            <div class="board__card" (click)="openDetail(request)">
+              <strong>{{ request.category }}</strong>
+              <p>{{ request.property?.title ?? request.propertyId }}</p>
+              <mat-chip>{{ request.priority }}</mat-chip>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+}

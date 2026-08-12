@@ -1,0 +1,104 @@
+@if (store.loading() && !store.admin()) {
+  <div style="display:flex; justify-content:center; padding: 3rem;">
+    <mat-spinner diameter="36" />
+  </div>
+} @else if (store.admin(); as dashboard) {
+  <div class="dashboard">
+    <div class="dashboard__kpis">
+      <app-stat-card label="Biens gérés" [value]="dashboard.kpis.totalProperties" icon="home_work" accent="primary" />
+      <app-stat-card
+        label="Taux d'occupation"
+        [value]="(dashboard.kpis.occupancyRate * 100).toFixed(0) + ' %'"
+        icon="pie_chart"
+        accent="info"
+      />
+      <app-stat-card
+        label="Revenus du mois"
+        [value]="(dashboard.kpis.monthlyRevenue | currencyXof) ?? ''"
+        icon="payments"
+        accent="success"
+      />
+      <app-stat-card
+        label="Impayés"
+        [value]="dashboard.kpis.overduePaymentsCount + ' (' + (dashboard.kpis.overduePaymentsAmount | currencyXof) + ')'"
+        icon="warning"
+        accent="warn"
+      />
+    </div>
+
+    <div class="dashboard__charts">
+      <div class="card dashboard__chart">
+        <h3>Revenus locatifs — historique</h3>
+        <p class="dashboard__chart-note">Graphique simplifié (barres CSS, sans librairie de charts)</p>
+        @if (revenueBars().length) {
+          <div class="dashboard__bars">
+            @for (bar of revenueBars(); track bar.month) {
+              <div class="dashboard__bar-col">
+                <div class="dashboard__bar" [style.height.%]="bar.heightPct" [matTooltip]="bar.amount + ' F'"></div>
+                <span class="dashboard__bar-label">{{ bar.month }}</span>
+              </div>
+            }
+          </div>
+        } @else {
+          <app-empty-state message="Aucune donnée de revenus." />
+        }
+      </div>
+
+      <div class="card dashboard__chart">
+        <h3>Répartition des biens</h3>
+        <p class="dashboard__chart-note">Graphique simplifié (barres proportionnelles)</p>
+        @if (statusSlices().length) {
+          <div class="dashboard__slices">
+            @for (slice of statusSlices(); track slice.status) {
+              <div class="dashboard__slice-row">
+                <span class="dashboard__slice-label">{{ slice.status | statusLabel }}</span>
+                <div class="dashboard__slice-track">
+                  <div class="dashboard__slice-fill" [style.width.%]="slice.pct"></div>
+                </div>
+                <span class="dashboard__slice-count">{{ slice.count }}</span>
+              </div>
+            }
+          </div>
+        } @else {
+          <app-empty-state message="Aucune donnée de répartition." />
+        }
+      </div>
+    </div>
+
+    <div class="dashboard__lists">
+      <div class="card">
+        <h3>Contrats expirant sous 30 jours</h3>
+        @if (dashboard.expiringLeases.length) {
+          <ul class="dashboard__list">
+            @for (lease of dashboard.expiringLeases; track lease.leaseId) {
+              <li>
+                <a [routerLink]="['/app/leases', lease.leaseId]">{{ lease.propertyTitle }}</a>
+                <span>expire le {{ lease.endDate | date: 'dd/MM/yyyy' }}</span>
+              </li>
+            }
+          </ul>
+        } @else {
+          <app-empty-state message="Aucun contrat n'expire prochainement." />
+        }
+      </div>
+
+      <div class="card">
+        <h3>Maintenances ouvertes</h3>
+        @if (dashboard.openMaintenance.length) {
+          <ul class="dashboard__list">
+            @for (item of dashboard.openMaintenance; track item.id) {
+              <li>
+                <a [routerLink]="['/app/maintenance', item.id]">{{ item.propertyTitle }}</a>
+                <mat-chip>{{ item.priority | statusLabel }}</mat-chip>
+              </li>
+            }
+          </ul>
+        } @else {
+          <app-empty-state message="Aucune maintenance ouverte." />
+        }
+      </div>
+    </div>
+  </div>
+} @else {
+  <app-empty-state message="Impossible de charger le tableau de bord." />
+}

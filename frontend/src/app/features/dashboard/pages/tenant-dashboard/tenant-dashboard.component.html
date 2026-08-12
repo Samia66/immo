@@ -1,0 +1,54 @@
+@if (store.loading() && !store.tenant()) {
+  <div style="display:flex; justify-content:center; padding: 3rem;">
+    <mat-spinner diameter="36" />
+  </div>
+} @else if (store.tenant(); as dashboard) {
+  <div style="display:flex; flex-direction:column; gap: 1.25rem;">
+    <div class="card">
+      <h3>Prochain loyer</h3>
+      @if (dashboard.nextPayment; as next) {
+        <p style="font-size: 1.4rem; font-weight:700; margin: 0.25rem 0;">{{ next.amountDue | currencyXof }}</p>
+        <p style="color: var(--immo-text-muted); margin: 0 0 1rem;">Échéance le {{ next.dueDate | date: 'dd/MM/yyyy' }}</p>
+      } @else {
+        <app-empty-state message="Aucun paiement à venir." />
+      }
+      <button mat-stroked-button (click)="reportIssue()">
+        <mat-icon>report_problem</mat-icon>
+        Signaler un problème
+      </button>
+    </div>
+
+    @if (dashboard.activeLease; as lease) {
+      <div class="card">
+        <h3>Contrat actif</h3>
+        <p><strong>{{ lease.propertyTitle }}</strong></p>
+        <p style="color: var(--immo-text-muted);">
+          Du {{ lease.startDate | date: 'dd/MM/yyyy' }}
+          @if (lease.endDate) {
+            au {{ lease.endDate | date: 'dd/MM/yyyy' }}
+          }
+        </p>
+        <p>Loyer : {{ lease.rentAmount | currencyXof }}</p>
+      </div>
+    }
+
+    <div class="card">
+      <h3>Derniers paiements</h3>
+      @if (dashboard.recentPayments.length) {
+        <ul style="list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:0.5rem;">
+          @for (payment of dashboard.recentPayments; track payment.id) {
+            <li style="display:flex; justify-content:space-between; border-bottom:1px solid var(--immo-border); padding: 0.5rem 0;">
+              <span>{{ payment.dueDate | date: 'dd/MM/yyyy' }}</span>
+              <span>{{ payment.amountPaid | currencyXof }} / {{ payment.amountDue | currencyXof }}</span>
+              <span>{{ payment.status | statusLabel }}</span>
+            </li>
+          }
+        </ul>
+      } @else {
+        <app-empty-state message="Aucun paiement enregistré." />
+      }
+    </div>
+  </div>
+} @else {
+  <app-empty-state message="Impossible de charger votre tableau de bord." />
+}

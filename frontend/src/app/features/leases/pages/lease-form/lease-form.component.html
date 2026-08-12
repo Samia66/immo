@@ -1,0 +1,72 @@
+<app-page-header
+  title="Nouveau contrat"
+  subtitle="Formulaire simplifié en une page (voir note de simplification dans le code)"
+  [breadcrumbs]="[{ label: 'Contrats', link: '/app/leases' }, { label: 'Nouveau' }]"
+/>
+
+<form [formGroup]="form" (ngSubmit)="submit()" class="card">
+  <div class="form-grid">
+    <mat-form-field appearance="outline">
+      <mat-label>Bien</mat-label>
+      <mat-select formControlName="propertyId" required>
+        @for (property of properties(); track property.id) {
+          <mat-option [value]="property.id">{{ property.title }} ({{ property.reference }})</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Locataire</mat-label>
+      <mat-select formControlName="tenantId" required>
+        @for (tenant of tenants(); track tenant.id) {
+          <mat-option [value]="tenant.id">{{ tenant.fullName }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Date de début</mat-label>
+      <input matInput type="date" formControlName="startDate" required />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Date de fin (optionnel)</mat-label>
+      <input matInput type="date" formControlName="endDate" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Loyer mensuel</mat-label>
+      <input matInput type="number" formControlName="rentAmount" required />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Dépôt de garantie</mat-label>
+      <input matInput type="number" formControlName="depositAmount" required />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Fréquence de paiement</mat-label>
+      <mat-select formControlName="paymentFrequency" required>
+        @for (freq of frequencies; track freq) {
+          <mat-option [value]="freq">{{ freq }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Taux d'indexation (%)</mat-label>
+      <input matInput type="number" formControlName="indexationRate" />
+    </mat-form-field>
+  </div>
+
+  <div class="form-actions">
+    <button mat-button type="button" (click)="cancel()">Annuler</button>
+    <button mat-flat-button color="primary" type="submit" [disabled]="saving()">
+      @if (saving()) {
+        <mat-spinner diameter="20" />
+      } @else {
+        Créer le contrat
+      }
+    </button>
+  </div>
+</form>

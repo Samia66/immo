@@ -1,0 +1,39 @@
+<h2 mat-dialog-title>Inviter un utilisateur</h2>
+<mat-dialog-content>
+  <form [formGroup]="form" class="form-grid" style="grid-template-columns: 1fr;">
+    <mat-form-field appearance="outline">
+      <mat-label>Prénom</mat-label>
+      <input matInput formControlName="firstName" required />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Nom</mat-label>
+      <input matInput formControlName="lastName" required />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+      <input matInput type="email" formControlName="email" required />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Téléphone</mat-label>
+      <input matInput formControlName="phone" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Rôle</mat-label>
+      <mat-select formControlName="roleId" required>
+        @for (role of roles(); track role.id) {
+          <mat-option [value]="role.id">{{ role.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="dialogRef.close(false)">Annuler</button>
+  <button mat-flat-button color="primary" [disabled]="saving()" (click)="submit()">
+    @if (saving()) {
+      <mat-spinner diameter="18" />
+    } @else {
+      Inviter
+    }
+  </button>
+</mat-dialog-actions>

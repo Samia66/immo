@@ -1,0 +1,19 @@
+<app-page-header title="Tableau de bord" [subtitle]="userName ? 'Bienvenue, ' + userName : null" />
+
+@switch (role()) {
+  @case (RoleName.ADMIN_AGENCE) {
+    <app-admin-dashboard />
+  }
+  @case (RoleName.GESTIONNAIRE) {
+    <app-manager-dashboard />
+  }
+  @case (RoleName.AGENT_IMMOBILIER) {
+    <app-manager-dashboard />
+  }
+  @case (RoleName.LOCATAIRE) {
+    <app-tenant-dashboard />
+  }
+  @default {
+    <app-empty-state message="Aucun tableau de bord disponible pour ce rôle." />
+  }
+}

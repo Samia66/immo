@@ -1,0 +1,20 @@
+<app-page-header title="Organisations" subtitle="Toutes les organisations de la plateforme" />
+
+<app-data-table
+  [columns]="columns"
+  [result]="result()"
+  [loading]="loading()"
+  [rowActions]="rowActionsRef()"
+  emptyMessage="Aucune organisation."
+  (pageChange)="onPageChange($event)"
+  (rowClick)="openDetail($event)"
+/>
+
+<ng-template #rowActionsTpl let-org>
+  <button mat-icon-button matTooltip="Voir" (click)="openDetail(org)">
+    <mat-icon>visibility</mat-icon>
+  </button>
+  <button mat-icon-button [matTooltip]="org.isActive ? 'Désactiver' : 'Activer'" (click)="toggleActive(org); $event.stopPropagation()">
+    <mat-icon>{{ org.isActive ? 'toggle_on' : 'toggle_off' }}</mat-icon>
+  </button>
+</ng-template>

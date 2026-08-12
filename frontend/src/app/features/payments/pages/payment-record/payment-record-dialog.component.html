@@ -1,0 +1,35 @@
+<h2 mat-dialog-title>Enregistrer un paiement</h2>
+<mat-dialog-content>
+  <form [formGroup]="form" class="form-grid" style="grid-template-columns: 1fr;">
+    <mat-form-field appearance="outline">
+      <mat-label>Montant payé</mat-label>
+      <input matInput type="number" formControlName="amountPaid" required />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Méthode</mat-label>
+      <mat-select formControlName="method" required>
+        @for (method of methods; track method) {
+          <mat-option [value]="method">{{ method }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Référence de transaction</mat-label>
+      <input matInput formControlName="transactionRef" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Date de paiement</mat-label>
+      <input matInput type="date" formControlName="paidAt" required />
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="dialogRef.close(false)">Annuler</button>
+  <button mat-flat-button color="primary" [disabled]="saving()" (click)="submit()">
+    @if (saving()) {
+      <mat-spinner diameter="18" />
+    } @else {
+      Enregistrer
+    }
+  </button>
+</mat-dialog-actions>

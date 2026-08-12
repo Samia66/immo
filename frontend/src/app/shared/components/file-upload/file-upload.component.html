@@ -1,0 +1,33 @@
+<div
+  class="file-upload"
+  [class.file-upload--dragover]="isDragOver()"
+  (click)="openPicker()"
+  (dragover)="onDragOver($event)"
+  (dragleave)="onDragLeave()"
+  (drop)="onDrop($event)"
+>
+  <mat-icon>cloud_upload</mat-icon>
+  <p>{{ label() }}</p>
+  <input
+    #fileInput
+    type="file"
+    hidden
+    [attr.accept]="accept()"
+    [attr.multiple]="multiple() ? true : null"
+    (change)="onInputChange($event)"
+  />
+</div>
+
+@if (selectedFiles().length) {
+  <ul class="file-upload__list">
+    @for (file of selectedFiles(); track file.name; let i = $index) {
+      <li>
+        <mat-icon>insert_drive_file</mat-icon>
+        <span class="file-upload__name">{{ file.name }}</span>
+        <button mat-icon-button type="button" (click)="removeFile(i); $event.stopPropagation()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </li>
+    }
+  </ul>
+}

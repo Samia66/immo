@@ -1,0 +1,62 @@
+:host {
+  display: block;
+}
+
+.file-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 2rem 1rem;
+  border: 2px dashed var(--immo-border);
+  border-radius: 0.75rem;
+  cursor: pointer;
+  text-align: center;
+  color: var(--immo-text-muted);
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+
+  mat-icon {
+    font-size: 2rem;
+    height: 2rem;
+    width: 2rem;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.85rem;
+  }
+
+  &:hover,
+  &--dragover {
+    border-color: var(--immo-accent);
+    background: var(--immo-accent-soft);
+    color: var(--immo-accent);
+  }
+}
+
+.file-upload__list {
+  list-style: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.6rem;
+    border-radius: 0.5rem;
+    background: var(--immo-surface-alt);
+    font-size: 0.85rem;
+  }
+}
+
+.file-upload__name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

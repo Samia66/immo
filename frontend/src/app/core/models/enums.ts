@@ -1,0 +1,99 @@
+export enum RoleName {
+  SUPER_ADMIN = 'SUPER_ADMIN',
+  ADMIN_AGENCE = 'ADMIN_AGENCE',
+  GESTIONNAIRE = 'GESTIONNAIRE',
+  AGENT_IMMOBILIER = 'AGENT_IMMOBILIER',
+  LOCATAIRE = 'LOCATAIRE',
+}
+
+export enum SubscriptionPlan {
+  FREE = 'FREE',
+  STARTER = 'STARTER',
+  PROFESSIONAL = 'PROFESSIONAL',
+  ENTERPRISE = 'ENTERPRISE',
+}
+
+export enum PropertyType {
+  MAISON = 'MAISON',
+  APPARTEMENT = 'APPARTEMENT',
+  STUDIO = 'STUDIO',
+  BUREAU = 'BUREAU',
+  TERRAIN = 'TERRAIN',
+  BOUTIQUE = 'BOUTIQUE',
+}
+
+export enum PropertyStatus {
+  DISPONIBLE = 'DISPONIBLE',
+  OCCUPE = 'OCCUPE',
+  RESERVE = 'RESERVE',
+  MAINTENANCE = 'MAINTENANCE',
+}
+
+export enum LeaseStatus {
+  ACTIF = 'ACTIF',
+  EXPIRE = 'EXPIRE',
+  RESILIE = 'RESILIE',
+}
+
+export enum PaymentFrequency {
+  MENSUEL = 'MENSUEL',
+  TRIMESTRIEL = 'TRIMESTRIEL',
+  SEMESTRIEL = 'SEMESTRIEL',
+  ANNUEL = 'ANNUEL',
+}
+
+export enum PaymentStatus {
+  EN_ATTENTE = 'EN_ATTENTE',
+  PARTIEL = 'PARTIEL',
+  PAYE = 'PAYE',
+  EN_RETARD = 'EN_RETARD',
+  ANNULE = 'ANNULE',
+}
+
+export enum PaymentMethod {
+  ESPECES = 'ESPECES',
+  VIREMENT = 'VIREMENT',
+  MOBILE_MONEY = 'MOBILE_MONEY',
+  CHEQUE = 'CHEQUE',
+  CARTE = 'CARTE',
+}
+
+export enum ExpenseCategory {
+  EAU = 'EAU',
+  ELECTRICITE = 'ELECTRICITE',
+  SECURITE = 'SECURITE',
+  ENTRETIEN = 'ENTRETIEN',
+  SYNDIC = 'SYNDIC',
+  AUTRE = 'AUTRE',
+}
+
+export enum MaintenancePriority {
+  BASSE = 'BASSE',
+  NORMALE = 'NORMALE',
+  HAUTE = 'HAUTE',
+  URGENTE = 'URGENTE',
+}
+
+export enum MaintenanceStatus {
+  NOUVELLE = 'NOUVELLE',
+  VALIDEE = 'VALIDEE',
+  ASSIGNEE = 'ASSIGNEE',
+  EN_COURS = 'EN_COURS',
+  TERMINEE = 'TERMINEE',
+  CLOTUREE = 'CLOTUREE',
+}
+
+export enum NotificationType {
+  RAPPEL_LOYER = 'RAPPEL_LOYER',
+  RETARD_PAIEMENT = 'RETARD_PAIEMENT',
+  CONFIRMATION_PAIEMENT = 'CONFIRMATION_PAIEMENT',
+  EXPIRATION_CONTRAT = 'EXPIRATION_CONTRAT',
+  MAINTENANCE = 'MAINTENANCE',
+  ALERTE_ADMIN = 'ALERTE_ADMIN',
+}
+
+export enum NotificationChannel {
+  IN_APP = 'IN_APP',
+  EMAIL = 'EMAIL',
+  SMS = 'SMS',
+}

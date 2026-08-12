@@ -1,0 +1,49 @@
+@if (store.loading() && !store.manager()) {
+  <div style="display:flex; justify-content:center; padding: 3rem;">
+    <mat-spinner diameter="36" />
+  </div>
+} @else if (store.manager(); as dashboard) {
+  <div class="dashboard">
+    <div class="dashboard__kpis" style="display:grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap:1rem;">
+      <app-stat-card label="Biens gérés" [value]="dashboard.kpis.totalProperties" icon="home_work" accent="primary" />
+      <app-stat-card label="Occupation" [value]="(dashboard.kpis.occupancyRate * 100).toFixed(0) + ' %'" icon="pie_chart" accent="info" />
+      <app-stat-card label="Maintenances ouvertes" [value]="dashboard.kpis.openMaintenanceCount" icon="build" accent="warn" />
+      <app-stat-card label="Paiements en attente" [value]="dashboard.kpis.pendingPaymentsCount" icon="hourglass_top" accent="warn" />
+    </div>
+
+    <div class="dashboard__lists" style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:1.25rem;">
+      <div class="card">
+        <h3>Contrats expirant sous 30 jours</h3>
+        @if (dashboard.expiringLeases.length) {
+          <ul class="dashboard__list">
+            @for (lease of dashboard.expiringLeases; track lease.leaseId) {
+              <li>
+                <a [routerLink]="['/app/leases', lease.leaseId]">{{ lease.propertyTitle }}</a>
+                <span>{{ lease.endDate | date: 'dd/MM/yyyy' }}</span>
+              </li>
+            }
+          </ul>
+        } @else {
+          <app-empty-state message="Aucun contrat n'expire prochainement." />
+        }
+      </div>
+      <div class="card">
+        <h3>Maintenances ouvertes</h3>
+        @if (dashboard.openMaintenance.length) {
+          <ul class="dashboard__list">
+            @for (item of dashboard.openMaintenance; track item.id) {
+              <li>
+                <a [routerLink]="['/app/maintenance', item.id]">{{ item.propertyTitle }}</a>
+                <mat-chip>{{ item.priority | statusLabel }}</mat-chip>
+              </li>
+            }
+          </ul>
+        } @else {
+          <app-empty-state message="Aucune maintenance ouverte." />
+        }
+      </div>
+    </div>
+  </div>
+} @else {
+  <app-empty-state message="Impossible de charger le tableau de bord." />
+}

@@ -1,0 +1,30 @@
+<app-page-header title="Locataires" subtitle="Personnes occupant les biens gérés">
+  <button mat-flat-button color="primary" *appHasPermission="'tenants:create'" (click)="createNew()">
+    <mat-icon>add</mat-icon>
+    Nouveau locataire
+  </button>
+</app-page-header>
+
+<mat-form-field appearance="outline" style="max-width: 320px; display: block; margin-bottom: 1rem;">
+  <mat-label>Recherche</mat-label>
+  <mat-icon matPrefix>search</mat-icon>
+  <input matInput [formControl]="search" placeholder="Nom, téléphone..." />
+</mat-form-field>
+
+<app-data-table
+  [columns]="columns"
+  [result]="store.result()"
+  [loading]="store.loading()"
+  [rowActions]="rowActionsRef()"
+  emptyMessage="Aucun locataire enregistré."
+  (pageChange)="onPageChange($event)"
+/>
+
+<ng-template #rowActionsTpl let-tenant>
+  <button mat-icon-button matTooltip="Modifier" *appHasPermission="'tenants:update'" (click)="edit(tenant)">
+    <mat-icon>edit</mat-icon>
+  </button>
+  <button mat-icon-button matTooltip="Supprimer" *appHasPermission="'tenants:delete'" (click)="remove(tenant)">
+    <mat-icon>delete</mat-icon>
+  </button>
+</ng-template>

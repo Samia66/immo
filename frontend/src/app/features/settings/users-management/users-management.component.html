@@ -1,0 +1,21 @@
+<app-page-header title="Utilisateurs" subtitle="Membres de votre organisation">
+  <button mat-flat-button color="primary" (click)="invite()">
+    <mat-icon>person_add</mat-icon>
+    Inviter un utilisateur
+  </button>
+</app-page-header>
+
+<app-data-table
+  [columns]="columns"
+  [result]="result()"
+  [loading]="loading()"
+  [rowActions]="rowActionsRef()"
+  emptyMessage="Aucun utilisateur."
+  (pageChange)="onPageChange($event)"
+/>
+
+<ng-template #rowActionsTpl let-user>
+  <button mat-icon-button [matTooltip]="user.isActive ? 'Désactiver' : 'Activer'" (click)="toggleActive(user)">
+    <mat-icon>{{ user.isActive ? 'toggle_on' : 'toggle_off' }}</mat-icon>
+  </button>
+</ng-template>

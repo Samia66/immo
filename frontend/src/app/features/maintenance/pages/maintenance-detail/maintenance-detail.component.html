@@ -1,0 +1,51 @@
+@if (store.loading() && !store.selected()) {
+  <div style="display:flex; justify-content:center; padding: 3rem;">
+    <mat-spinner diameter="36" />
+  </div>
+} @else if (store.selected(); as request) {
+  <app-page-header
+    [title]="request.category"
+    [breadcrumbs]="[{ label: 'Maintenance', link: '/app/maintenance' }, { label: 'Détail' }]"
+  >
+    @if (nextStatuses().length) {
+      <mat-form-field appearance="outline" style="margin: 0;" *appHasPermission="'maintenance:update'">
+        <mat-label>Changer le statut</mat-label>
+        <mat-select [disabled]="processing()" (selectionChange)="changeStatus($event.value)">
+          @for (status of nextStatuses(); track status) {
+            <mat-option [value]="status">{{ status }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    }
+  </app-page-header>
+
+  <div class="card">
+    <div style="display:flex; gap: 0.5rem; margin-bottom: 1rem;">
+      <mat-chip>{{ request.status | statusLabel }}</mat-chip>
+      <mat-chip>{{ request.priority | statusLabel }}</mat-chip>
+    </div>
+
+    <p>{{ request.description }}</p>
+
+    <div class="form-grid">
+      <div>
+        <span style="display:block; font-size:0.75rem; color: var(--immo-text-muted);">Bien</span>
+        <strong>{{ request.property?.title ?? request.propertyId }}</strong>
+      </div>
+      @if (request.estimatedCost) {
+        <div>
+          <span style="display:block; font-size:0.75rem; color: var(--immo-text-muted);">Coût estimé</span>
+          <strong>{{ request.estimatedCost }}</strong>
+        </div>
+      }
+      @if (request.actualCost) {
+        <div>
+          <span style="display:block; font-size:0.75rem; color: var(--immo-text-muted);">Coût réel</span>
+          <strong>{{ request.actualCost }}</strong>
+        </div>
+      }
+    </div>
+  </div>
+} @else {
+  <app-empty-state message="Demande introuvable." />
+}

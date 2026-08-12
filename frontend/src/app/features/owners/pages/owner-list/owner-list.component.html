@@ -1,0 +1,30 @@
+<app-page-header title="Propriétaires" subtitle="Personnes ou sociétés propriétaires de biens gérés">
+  <button mat-flat-button color="primary" *appHasPermission="'owners:create'" (click)="createNew()">
+    <mat-icon>add</mat-icon>
+    Nouveau propriétaire
+  </button>
+</app-page-header>
+
+<mat-form-field appearance="outline" style="max-width: 320px; display: block; margin-bottom: 1rem;">
+  <mat-label>Recherche</mat-label>
+  <mat-icon matPrefix>search</mat-icon>
+  <input matInput [formControl]="search" placeholder="Nom, téléphone..." />
+</mat-form-field>
+
+<app-data-table
+  [columns]="columns"
+  [result]="store.result()"
+  [loading]="store.loading()"
+  [rowActions]="rowActionsRef()"
+  emptyMessage="Aucun propriétaire enregistré."
+  (pageChange)="onPageChange($event)"
+/>
+
+<ng-template #rowActionsTpl let-owner>
+  <button mat-icon-button matTooltip="Modifier" *appHasPermission="'owners:update'" (click)="edit(owner)">
+    <mat-icon>edit</mat-icon>
+  </button>
+  <button mat-icon-button matTooltip="Supprimer" *appHasPermission="'owners:delete'" (click)="remove(owner)">
+    <mat-icon>delete</mat-icon>
+  </button>
+</ng-template>

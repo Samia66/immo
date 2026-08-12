@@ -1,0 +1,47 @@
+<form [formGroup]="form" class="property-filters">
+  <mat-form-field appearance="outline" class="property-filters__search">
+    <mat-label>Recherche</mat-label>
+    <mat-icon matPrefix>search</mat-icon>
+    <input matInput formControlName="search" placeholder="Titre, référence, adresse..." />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Type</mat-label>
+    <mat-select formControlName="type">
+      <mat-option [value]="null">Tous</mat-option>
+      @for (type of types; track type) {
+        <mat-option [value]="type">{{ type }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Statut</mat-label>
+    <mat-select formControlName="status">
+      <mat-option [value]="null">Tous</mat-option>
+      @for (status of statuses; track status) {
+        <mat-option [value]="status">{{ status }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Ville</mat-label>
+    <input matInput formControlName="city" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Loyer min</mat-label>
+    <input matInput type="number" formControlName="minRent" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Loyer max</mat-label>
+    <input matInput type="number" formControlName="maxRent" />
+  </mat-form-field>
+
+  <button mat-stroked-button type="button" (click)="reset()">
+    <mat-icon>filter_alt_off</mat-icon>
+    Réinitialiser
+  </button>
+</form>

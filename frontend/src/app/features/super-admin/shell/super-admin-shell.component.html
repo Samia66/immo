@@ -1,0 +1,28 @@
+<mat-toolbar class="super-admin-toolbar">
+  <span class="super-admin-toolbar__brand">
+    <mat-icon>admin_panel_settings</mat-icon>
+    Immo SaaS — Super Admin
+  </span>
+
+  <nav class="super-admin-toolbar__nav">
+    <a mat-button routerLink="/super-admin/organizations" routerLinkActive="super-admin-toolbar__link--active">
+      Organisations
+    </a>
+    <a mat-button routerLink="/super-admin/statistics" routerLinkActive="super-admin-toolbar__link--active">
+      Statistiques
+    </a>
+  </nav>
+
+  <span class="super-admin-toolbar__spacer"></span>
+
+  <button mat-icon-button (click)="themeService.toggle()">
+    <mat-icon>{{ themeService.theme() === 'dark' ? 'light_mode' : 'dark_mode' }}</mat-icon>
+  </button>
+  <button mat-icon-button (click)="logout()">
+    <mat-icon>logout</mat-icon>
+  </button>
+</mat-toolbar>
+
+<main class="super-admin-content">
+  <router-outlet />
+</main>

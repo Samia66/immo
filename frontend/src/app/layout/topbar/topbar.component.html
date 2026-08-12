@@ -1,0 +1,37 @@
+<mat-toolbar class="topbar">
+  <button mat-icon-button (click)="toggleSidenav.emit()" aria-label="Basculer le menu">
+    <mat-icon>menu</mat-icon>
+  </button>
+
+  <span class="topbar__spacer"></span>
+
+  <button mat-icon-button (click)="themeService.toggle()" aria-label="Basculer le thème">
+    <mat-icon>{{ themeService.theme() === 'dark' ? 'light_mode' : 'dark_mode' }}</mat-icon>
+  </button>
+
+  <button mat-icon-button (click)="goToNotifications()" aria-label="Notifications">
+    <mat-icon [matBadge]="notificationService.unreadCount() || undefined" matBadgeColor="warn" matBadgeSize="small">
+      notifications
+    </mat-icon>
+  </button>
+
+  <button mat-button [matMenuTriggerFor]="userMenu" class="topbar__user">
+    <mat-icon>account_circle</mat-icon>
+    @if (currentUser(); as user) {
+      <span class="topbar__user-name">{{ user.firstName }} {{ user.lastName }}</span>
+    }
+  </button>
+  <mat-menu #userMenu="matMenu">
+    @if (currentUser(); as user) {
+      <div class="topbar__user-info">
+        <strong>{{ user.firstName }} {{ user.lastName }}</strong>
+        <span>{{ user.email }}</span>
+        <span class="topbar__user-role">{{ user.role.label }}</span>
+      </div>
+    }
+    <button mat-menu-item (click)="logout()">
+      <mat-icon>logout</mat-icon>
+      <span>Déconnexion</span>
+    </button>
+  </mat-menu>
+</mat-toolbar>

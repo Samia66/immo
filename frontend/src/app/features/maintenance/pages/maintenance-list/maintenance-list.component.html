@@ -1,0 +1,36 @@
+<app-page-header title="Maintenance" subtitle="Demandes d'intervention sur les biens">
+  <a mat-stroked-button routerLink="/app/maintenance/board">
+    <mat-icon>view_kanban</mat-icon>
+    Vue Kanban
+  </a>
+  <button mat-flat-button color="primary" *appHasPermission="'maintenance:create'" (click)="createNew()">
+    <mat-icon>add</mat-icon>
+    Nouvelle demande
+  </button>
+</app-page-header>
+
+<mat-form-field appearance="outline" style="max-width: 220px; display:block; margin-bottom: 1rem;">
+  <mat-label>Statut</mat-label>
+  <mat-select (selectionChange)="onStatusChange($event.value)">
+    <mat-option [value]="null">Tous</mat-option>
+    @for (status of statuses; track status) {
+      <mat-option [value]="status">{{ status }}</mat-option>
+    }
+  </mat-select>
+</mat-form-field>
+
+<app-data-table
+  [columns]="columns"
+  [result]="store.result()"
+  [loading]="store.loading()"
+  [rowActions]="rowActionsRef()"
+  emptyMessage="Aucune demande de maintenance."
+  (pageChange)="onPageChange($event)"
+  (rowClick)="openDetail($event)"
+/>
+
+<ng-template #rowActionsTpl let-request>
+  <button mat-icon-button matTooltip="Voir" (click)="openDetail(request)">
+    <mat-icon>visibility</mat-icon>
+  </button>
+</ng-template>

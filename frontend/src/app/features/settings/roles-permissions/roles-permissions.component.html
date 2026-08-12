@@ -1,0 +1,49 @@
+<app-page-header title="Rôles & permissions" subtitle="Configuration des accès par rôle" />
+
+@if (loading()) {
+  <div style="display:flex; justify-content:center; padding: 3rem;">
+    <mat-spinner diameter="32" />
+  </div>
+} @else {
+  <div class="roles-permissions">
+    <mat-nav-list class="roles-permissions__roles card">
+      @for (role of roles(); track role.id) {
+        <a
+          mat-list-item
+          [class.roles-permissions__role--active]="role.id === selectedRoleId()"
+          (click)="selectRole(role)"
+        >
+          {{ role.label }}
+        </a>
+      }
+    </mat-nav-list>
+
+    <div class="card roles-permissions__matrix">
+      @if (selectedRole(); as role) {
+        <h3>{{ role.label }}</h3>
+        @for (group of permissionsByModule(); track group.module) {
+          <div class="roles-permissions__group">
+            <h4>{{ group.module }}</h4>
+            <div class="roles-permissions__checks">
+              @for (permission of group.permissions; track permission.id) {
+                <mat-checkbox [checked]="isChecked(permission)" [disabled]="role.isSystem" (change)="toggle(permission)">
+                  {{ permission.code }}
+                </mat-checkbox>
+              }
+            </div>
+          </div>
+        }
+
+        <div class="form-actions">
+          <button mat-flat-button color="primary" [disabled]="saving() || role.isSystem" (click)="save()">
+            @if (saving()) {
+              <mat-spinner diameter="20" />
+            } @else {
+              Enregistrer
+            }
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+}

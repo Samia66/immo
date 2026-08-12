@@ -1,0 +1,100 @@
+<app-page-header
+  [title]="isEdit ? 'Modifier le bien' : 'Nouveau bien'"
+  [breadcrumbs]="[{ label: 'Biens', link: '/app/properties' }, { label: isEdit ? 'Modifier' : 'Nouveau' }]"
+/>
+
+@if (loading()) {
+  <div class="property-form__loading">
+    <mat-spinner diameter="32" />
+  </div>
+} @else {
+  <form [formGroup]="form" (ngSubmit)="submit()" class="card property-form">
+    <div class="form-grid">
+      <mat-form-field appearance="outline" class="full-width property-form__span2">
+        <mat-label>Titre</mat-label>
+        <input matInput formControlName="title" required />
+        @if (form.controls.title.hasError('required')) {
+          <mat-error>Le titre est requis.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Type</mat-label>
+        <mat-select formControlName="type" required>
+          @for (type of types; track type) {
+            <mat-option [value]="type">{{ type }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Propriétaire</mat-label>
+        <mat-select formControlName="ownerId" required>
+          @for (owner of owners(); track owner.id) {
+            <mat-option [value]="owner.id">{{ owner.fullName }}</mat-option>
+          }
+        </mat-select>
+        @if (form.controls.ownerId.hasError('required')) {
+          <mat-error>Le propriétaire est requis.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="property-form__span2">
+        <mat-label>Adresse</mat-label>
+        <input matInput formControlName="addressLine" required />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Ville</mat-label>
+        <input matInput formControlName="city" required />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Quartier</mat-label>
+        <input matInput formControlName="district" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Pièces</mat-label>
+        <input matInput type="number" formControlName="rooms" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Surface (m²)</mat-label>
+        <input matInput type="number" formControlName="surfaceM2" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Loyer mensuel</mat-label>
+        <input matInput type="number" formControlName="monthlyRent" required />
+        @if (form.controls.monthlyRent.hasError('required')) {
+          <mat-error>Le loyer est requis.</mat-error>
+        }
+        @if (form.controls.monthlyRent.hasError('min')) {
+          <mat-error>Le loyer doit être positif.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Charges mensuelles</mat-label>
+        <input matInput type="number" formControlName="monthlyCharges" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="property-form__span2">
+        <mat-label>Description</mat-label>
+        <textarea matInput rows="3" formControlName="description"></textarea>
+      </mat-form-field>
+    </div>
+
+    <div class="form-actions">
+      <button mat-button type="button" (click)="cancel()">Annuler</button>
+      <button mat-flat-button color="primary" type="submit" [disabled]="saving()">
+        @if (saving()) {
+          <mat-spinner diameter="20" />
+        } @else {
+          Enregistrer
+        }
+      </button>
+    </div>
+  </form>
+}

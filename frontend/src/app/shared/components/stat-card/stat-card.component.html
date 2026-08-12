@@ -1,0 +1,19 @@
+<div class="stat-card" [attr.data-accent]="accent()">
+  <div class="stat-card__icon">
+    <mat-icon>{{ icon() }}</mat-icon>
+  </div>
+  <div class="stat-card__body">
+    <span class="stat-card__label">{{ label() }}</span>
+    <span class="stat-card__value">{{ value() }}</span>
+    @if (trendLabel()) {
+      <span class="stat-card__trend" [class]="'stat-card__trend--' + trend()">
+        @if (trend() === 'up') {
+          <mat-icon inline>trending_up</mat-icon>
+        } @else if (trend() === 'down') {
+          <mat-icon inline>trending_down</mat-icon>
+        }
+        {{ trendLabel() }}
+      </span>
+    }
+  </div>
+</div>

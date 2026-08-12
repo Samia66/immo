@@ -1,0 +1,14 @@
+.notification-list {
+  background: var(--immo-surface);
+  border: 1px solid var(--immo-border);
+  border-radius: 0.75rem;
+}
+
+.notification-list__item--unread {
+  background: var(--immo-accent-soft);
+}
+
+.notification-list__date {
+  font-size: 0.75rem;
+  color: var(--immo-text-muted);
+}

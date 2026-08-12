@@ -1,0 +1,31 @@
+.roles-permissions {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 1rem;
+
+  @media (max-width: 720px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.roles-permissions__role--active {
+  background: var(--immo-accent-soft);
+  color: var(--immo-accent);
+}
+
+.roles-permissions__group {
+  margin-bottom: 1rem;
+
+  h4 {
+    text-transform: capitalize;
+    margin: 0 0 0.4rem;
+    font-size: 0.85rem;
+    color: var(--immo-text-muted);
+  }
+}
+
+.roles-permissions__checks {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.35rem;
+}

@@ -1,0 +1,118 @@
+// Include theming for Angular Material with `mat.theme()`.
+// This Sass mixin will define CSS variables that are used for styling Angular Material
+// components according to the Material 3 design spec.
+@use '@angular/material' as mat;
+
+html {
+  @include mat.theme(
+    (
+      color: (
+        primary: mat.$azure-palette,
+        tertiary: mat.$blue-palette,
+      ),
+      typography: Roboto,
+      density: 0,
+    )
+  );
+}
+
+// --- App design tokens, toggled by ThemeService via [data-theme] on <html> ---
+:root {
+  --immo-bg: #f4f6f9;
+  --immo-surface: #ffffff;
+  --immo-surface-alt: #f0f2f6;
+  --immo-border: #e2e6ec;
+  --immo-text: #1b2432;
+  --immo-text-muted: #667085;
+  --immo-accent: #2563eb;
+  --immo-accent-soft: #e8effe;
+  --immo-success: #15803d;
+  --immo-success-soft: #e6f6ec;
+  --immo-warn: #b91c1c;
+  --immo-warn-soft: #fdecec;
+  --immo-info: #0e7490;
+  --immo-info-soft: #e3f6fa;
+  --immo-shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.06);
+  --immo-shadow-md: 0 4px 16px rgba(16, 24, 40, 0.12);
+}
+
+:root[data-theme='dark'] {
+  --immo-bg: #10151f;
+  --immo-surface: #171d29;
+  --immo-surface-alt: #1e2532;
+  --immo-border: #2b3342;
+  --immo-text: #e7ebf2;
+  --immo-text-muted: #93a0b4;
+  --immo-accent: #5b9bff;
+  --immo-accent-soft: rgba(91, 155, 255, 0.16);
+  --immo-success: #4ade80;
+  --immo-success-soft: rgba(74, 222, 128, 0.14);
+  --immo-warn: #f87171;
+  --immo-warn-soft: rgba(248, 113, 113, 0.14);
+  --immo-info: #38bdf8;
+  --immo-info-soft: rgba(56, 189, 248, 0.14);
+  --immo-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --immo-shadow-md: 0 4px 20px rgba(0, 0, 0, 0.45);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  background-color: var(--immo-bg);
+  color: var(--immo-text);
+  color-scheme: light;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+:root[data-theme='dark'] body {
+  color-scheme: dark;
+}
+
+.snackbar-success {
+  --mdc-snackbar-container-color: #15803d;
+  --mdc-snackbar-supporting-text-color: #ffffff;
+}
+
+.snackbar-error {
+  --mdc-snackbar-container-color: #b91c1c;
+  --mdc-snackbar-supporting-text-color: #ffffff;
+}
+
+.snackbar-info {
+  --mdc-snackbar-container-color: #0e7490;
+  --mdc-snackbar-supporting-text-color: #ffffff;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem 1rem;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.card {
+  background: var(--immo-surface);
+  border: 1px solid var(--immo-border);
+  border-radius: 1rem;
+  box-shadow: var(--immo-shadow-sm);
+  padding: 1.25rem;
+}
+
+.full-width {
+  width: 100%;
+}

@@ -1,0 +1,58 @@
+@if (store.loading() && !store.selected()) {
+  <div style="display:flex; justify-content:center; padding: 3rem;">
+    <mat-spinner diameter="36" />
+  </div>
+} @else if (store.selected(); as lease) {
+  <app-page-header
+    [title]="'Contrat — ' + (lease.property?.title ?? lease.propertyId)"
+    [breadcrumbs]="[{ label: 'Contrats', link: '/app/leases' }, { label: 'Détail' }]"
+  >
+    <button mat-stroked-button (click)="downloadContract()">
+      <mat-icon>picture_as_pdf</mat-icon>
+      Contrat PDF
+    </button>
+    @if (lease.status === LeaseStatus.ACTIF) {
+      <button mat-flat-button color="warn" *appHasPermission="'leases:update'" [disabled]="processing()" (click)="terminate()">
+        <mat-icon>block</mat-icon>
+        Résilier
+      </button>
+    }
+  </app-page-header>
+
+  <div class="card">
+    <mat-chip>{{ lease.status | statusLabel }}</mat-chip>
+
+    <div class="form-grid" style="margin-top: 1rem;">
+      <div>
+        <span style="display:block; font-size: 0.75rem; color: var(--immo-text-muted);">Bien</span>
+        <strong>{{ lease.property?.title ?? lease.propertyId }}</strong>
+      </div>
+      <div>
+        <span style="display:block; font-size: 0.75rem; color: var(--immo-text-muted);">Locataire</span>
+        <strong>{{ lease.tenant?.fullName ?? lease.tenantId }}</strong>
+      </div>
+      <div>
+        <span style="display:block; font-size: 0.75rem; color: var(--immo-text-muted);">Début</span>
+        <strong>{{ lease.startDate | date: 'dd/MM/yyyy' }}</strong>
+      </div>
+      <div>
+        <span style="display:block; font-size: 0.75rem; color: var(--immo-text-muted);">Fin</span>
+        <strong>{{ lease.endDate ? (lease.endDate | date: 'dd/MM/yyyy') : '—' }}</strong>
+      </div>
+      <div>
+        <span style="display:block; font-size: 0.75rem; color: var(--immo-text-muted);">Loyer</span>
+        <strong>{{ lease.rentAmount | currencyXof }}</strong>
+      </div>
+      <div>
+        <span style="display:block; font-size: 0.75rem; color: var(--immo-text-muted);">Dépôt</span>
+        <strong>{{ lease.depositAmount | currencyXof }}</strong>
+      </div>
+      <div>
+        <span style="display:block; font-size: 0.75rem; color: var(--immo-text-muted);">Fréquence</span>
+        <strong>{{ lease.paymentFrequency | statusLabel }}</strong>
+      </div>
+    </div>
+  </div>
+} @else {
+  <app-empty-state message="Contrat introuvable." />
+}

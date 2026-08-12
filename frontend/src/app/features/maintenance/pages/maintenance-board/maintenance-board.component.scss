@@ -1,0 +1,56 @@
+.board {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding-bottom: 1rem;
+}
+
+.board__column {
+  flex: 0 0 240px;
+  background: var(--immo-surface-alt);
+  border-radius: 0.75rem;
+  padding: 0.75rem;
+}
+
+.board__column-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  margin: 0 0 0.5rem;
+  color: var(--immo-text-muted);
+}
+
+.board__count {
+  background: var(--immo-accent-soft);
+  color: var(--immo-accent);
+  border-radius: 999px;
+  padding: 0.05rem 0.5rem;
+  font-size: 0.75rem;
+}
+
+.board__cards {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-height: 80px;
+}
+
+.board__card {
+  background: var(--immo-surface);
+  border: 1px solid var(--immo-border);
+  border-radius: 0.6rem;
+  padding: 0.6rem 0.75rem;
+  cursor: pointer;
+  box-shadow: var(--immo-shadow-sm);
+
+  strong {
+    display: block;
+    font-size: 0.85rem;
+  }
+  p {
+    margin: 0.15rem 0 0.4rem;
+    font-size: 0.75rem;
+    color: var(--immo-text-muted);
+  }
+}

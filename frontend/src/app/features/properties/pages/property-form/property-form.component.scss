@@ -1,0 +1,13 @@
+.property-form__loading {
+  display: flex;
+  justify-content: center;
+  padding: 3rem;
+}
+
+.property-form__span2 {
+  grid-column: span 2;
+
+  @media (max-width: 640px) {
+    grid-column: span 1;
+  }
+}

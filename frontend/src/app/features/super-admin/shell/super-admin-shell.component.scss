@@ -1,0 +1,40 @@
+.super-admin-toolbar {
+  background: var(--immo-surface);
+  color: var(--immo-text);
+  border-bottom: 1px solid var(--immo-border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  gap: 0.5rem;
+}
+
+.super-admin-toolbar__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 700;
+}
+
+.super-admin-toolbar__nav {
+  display: flex;
+  gap: 0.25rem;
+  margin-left: 1.5rem;
+
+  @media (max-width: 640px) {
+    display: none;
+  }
+}
+
+.super-admin-toolbar__link--active {
+  color: var(--immo-accent);
+}
+
+.super-admin-toolbar__spacer {
+  flex: 1;
+}
+
+.super-admin-content {
+  padding: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
