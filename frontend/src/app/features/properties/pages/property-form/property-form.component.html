@@ -55,29 +55,13 @@
       </mat-form-field>
 
       <mat-form-field appearance="outline">
-        <mat-label>Pièces</mat-label>
-        <input matInput type="number" formControlName="rooms" />
+        <mat-label>Latitude</mat-label>
+        <input matInput type="number" formControlName="latitude" />
       </mat-form-field>
 
       <mat-form-field appearance="outline">
-        <mat-label>Surface (m²)</mat-label>
-        <input matInput type="number" formControlName="surfaceM2" />
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
-        <mat-label>Loyer mensuel</mat-label>
-        <input matInput type="number" formControlName="monthlyRent" required />
-        @if (form.controls.monthlyRent.hasError('required')) {
-          <mat-error>Le loyer est requis.</mat-error>
-        }
-        @if (form.controls.monthlyRent.hasError('min')) {
-          <mat-error>Le loyer doit être positif.</mat-error>
-        }
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
-        <mat-label>Charges mensuelles</mat-label>
-        <input matInput type="number" formControlName="monthlyCharges" />
+        <mat-label>Longitude</mat-label>
+        <input matInput type="number" formControlName="longitude" />
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="property-form__span2">

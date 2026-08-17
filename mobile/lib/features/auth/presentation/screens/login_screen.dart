@@ -142,6 +142,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             )
                           : const Text('Se connecter'),
                     ),
+                    const SizedBox(height: 12),
+                    TextButton(
+                      onPressed: isLoading
+                          ? null
+                          : () => context.push(AppRoutes.invitationEntry),
+                      child: const Text("J'ai reçu une invitation"),
+                    ),
+                    TextButton(
+                      onPressed: isLoading ? null : () => context.push(AppRoutes.register),
+                      child: const Text('Créer un compte'),
+                    ),
                   ],
                 ),
               ),

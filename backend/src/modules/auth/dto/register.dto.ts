@@ -1,10 +1,14 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsString, MinLength } from 'class-validator';
+import { ApiPropertyOptional, ApiProperty } from '@nestjs/swagger';
+import { IsEmail, IsOptional, IsString, MinLength } from 'class-validator';
 
 export class RegisterDto {
-  @ApiProperty()
+  @ApiPropertyOptional({
+    description:
+      'Nom de l\'organisation créée pour ce gestionnaire. Si omis/vide, un nom par défaut ("Espace de {prénom} {nom}") est utilisé (spec §5.1).',
+  })
+  @IsOptional()
   @IsString()
-  organizationName: string;
+  organizationName?: string;
 
   @ApiProperty()
   @IsEmail()

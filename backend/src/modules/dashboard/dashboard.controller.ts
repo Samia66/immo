@@ -20,14 +20,20 @@ export class DashboardController {
 
   @Get('manager')
   @Permissions('dashboard:manager')
-  manager(@CurrentUser() user: AuthenticatedUser) {
-    return this.service.managerDashboard(user.organizationId);
+  manager(@CurrentUser('id') userId: string) {
+    return this.service.managerDashboard(userId);
   }
 
   @Get('tenant')
   @Permissions('dashboard:tenant')
   tenant(@CurrentUser('id') userId: string) {
     return this.service.tenantDashboard(userId);
+  }
+
+  @Get('owner')
+  @Permissions('dashboard:owner')
+  owner(@CurrentUser('id') userId: string) {
+    return this.service.ownerDashboard(userId);
   }
 
   @Get('super-admin')

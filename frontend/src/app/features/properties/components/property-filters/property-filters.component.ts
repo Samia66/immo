@@ -27,7 +27,7 @@ export class PropertyFiltersComponent implements OnInit {
   readonly form = this.fb.group({
     search: [''],
     type: [null as PropertyType | null],
-    status: [null as PropertyStatus | null],
+    unitStatus: [null as PropertyStatus | null],
     city: [''],
     minRent: [null as number | null],
     maxRent: [null as number | null],
@@ -38,7 +38,7 @@ export class PropertyFiltersComponent implements OnInit {
   }
 
   reset(): void {
-    this.form.reset({ search: '', type: null, status: null, city: '', minRent: null, maxRent: null });
+    this.form.reset({ search: '', type: null, unitStatus: null, city: '', minRent: null, maxRent: null });
     this.emit();
   }
 
@@ -47,7 +47,7 @@ export class PropertyFiltersComponent implements OnInit {
     const filters: PropertyFilters = {
       search: raw.search || undefined,
       type: raw.type ?? undefined,
-      status: raw.status ?? undefined,
+      unitStatus: raw.unitStatus ?? undefined,
       city: raw.city || undefined,
       minRent: raw.minRent ?? undefined,
       maxRent: raw.maxRent ?? undefined,

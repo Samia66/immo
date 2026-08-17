@@ -1,0 +1,27 @@
+// Status badge, colored via [data-accent] — mirrors the pattern used by
+// shared/components/stat-card/stat-card.component.scss for its icon background
+// (plain element + design tokens, since Material chips don't expose a soft-color API here).
+.lease-detail__status-badge {
+  display: inline-block;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: var(--immo-surface-alt);
+  color: var(--immo-text-muted);
+
+  &[data-accent='success'] {
+    background: var(--immo-success-soft);
+    color: var(--immo-success);
+  }
+
+  &[data-accent='warn'] {
+    background: var(--immo-warn-soft);
+    color: var(--immo-warn);
+  }
+
+  &[data-accent='info'] {
+    background: var(--immo-info-soft);
+    color: var(--immo-info);
+  }
+}

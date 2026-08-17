@@ -9,10 +9,10 @@ import { MatSelectModule } from '@angular/material/select';
 import { finalize } from 'rxjs';
 import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header.component';
 import { NotificationService } from '../../../../core/services/notification.service';
-import { PaymentFrequency } from '../../../../core/models/enums';
+import { PaymentFrequency, PropertyStatus } from '../../../../core/models/enums';
 import { LeasesApiService } from '../../services/leases-api.service';
 import { CreateLeaseDto } from '../../models/lease.model';
-import { Property } from '../../../properties/models/property.model';
+import { Property, PropertyUnit } from '../../../properties/models/property.model';
 import { PropertiesApiService } from '../../../properties/services/properties-api.service';
 import { Tenant } from '../../../tenants/models/tenant.model';
 import { TenantsApiService } from '../../../tenants/services/tenants-api.service';
@@ -22,6 +22,10 @@ import { TenantsApiService } from '../../../tenants/services/tenants-api.service
  * To keep the MVP functional end-to-end within scope, this is a single-page reactive form
  * covering the same CreateLeaseDto fields; splitting it into steps is a pure UI enhancement
  * that can be layered on later without touching the API contract.
+ *
+ * Since rental terms (rent, rooms, ...) now live on `PropertyUnit` rather than `Property`, the
+ * bien/logement selection is a two-step cascade: pick a `Property`, then pick one of its
+ * DISPONIBLE units — only then can `propertyUnitId` be submitted and the rent pre-filled.
  */
 @Component({
   selector: 'app-lease-form',
@@ -47,11 +51,14 @@ export class LeaseFormComponent implements OnInit {
 
   readonly frequencies = Object.values(PaymentFrequency);
   readonly properties = signal<Property[]>([]);
+  readonly units = signal<PropertyUnit[]>([]);
+  readonly loadingUnits = signal(false);
   readonly tenants = signal<Tenant[]>([]);
   readonly saving = signal(false);
 
   readonly form = this.fb.nonNullable.group({
     propertyId: ['', [Validators.required]],
+    propertyUnitId: ['', [Validators.required]],
     tenantId: ['', [Validators.required]],
     startDate: ['', [Validators.required]],
     endDate: [''],
@@ -64,6 +71,26 @@ export class LeaseFormComponent implements OnInit {
   ngOnInit(): void {
     this.propertiesApi.list({ limit: 100 }).subscribe((res) => this.properties.set(res.data));
     this.tenantsApi.list({ limit: 100 }).subscribe((res) => this.tenants.set(res.data));
+
+    this.form.controls.propertyId.valueChanges.subscribe((propertyId) => {
+      this.units.set([]);
+      this.form.controls.propertyUnitId.setValue('');
+      if (!propertyId) {
+        return;
+      }
+      this.loadingUnits.set(true);
+      this.propertiesApi
+        .listUnits(propertyId, { status: PropertyStatus.DISPONIBLE, limit: 100 })
+        .pipe(finalize(() => this.loadingUnits.set(false)))
+        .subscribe((res) => this.units.set(res.data));
+    });
+
+    this.form.controls.propertyUnitId.valueChanges.subscribe((unitId) => {
+      const unit = this.units().find((u) => u.id === unitId);
+      if (unit) {
+        this.form.controls.rentAmount.setValue(unit.monthlyRent);
+      }
+    });
   }
 
   submit(): void {
@@ -73,7 +100,7 @@ export class LeaseFormComponent implements OnInit {
     }
     const raw = this.form.getRawValue();
     const dto: CreateLeaseDto = {
-      propertyId: raw.propertyId,
+      propertyUnitId: raw.propertyUnitId,
       tenantId: raw.tenantId,
       startDate: raw.startDate,
       endDate: raw.endDate || undefined,

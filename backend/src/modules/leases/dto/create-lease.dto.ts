@@ -5,7 +5,7 @@ import { IsDateString, IsEnum, IsNumber, IsOptional, IsUUID, Min } from 'class-v
 export class CreateLeaseDto {
   @ApiProperty()
   @IsUUID()
-  propertyId: string;
+  propertyUnitId: string;
 
   @ApiProperty()
   @IsUUID()

@@ -75,6 +75,50 @@
   margin-top: 0;
 }
 
+.property-detail__units {
+  grid-column: 1 / -1;
+}
+
+.property-detail__units-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+
+  h3 {
+    margin: 0;
+  }
+}
+
+.property-detail__units-table-wrap {
+  overflow-x: auto;
+}
+
+.property-detail__units-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th,
+  td {
+    text-align: left;
+    padding: 0.6rem 0.5rem;
+    border-bottom: 1px solid var(--immo-border);
+    white-space: nowrap;
+  }
+
+  th {
+    font-size: 0.75rem;
+    color: var(--immo-text-muted);
+    font-weight: 600;
+  }
+}
+
+.property-detail__units-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.15rem;
+}
+
 .property-detail__photo-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);

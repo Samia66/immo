@@ -47,12 +47,14 @@ export const PERMISSIONS: PermissionDefinition[] = [
   { code: 'properties:delete', module: 'properties', description: 'Supprimer (soft) un bien' },
   { code: 'properties:manage_images', module: 'properties', description: 'Gérer les photos du bien' },
   { code: 'properties:read_history', module: 'properties', description: "Consulter l'historique du bien" },
+  { code: 'properties:read_own', module: 'properties', description: 'Consulter ses propres biens (propriétaire)' },
 
   // owners
   { code: 'owners:read', module: 'owners', description: 'Lire les propriétaires' },
   { code: 'owners:create', module: 'owners', description: 'Créer un propriétaire' },
   { code: 'owners:update', module: 'owners', description: 'Modifier un propriétaire' },
   { code: 'owners:delete', module: 'owners', description: 'Supprimer (soft) un propriétaire' },
+  { code: 'owners:invite', module: 'owners', description: 'Inviter un propriétaire (auto-inscription liée)' },
 
   // tenants
   { code: 'tenants:read', module: 'tenants', description: 'Lister les locataires' },
@@ -81,6 +83,11 @@ export const PERMISSIONS: PermissionDefinition[] = [
   { code: 'payments:read_receipt', module: 'payments', description: 'Télécharger une quittance' },
   { code: 'payments:read_overdue', module: 'payments', description: 'Consulter les loyers en retard' },
   { code: 'payments:read_own', module: 'payments', description: 'Consulter ses propres paiements' },
+  {
+    code: 'payments:read_own_properties',
+    module: 'payments',
+    description: 'Consulter les paiements liés à ses propres biens (propriétaire)',
+  },
 
   // expenses
   { code: 'expenses:read', module: 'expenses', description: 'Lister les charges' },
@@ -118,6 +125,7 @@ export const PERMISSIONS: PermissionDefinition[] = [
   { code: 'dashboard:admin', module: 'dashboard', description: 'Consulter le dashboard ADMIN_AGENCE' },
   { code: 'dashboard:manager', module: 'dashboard', description: 'Consulter le dashboard GESTIONNAIRE' },
   { code: 'dashboard:tenant', module: 'dashboard', description: 'Consulter le dashboard LOCATAIRE' },
+  { code: 'dashboard:owner', module: 'dashboard', description: 'Consulter le dashboard PROPRIETAIRE' },
   { code: 'dashboard:super_admin', module: 'dashboard', description: 'Consulter le dashboard SUPER_ADMIN' },
 
   // audit log
@@ -203,6 +211,7 @@ export const ROLE_PERMISSIONS: Record<Exclude<RoleName, 'SUPER_ADMIN'>, string[]
     'owners:read',
     'owners:create',
     'owners:update',
+    'owners:invite',
     'tenants:read',
     'tenants:read_detail',
     'tenants:create',
@@ -271,6 +280,13 @@ export const ROLE_PERMISSIONS: Record<Exclude<RoleName, 'SUPER_ADMIN'>, string[]
     'notifications:manage',
     'dashboard:tenant',
   ],
+  PROPRIETAIRE: [
+    'properties:read_own',
+    'dashboard:owner',
+    'payments:read_own_properties',
+    'notifications:read',
+    'notifications:manage',
+  ],
 };
 
 export const ROLE_LABELS: Record<RoleName, string> = {
@@ -279,4 +295,5 @@ export const ROLE_LABELS: Record<RoleName, string> = {
   GESTIONNAIRE: 'Gestionnaire',
   AGENT_IMMOBILIER: 'Agent immobilier',
   LOCATAIRE: 'Locataire',
+  PROPRIETAIRE: 'Propriétaire',
 };

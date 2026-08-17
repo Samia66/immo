@@ -6,18 +6,18 @@ part of 'lease_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$PropertySummaryModelImpl _$$PropertySummaryModelImplFromJson(
+_$LeasePropertySummaryModelImpl _$$LeasePropertySummaryModelImplFromJson(
   Map<String, dynamic> json,
-) => _$PropertySummaryModelImpl(
+) => _$LeasePropertySummaryModelImpl(
   id: json['id'] as String,
   title: json['title'] as String,
   reference: json['reference'] as String,
-  addressLine: json['addressLine'] as String?,
-  city: json['city'] as String?,
+  addressLine: json['addressLine'] as String,
+  city: json['city'] as String,
 );
 
-Map<String, dynamic> _$$PropertySummaryModelImplToJson(
-  _$PropertySummaryModelImpl instance,
+Map<String, dynamic> _$$LeasePropertySummaryModelImplToJson(
+  _$LeasePropertySummaryModelImpl instance,
 ) => <String, dynamic>{
   'id': instance.id,
   'title': instance.title,
@@ -26,18 +26,70 @@ Map<String, dynamic> _$$PropertySummaryModelImplToJson(
   'city': instance.city,
 };
 
+_$PropertyUnitSummaryModelImpl _$$PropertyUnitSummaryModelImplFromJson(
+  Map<String, dynamic> json,
+) => _$PropertyUnitSummaryModelImpl(
+  id: json['id'] as String,
+  reference: json['reference'] as String,
+  label: json['label'] as String?,
+  status: $enumDecode(_$PropertyStatusEnumMap, json['status']),
+  property: LeasePropertySummaryModel.fromJson(
+    json['property'] as Map<String, dynamic>,
+  ),
+);
+
+Map<String, dynamic> _$$PropertyUnitSummaryModelImplToJson(
+  _$PropertyUnitSummaryModelImpl instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'reference': instance.reference,
+  'label': instance.label,
+  'status': _$PropertyStatusEnumMap[instance.status]!,
+  'property': instance.property,
+};
+
+const _$PropertyStatusEnumMap = {
+  PropertyStatus.DISPONIBLE: 'DISPONIBLE',
+  PropertyStatus.OCCUPE: 'OCCUPE',
+  PropertyStatus.RESERVE: 'RESERVE',
+  PropertyStatus.MAINTENANCE: 'MAINTENANCE',
+};
+
+_$LeaseTenantSummaryModelImpl _$$LeaseTenantSummaryModelImplFromJson(
+  Map<String, dynamic> json,
+) => _$LeaseTenantSummaryModelImpl(
+  id: json['id'] as String,
+  fullName: json['fullName'] as String,
+  userId: json['userId'] as String?,
+);
+
+Map<String, dynamic> _$$LeaseTenantSummaryModelImplToJson(
+  _$LeaseTenantSummaryModelImpl instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'fullName': instance.fullName,
+  'userId': instance.userId,
+};
+
 _$LeaseModelImpl _$$LeaseModelImplFromJson(Map<String, dynamic> json) =>
     _$LeaseModelImpl(
       id: json['id'] as String,
       organizationId: json['organizationId'] as String,
-      propertyId: json['propertyId'] as String,
-      property: json['property'] == null
+      reference: json['reference'] as String,
+      propertyUnitId: json['propertyUnitId'] as String,
+      propertyUnit: json['propertyUnit'] == null
           ? null
-          : PropertySummaryModel.fromJson(
-              json['property'] as Map<String, dynamic>,
+          : PropertyUnitSummaryModel.fromJson(
+              json['propertyUnit'] as Map<String, dynamic>,
             ),
       ownerId: json['ownerId'] as String,
+      managerId: json['managerId'] as String,
       tenantId: json['tenantId'] as String,
+      tenant: json['tenant'] == null
+          ? null
+          : LeaseTenantSummaryModel.fromJson(
+              json['tenant'] as Map<String, dynamic>,
+            ),
       startDate: DateTime.parse(json['startDate'] as String),
       endDate: json['endDate'] == null
           ? null
@@ -58,10 +110,13 @@ Map<String, dynamic> _$$LeaseModelImplToJson(_$LeaseModelImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
       'organizationId': instance.organizationId,
-      'propertyId': instance.propertyId,
-      'property': instance.property,
+      'reference': instance.reference,
+      'propertyUnitId': instance.propertyUnitId,
+      'propertyUnit': instance.propertyUnit,
       'ownerId': instance.ownerId,
+      'managerId': instance.managerId,
       'tenantId': instance.tenantId,
+      'tenant': instance.tenant,
       'startDate': instance.startDate.toIso8601String(),
       'endDate': instance.endDate?.toIso8601String(),
       'rentAmount': instance.rentAmount,
@@ -81,7 +136,13 @@ const _$PaymentFrequencyEnumMap = {
 };
 
 const _$LeaseStatusEnumMap = {
+  LeaseStatus.BROUILLON: 'BROUILLON',
+  LeaseStatus.ENVOYE: 'ENVOYE',
+  LeaseStatus.CONSULTE: 'CONSULTE',
+  LeaseStatus.ACCEPTE: 'ACCEPTE',
   LeaseStatus.ACTIF: 'ACTIF',
+  LeaseStatus.REFUSE: 'REFUSE',
+  LeaseStatus.ANNULE: 'ANNULE',
   LeaseStatus.EXPIRE: 'EXPIRE',
   LeaseStatus.RESILIE: 'RESILIE',
 };

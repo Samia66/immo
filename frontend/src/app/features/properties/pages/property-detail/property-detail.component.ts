@@ -6,15 +6,19 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { HasPermissionDirective } from '../../../../shared/directives/has-permission.directive';
 import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header.component';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
+import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { CurrencyXofPipe } from '../../../../shared/pipes/currency-xof.pipe';
 import { StatusLabelPipe } from '../../../../shared/pipes/status-label.pipe';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { PropertiesStore } from '../../store/properties.store';
 import { PropertiesApiService } from '../../services/properties-api.service';
 import { PropertyPhotoDialogComponent } from '../../dialogs/property-photo-dialog/property-photo-dialog.component';
+import { UnitFormDialogComponent } from '../../dialogs/unit-form-dialog/unit-form-dialog.component';
+import { PropertyUnit } from '../../models/property.model';
 
 @Component({
   selector: 'app-property-detail',
@@ -25,6 +29,7 @@ import { PropertyPhotoDialogComponent } from '../../dialogs/property-photo-dialo
     MatIconModule,
     MatProgressSpinnerModule,
     MatTabsModule,
+    MatTooltipModule,
     HasPermissionDirective,
     PageHeaderComponent,
     EmptyStateComponent,
@@ -70,6 +75,51 @@ export class PropertyDetailComponent implements OnInit {
         this.notificationService.success('Photo supprimée.');
         this.store.loadOne(this.propertyId);
       },
+    });
+  }
+
+  addUnit(): void {
+    const ref = this.dialog.open(UnitFormDialogComponent, {
+      width: '640px',
+      data: { propertyId: this.propertyId },
+    });
+    ref.afterClosed().subscribe((changed) => {
+      if (changed) {
+        this.store.loadOne(this.propertyId);
+      }
+    });
+  }
+
+  editUnit(unit: PropertyUnit): void {
+    const ref = this.dialog.open(UnitFormDialogComponent, {
+      width: '640px',
+      data: { propertyId: this.propertyId, unit },
+    });
+    ref.afterClosed().subscribe((changed) => {
+      if (changed) {
+        this.store.loadOne(this.propertyId);
+      }
+    });
+  }
+
+  removeUnit(unit: PropertyUnit): void {
+    const ref = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Supprimer le logement',
+        message: `Confirmez-vous la suppression de "${unit.label ?? unit.reference}" ?`,
+        danger: true,
+      },
+    });
+    ref.afterClosed().subscribe((confirmed) => {
+      if (!confirmed) {
+        return;
+      }
+      this.api.deleteUnit(unit.id).subscribe({
+        next: () => {
+          this.notificationService.success('Logement supprimé.');
+          this.store.loadOne(this.propertyId);
+        },
+      });
     });
   }
 }

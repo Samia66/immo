@@ -75,7 +75,7 @@ class AssignedMaintenanceScreen extends ConsumerWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(item.property?.title ?? item.category,
+                            Text(item.propertyUnit?.property.title ?? item.category,
                                 style: theme.textTheme.titleMedium),
                             const SizedBox(height: 4),
                             Text(item.category, style: theme.textTheme.bodySmall),

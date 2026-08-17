@@ -46,7 +46,7 @@ export class MaintenanceController {
   @Get()
   @Permissions('maintenance:read')
   findAll(@CurrentUser() user: AuthenticatedUser, @Query() query: QueryMaintenanceDto) {
-    return this.service.findAll(user.organizationId, query);
+    return this.service.findAll(user.organizationId, user, query);
   }
 
   @Get(':id')

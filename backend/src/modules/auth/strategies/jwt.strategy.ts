@@ -26,6 +26,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       include: {
         role: { include: { permissions: { include: { permission: true } } } },
         tenantProfile: { select: { id: true } },
+        ownerProfile: { select: { id: true } },
       },
     });
 
@@ -43,6 +44,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       roleName: user.role.name,
       permissions: user.role.permissions.map((rp) => rp.permission.code),
       tenantProfileId: user.tenantProfile?.id ?? null,
+      ownerProfileId: user.ownerProfile?.id ?? null,
     };
   }
 }

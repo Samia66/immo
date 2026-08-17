@@ -31,12 +31,20 @@ export class MaintenanceService {
     private readonly notifications: NotificationsService,
   ) {}
 
-  async findAll(organizationId: string, query: QueryMaintenanceDto) {
+  /**
+   * V2 pivot (spec §0/§6): a GESTIONNAIRE only sees requests on properties they manage (via an
+   * ACTIVE PropertyManagement row). ADMIN_AGENCE keeps the unscoped org-wide view.
+   */
+  async findAll(organizationId: string, user: AuthenticatedUser, query: QueryMaintenanceDto) {
     const where: Prisma.MaintenanceRequestWhereInput = { organizationId, deletedAt: null };
     if (query.status) where.status = query.status;
     if (query.priority) where.priority = query.priority;
-    if (query.propertyId) where.propertyId = query.propertyId;
+    if (query.propertyUnitId) where.propertyUnitId = query.propertyUnitId;
     if (query.assignedToId) where.assignedToId = query.assignedToId;
+
+    if (user.roleName === RoleName.GESTIONNAIRE) {
+      where.propertyUnit = { property: { managementLinks: { some: { managerId: user.id, status: 'ACTIVE' } } } };
+    }
 
     const [items, total] = await Promise.all([
       this.repo.findMany(where, (query.page - 1) * query.limit, query.limit, {
@@ -69,10 +77,10 @@ export class MaintenanceService {
   }
 
   async create(organizationId: string, user: AuthenticatedUser, dto: CreateMaintenanceRequestDto) {
-    const property = await this.prisma.property.findFirst({
-      where: { id: dto.propertyId, organizationId, deletedAt: null },
+    const unit = await this.prisma.propertyUnit.findFirst({
+      where: { id: dto.propertyUnitId, organizationId, deletedAt: null },
     });
-    if (!property) throw new BadRequestException('Bien invalide pour cette organisation.');
+    if (!unit) throw new BadRequestException('Lot invalide pour cette organisation.');
 
     let tenantId = dto.tenantId;
     if (user.roleName === RoleName.LOCATAIRE) {
@@ -82,7 +90,7 @@ export class MaintenanceService {
 
     const request = await this.repo.create({
       organization: { connect: { id: organizationId } },
-      property: { connect: { id: dto.propertyId } },
+      propertyUnit: { connect: { id: dto.propertyUnitId } },
       tenant: tenantId ? { connect: { id: tenantId } } : undefined,
       category: dto.category,
       description: dto.description,

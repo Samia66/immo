@@ -16,6 +16,8 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { PropertiesService } from './properties.service';
 import { PropertyImagesService } from './property-images/property-images.service';
 import { CreatePropertyDto, UpdatePropertyDto, QueryPropertyDto, NearbyPropertyDto } from './dto';
+import { PropertyUnitsService } from '../property-units/property-units.service';
+import { CreatePropertyUnitDto, QueryPropertyUnitDto } from '../property-units/dto';
 import { JwtAuthGuard, PermissionsGuard } from '../../common/guards';
 import { Permissions, CurrentUser, Audit } from '../../common/decorators';
 import { ParseUuidPipe } from '../../common/pipes';
@@ -30,6 +32,7 @@ export class PropertiesController {
   constructor(
     private readonly service: PropertiesService,
     private readonly imagesService: PropertyImagesService,
+    private readonly unitsService: PropertyUnitsService,
   ) {}
 
   @Get('nearby')
@@ -41,25 +44,31 @@ export class PropertiesController {
   @Get()
   @Permissions('properties:read')
   findAll(@CurrentUser() user: AuthenticatedUser, @Query() query: QueryPropertyDto) {
-    return this.service.findAll(user.organizationId, query);
+    return this.service.findAll(user, query);
+  }
+
+  @Get('me')
+  @Permissions('properties:read_own')
+  myProperties(@CurrentUser('id') userId: string, @Query() query: QueryPropertyDto) {
+    return this.service.myProperties(userId, query);
   }
 
   @Get(':id')
   @Permissions('properties:read')
-  findOne(@Param('id', ParseUuidPipe) id: string) {
-    return this.service.findOne(id);
+  findOne(@CurrentUser() user: AuthenticatedUser, @Param('id', ParseUuidPipe) id: string) {
+    return this.service.findOne(id, user);
   }
 
   @Get(':id/history')
   @Permissions('properties:read_history')
-  history(@Param('id', ParseUuidPipe) id: string) {
-    return this.service.history(id);
+  history(@CurrentUser() user: AuthenticatedUser, @Param('id', ParseUuidPipe) id: string) {
+    return this.service.history(id, user);
   }
 
   @Post()
   @Permissions('properties:create')
   create(@CurrentUser() user: AuthenticatedUser, @Body() dto: CreatePropertyDto) {
-    return this.service.create(user.organizationId, dto);
+    return this.service.create(user.organizationId, user, dto);
   }
 
   @Patch(':id')
@@ -96,5 +105,25 @@ export class PropertiesController {
   @Permissions('properties:manage_images')
   removeImage(@Param('id', ParseUuidPipe) id: string, @Param('imageId', ParseUuidPipe) imageId: string) {
     return this.imagesService.removeImage(id, imageId);
+  }
+
+  @Get(':propertyId/units')
+  @Permissions('properties:read')
+  listUnits(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('propertyId', ParseUuidPipe) propertyId: string,
+    @Query() query: QueryPropertyUnitDto,
+  ) {
+    return this.unitsService.findAllForProperty(propertyId, user.organizationId, query);
+  }
+
+  @Post(':propertyId/units')
+  @Permissions('properties:create')
+  createUnit(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('propertyId', ParseUuidPipe) propertyId: string,
+    @Body() dto: CreatePropertyUnitDto,
+  ) {
+    return this.unitsService.create(propertyId, user.organizationId, dto);
   }
 }

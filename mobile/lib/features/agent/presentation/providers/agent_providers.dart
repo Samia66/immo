@@ -28,7 +28,7 @@ final visitsRepositoryProvider = Provider<VisitsRepository>((ref) {
 
 class PropertiesFilter {
   const PropertiesFilter({
-    this.status = PropertyStatus.DISPONIBLE,
+    this.unitStatus = PropertyStatus.DISPONIBLE,
     this.type,
     this.city,
     this.minRent,
@@ -36,7 +36,9 @@ class PropertiesFilter {
     this.search,
   });
 
-  final PropertyStatus? status;
+  /// Filters properties having at least one unit in this status - see
+  /// `QueryPropertyDto.unitStatus` (Property itself has no status).
+  final PropertyStatus? unitStatus;
   final PropertyType? type;
   final String? city;
   final num? minRent;
@@ -44,7 +46,7 @@ class PropertiesFilter {
   final String? search;
 
   PropertiesFilter copyWith({
-    PropertyStatus? status,
+    PropertyStatus? unitStatus,
     bool clearStatus = false,
     PropertyType? type,
     bool clearType = false,
@@ -54,7 +56,7 @@ class PropertiesFilter {
     String? search,
   }) {
     return PropertiesFilter(
-      status: clearStatus ? null : (status ?? this.status),
+      unitStatus: clearStatus ? null : (unitStatus ?? this.unitStatus),
       type: clearType ? null : (type ?? this.type),
       city: city ?? this.city,
       minRent: minRent ?? this.minRent,
@@ -75,7 +77,7 @@ class PropertiesListNotifier extends PaginatedNotifier<PropertyModel> {
     return _repository.list(
       page: page,
       limit: limit,
-      status: filter.status,
+      unitStatus: filter.unitStatus,
       type: filter.type,
       city: filter.city,
       minRent: filter.minRent,

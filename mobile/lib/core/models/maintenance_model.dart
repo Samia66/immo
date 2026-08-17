@@ -52,25 +52,38 @@ class TenantSummaryModel with _$TenantSummaryModel {
       _$TenantSummaryModelFromJson(json);
 }
 
-/// Full property shape as embedded by the maintenance mapper is actually just
-/// {id,title,reference}; the manager flow needs address/lat/lng too, which
-/// come from a separate `GET /properties/:id` when the light summary isn't
-/// enough. We model the maintenance-embedded property loosely with optional
-/// address fields so both cases parse without a second model.
+/// Minimal building summary nested inside [MaintenanceUnitSummaryModel] -
+/// matches `MaintenanceMapper.toResponse`'s `propertyUnit.property`, which is
+/// only `{id, title}` (no address/lat/lng - those aren't selected by the
+/// maintenance mapper, unlike the agent's full `GET /properties/:id`).
 @freezed
 class MaintenancePropertySummaryModel with _$MaintenancePropertySummaryModel {
   const factory MaintenancePropertySummaryModel({
     required String id,
     required String title,
-    required String reference,
-    String? addressLine,
-    String? city,
-    double? latitude,
-    double? longitude,
   }) = _MaintenancePropertySummaryModel;
 
   factory MaintenancePropertySummaryModel.fromJson(Map<String, dynamic> json) =>
       _$MaintenancePropertySummaryModelFromJson(json);
+}
+
+/// The unit a maintenance request is attached to, as embedded by
+/// `MaintenanceMapper.toResponse`'s `propertyUnit`: {id, reference, label, property}.
+@freezed
+class MaintenanceUnitSummaryModel with _$MaintenanceUnitSummaryModel {
+  const factory MaintenanceUnitSummaryModel({
+    required String id,
+    required String reference,
+    String? label,
+    required MaintenancePropertySummaryModel property,
+  }) = _MaintenanceUnitSummaryModel;
+
+  factory MaintenanceUnitSummaryModel.fromJson(Map<String, dynamic> json) =>
+      _$MaintenanceUnitSummaryModelFromJson(json);
+}
+
+extension MaintenanceUnitSummaryModelX on MaintenanceUnitSummaryModel {
+  String get displayLabel => label ?? reference;
 }
 
 @freezed
@@ -91,8 +104,8 @@ class MaintenanceRequestModel with _$MaintenanceRequestModel {
   const factory MaintenanceRequestModel({
     required String id,
     required String organizationId,
-    required String propertyId,
-    MaintenancePropertySummaryModel? property,
+    required String propertyUnitId,
+    MaintenanceUnitSummaryModel? propertyUnit,
     String? tenantId,
     TenantSummaryModel? tenant,
     required String category,

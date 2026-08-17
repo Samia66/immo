@@ -5,7 +5,7 @@ import { IsEnum, IsOptional, IsString, IsUUID } from 'class-validator';
 export class CreateMaintenanceRequestDto {
   @ApiProperty()
   @IsUUID()
-  propertyId: string;
+  propertyUnitId: string;
 
   @ApiPropertyOptional()
   @IsOptional()

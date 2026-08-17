@@ -12,7 +12,7 @@ export class QueryPaymentDto extends PaginationQueryDto {
   @ApiPropertyOptional()
   @IsOptional()
   @IsUUID()
-  propertyId?: string;
+  propertyUnitId?: string;
 
   @ApiPropertyOptional()
   @IsOptional()

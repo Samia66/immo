@@ -21,8 +21,7 @@
   <div class="property-detail__grid">
     <div class="card property-detail__main">
       <div class="property-detail__badges">
-        <mat-chip>{{ property.type }}</mat-chip>
-        <mat-chip>{{ property.status | statusLabel }}</mat-chip>
+        <mat-chip>{{ property.type | statusLabel }}</mat-chip>
       </div>
 
       <p class="property-detail__address">
@@ -36,25 +35,6 @@
       @if (property.description) {
         <p class="property-detail__description">{{ property.description }}</p>
       }
-
-      <div class="property-detail__facts">
-        <div>
-          <span class="property-detail__fact-label">Loyer mensuel</span>
-          <span class="property-detail__fact-value">{{ property.monthlyRent | currencyXof }}</span>
-        </div>
-        <div>
-          <span class="property-detail__fact-label">Charges</span>
-          <span class="property-detail__fact-value">{{ property.monthlyCharges | currencyXof }}</span>
-        </div>
-        <div>
-          <span class="property-detail__fact-label">Pièces</span>
-          <span class="property-detail__fact-value">{{ property.rooms ?? '—' }}</span>
-        </div>
-        <div>
-          <span class="property-detail__fact-label">Surface</span>
-          <span class="property-detail__fact-value">{{ property.surfaceM2 ? property.surfaceM2 + ' m²' : '—' }}</span>
-        </div>
-      </div>
 
       @if (property.owner) {
         <div class="property-detail__owner">
@@ -82,6 +62,68 @@
         </div>
       } @else {
         <app-empty-state message="Aucune photo pour ce bien." icon="photo_camera" />
+      }
+    </div>
+
+    <div class="card property-detail__units">
+      <div class="property-detail__units-header">
+        <h3>Logements</h3>
+        <button mat-stroked-button *appHasPermission="'properties:create'" (click)="addUnit()">
+          <mat-icon>add</mat-icon>
+          Ajouter un logement
+        </button>
+      </div>
+
+      @if (property.units && property.units.length) {
+        <div class="property-detail__units-table-wrap">
+          <table class="property-detail__units-table">
+            <thead>
+              <tr>
+                <th>Référence</th>
+                <th>Type</th>
+                <th>Pièces</th>
+                <th>Surface</th>
+                <th>Loyer</th>
+                <th>Statut</th>
+                <th>Locataire</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (unit of property.units; track unit.id) {
+                <tr>
+                  <td>{{ unit.label ?? unit.reference }}</td>
+                  <td>{{ unit.type | statusLabel }}</td>
+                  <td>{{ unit.rooms ?? '—' }}</td>
+                  <td>{{ unit.surfaceM2 ? unit.surfaceM2 + ' m²' : '—' }}</td>
+                  <td>{{ unit.monthlyRent | currencyXof }}</td>
+                  <td><mat-chip>{{ unit.status | statusLabel }}</mat-chip></td>
+                  <td>{{ unit.currentTenant?.fullName ?? 'Vacant' }}</td>
+                  <td class="property-detail__units-actions">
+                    <button
+                      mat-icon-button
+                      matTooltip="Modifier"
+                      *appHasPermission="'properties:update'"
+                      (click)="editUnit(unit)"
+                    >
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                    <button
+                      mat-icon-button
+                      matTooltip="Supprimer"
+                      *appHasPermission="'properties:delete'"
+                      (click)="removeUnit(unit)"
+                    >
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <app-empty-state message="Aucun logement pour ce bien." icon="meeting_room" />
       }
     </div>
   </div>

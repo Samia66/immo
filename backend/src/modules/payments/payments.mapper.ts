@@ -3,7 +3,12 @@ import { Payment } from '@prisma/client';
 type PaymentWithLease = Payment & {
   lease?: {
     id: string;
-    property?: { id: string; title: string; reference: string } | null;
+    propertyUnit?: {
+      id: string;
+      reference: string;
+      label: string | null;
+      property: { id: string; title: string };
+    } | null;
     tenant?: { id: string; fullName: string } | null;
   } | null;
 };
@@ -15,7 +20,7 @@ export class PaymentsMapper {
       organizationId: payment.organizationId,
       leaseId: payment.leaseId,
       lease: payment.lease
-        ? { id: payment.lease.id, property: payment.lease.property, tenant: payment.lease.tenant }
+        ? { id: payment.lease.id, propertyUnit: payment.lease.propertyUnit, tenant: payment.lease.tenant }
         : undefined,
       amountDue: Number(payment.amountDue),
       amountPaid: Number(payment.amountPaid),

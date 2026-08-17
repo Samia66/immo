@@ -82,7 +82,12 @@ export class UsersService {
       `Un compte a été créé pour vous. Email: ${user.email} / Mot de passe temporaire: ${tempPassword}\nConnectez-vous puis changez votre mot de passe.`,
     );
 
-    return UsersMapper.toResponse(user);
+    // Email delivery is a logged stub for now (see mailer.util.ts) rather than a real SMTP send,
+    // so the temporary password has no other channel to reach the admin who just created the
+    // account — surface it once, directly in the creation response, purely for this MVP dev
+    // workflow. Never returned by any other endpoint (findAll/findOne/update all use the plain
+    // mapper), and it stops being valid the moment a real mailer replaces logStubEmail.
+    return { ...UsersMapper.toResponse(user), tempPassword };
   }
 
   async update(id: string, dto: UpdateUserDto) {

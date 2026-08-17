@@ -8,11 +8,21 @@ import {
   RenewLeaseDto,
   AddAmendmentDto,
   QueryLeaseDto,
+  RefuseLeaseDto,
 } from './dto';
 import { JwtAuthGuard, PermissionsGuard } from '../../common/guards';
 import { Permissions, CurrentUser, Audit } from '../../common/decorators';
 import { ParseUuidPipe } from '../../common/pipes';
 import { AuthenticatedUser } from '../../common/interfaces';
+
+/**
+ * `leases:update, leases:read_detail` on the tenant-facing workflow steps (acknowledge/accept/
+ * refuse) mirrors the pattern used elsewhere (see visits.controller.ts's `@Permissions('visits:read',
+ * 'visits:read_own')`): it lets EITHER a manager (leases:update) OR the tenant (whose role only
+ * carries leases:read_detail) through the coarse permission gate, with LeasesService's
+ * `getOwnedOrThrow` enforcing that a LOCATAIRE caller only ever touches their own lease.
+ */
+const TENANT_WORKFLOW_PERMISSIONS = ['leases:update', 'leases:read_detail'] as const;
 
 @ApiTags('leases')
 @ApiBearerAuth()
@@ -30,7 +40,7 @@ export class LeasesController {
   @Get()
   @Permissions('leases:read')
   findAll(@CurrentUser() user: AuthenticatedUser, @Query() query: QueryLeaseDto) {
-    return this.service.findAll(user.organizationId, query);
+    return this.service.findAll(user.organizationId, user, query);
   }
 
   @Get(':id')
@@ -48,7 +58,7 @@ export class LeasesController {
   @Post()
   @Permissions('leases:create')
   create(@CurrentUser() user: AuthenticatedUser, @Body() dto: CreateLeaseDto) {
-    return this.service.create(user.organizationId, dto);
+    return this.service.create(user.organizationId, user, dto);
   }
 
   @Patch(':id')
@@ -75,5 +85,35 @@ export class LeasesController {
   @Permissions('leases:manage_amendments')
   addAmendment(@Param('id', ParseUuidPipe) id: string, @Body() dto: AddAmendmentDto) {
     return this.service.addAmendment(id, dto);
+  }
+
+  @Post(':id/send')
+  @Permissions('leases:update')
+  send(@CurrentUser('id') userId: string, @Param('id', ParseUuidPipe) id: string) {
+    return this.service.send(id, userId);
+  }
+
+  @Post(':id/acknowledge')
+  @Permissions(...TENANT_WORKFLOW_PERMISSIONS)
+  acknowledge(@CurrentUser() user: AuthenticatedUser, @Param('id', ParseUuidPipe) id: string) {
+    return this.service.acknowledge(id, user);
+  }
+
+  @Post(':id/accept')
+  @Permissions(...TENANT_WORKFLOW_PERMISSIONS)
+  accept(@CurrentUser() user: AuthenticatedUser, @Param('id', ParseUuidPipe) id: string) {
+    return this.service.accept(id, user);
+  }
+
+  @Post(':id/refuse')
+  @Permissions(...TENANT_WORKFLOW_PERMISSIONS)
+  refuse(@CurrentUser() user: AuthenticatedUser, @Param('id', ParseUuidPipe) id: string, @Body() dto: RefuseLeaseDto) {
+    return this.service.refuse(id, user, dto);
+  }
+
+  @Post(':id/cancel')
+  @Permissions('leases:update')
+  cancel(@CurrentUser('id') userId: string, @Param('id', ParseUuidPipe) id: string) {
+    return this.service.cancel(id, userId);
   }
 }

@@ -12,8 +12,25 @@ import '../../../../shared/widgets/refreshable_list_view.dart';
 import '../../../../shared/widgets/status_chip.dart';
 import '../providers/agent_providers.dart';
 
+/// Read-only property browsing UI shared by the agent and manager modules.
+///
+/// Defaults to the agent's own list provider and detail route, so existing
+/// agent call sites are unaffected. Other roles (e.g. the manager module)
+/// can plug in their own paginated list provider, detail-route builder and
+/// floating action button (e.g. a permission-gated "add property" FAB)
+/// without duplicating the filters/list/empty-state UI below.
 class PropertyListScreen extends ConsumerStatefulWidget {
-  const PropertyListScreen({super.key});
+  const PropertyListScreen({
+    super.key,
+    this.listProvider,
+    this.detailPathBuilder,
+    this.floatingActionButton,
+  });
+
+  final StateNotifierProvider<PropertiesListNotifier, AsyncValue<List<PropertyModel>>>?
+      listProvider;
+  final String Function(String id)? detailPathBuilder;
+  final Widget? floatingActionButton;
 
   @override
   ConsumerState<PropertyListScreen> createState() => _PropertyListScreenState();
@@ -30,8 +47,10 @@ class _PropertyListScreenState extends ConsumerState<PropertyListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final listState = ref.watch(propertiesListProvider);
-    final notifier = ref.read(propertiesListProvider.notifier);
+    final effectiveProvider = widget.listProvider ?? propertiesListProvider;
+    final detailPathBuilder = widget.detailPathBuilder ?? AppRoutes.agentPropertyDetailPath;
+    final listState = ref.watch(effectiveProvider);
+    final notifier = ref.read(effectiveProvider.notifier);
     final theme = Theme.of(context);
 
     return Scaffold(
@@ -88,7 +107,7 @@ class _PropertyListScreenState extends ConsumerState<PropertyListScreen> {
                 emptyMessage: 'Essayez de modifier vos filtres de recherche.',
                 itemBuilder: (context, item) => AppCard(
                   padding: const EdgeInsets.all(12),
-                  onTap: () => context.push(AppRoutes.agentPropertyDetailPath(item.id)),
+                  onTap: () => context.push(detailPathBuilder(item.id)),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -114,13 +133,18 @@ class _PropertyListScreenState extends ConsumerState<PropertyListScreen> {
                               overflow: TextOverflow.ellipsis,
                             ),
                             const SizedBox(height: 6),
-                            Text(Formatters.amount(item.monthlyRent),
-                                style: theme.textTheme.titleSmall
-                                    ?.copyWith(color: theme.colorScheme.primary)),
+                            if (item.minMonthlyRent != null)
+                              Text('À partir de ${Formatters.amount(item.minMonthlyRent!)}',
+                                  style: theme.textTheme.titleSmall
+                                      ?.copyWith(color: theme.colorScheme.primary))
+                            else
+                              Text('Aucun lot enregistré',
+                                  style: theme.textTheme.bodySmall
+                                      ?.copyWith(color: theme.colorScheme.outline)),
                             const SizedBox(height: 6),
                             Row(
                               children: [
-                                PropertyStatusChip(status: item.status),
+                                _UnitCountBadge(property: item),
                                 const SizedBox(width: 6),
                                 Text(item.type.label, style: theme.textTheme.bodySmall),
                               ],
@@ -136,11 +160,12 @@ class _PropertyListScreenState extends ConsumerState<PropertyListScreen> {
           ),
         ],
       ),
+      floatingActionButton: widget.floatingActionButton,
     );
   }
 
   void _openFilters(BuildContext context, PropertiesListNotifier notifier) {
-    var status = notifier.filter.status;
+    var unitStatus = notifier.filter.unitStatus;
     var type = notifier.filter.type;
     showModalBottomSheet(
       context: context,
@@ -164,14 +189,14 @@ class _PropertyListScreenState extends ConsumerState<PropertyListScreen> {
                       children: [
                         ChoiceChip(
                           label: const Text('Tous'),
-                          selected: status == null,
-                          onSelected: (_) => setModalState(() => status = null),
+                          selected: unitStatus == null,
+                          onSelected: (_) => setModalState(() => unitStatus = null),
                         ),
                         for (final s in PropertyStatus.values)
                           ChoiceChip(
                             label: Text(s.label),
-                            selected: status == s,
-                            onSelected: (_) => setModalState(() => status = s),
+                            selected: unitStatus == s,
+                            onSelected: (_) => setModalState(() => unitStatus = s),
                           ),
                       ],
                     ),
@@ -198,8 +223,8 @@ class _PropertyListScreenState extends ConsumerState<PropertyListScreen> {
                     FilledButton(
                       onPressed: () {
                         notifier.applyFilter(notifier.filter.copyWith(
-                          status: status,
-                          clearStatus: status == null,
+                          unitStatus: unitStatus,
+                          clearStatus: unitStatus == null,
                           type: type,
                           clearType: type == null,
                         ));
@@ -214,6 +239,26 @@ class _PropertyListScreenState extends ConsumerState<PropertyListScreen> {
           },
         );
       },
+    );
+  }
+}
+
+/// Compact "X disponible(s) / Y lots" badge for a property list card - the
+/// list stays a per-building overview (title/city/photo), with per-unit
+/// status/rent detail left to [PropertyDetailScreen].
+class _UnitCountBadge extends StatelessWidget {
+  const _UnitCountBadge({required this.property});
+
+  final PropertyModel property;
+
+  @override
+  Widget build(BuildContext context) {
+    final total = property.units?.length ?? 0;
+    final available = property.availableUnitsCount;
+    return AppStatusChip(
+      label: total == 0 ? 'Aucun lot' : '$available/$total dispo.',
+      color: available > 0 ? Colors.green : Colors.blueGrey,
+      icon: Icons.meeting_room_outlined,
     );
   }
 }

@@ -10,7 +10,7 @@ class AppConfig {
 
   static const String apiBaseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'http://10.0.2.2:3000/api',
+    defaultValue: 'http://127.0.0.0:3000/api',
   );
 
   /// The API is mounted under `/api`. File/image URLs returned by the API
@@ -47,10 +47,11 @@ class AppRoles {
   static const String gestionnaire = 'GESTIONNAIRE';
   static const String agentImmobilier = 'AGENT_IMMOBILIER';
   static const String locataire = 'LOCATAIRE';
+  static const String proprietaire = 'PROPRIETAIRE';
 }
 
-/// The three mobile-facing app roles, mapped from the backend's [AppRoles].
-enum MobileRole { tenant, agent, manager }
+/// The four mobile-facing app roles, mapped from the backend's [AppRoles].
+enum MobileRole { tenant, agent, manager, owner }
 
 MobileRole? mobileRoleFromBackendRole(String roleName) {
   switch (roleName) {
@@ -60,6 +61,8 @@ MobileRole? mobileRoleFromBackendRole(String roleName) {
       return MobileRole.agent;
     case AppRoles.gestionnaire:
       return MobileRole.manager;
+    case AppRoles.proprietaire:
+      return MobileRole.owner;
     default:
       return null;
   }

@@ -5,11 +5,15 @@ import { environment } from '../../../../environments/environment';
 import { PaginatedResult } from '../../../core/models';
 import {
   CreatePropertyDto,
+  CreatePropertyUnitDto,
   Property,
   PropertyHistoryEntry,
   PropertyImage,
   PropertyQuery,
+  PropertyUnit,
+  PropertyUnitQuery,
   UpdatePropertyDto,
+  UpdatePropertyUnitDto,
 } from '../models/property.model';
 
 @Injectable({ providedIn: 'root' })
@@ -57,6 +61,28 @@ export class PropertiesApiService {
     return this.http.get<Property[]>(`${this.baseUrl}/nearby`, {
       params: { lat, lng, radius } as unknown as Record<string, string>,
     });
+  }
+
+  listUnits(propertyId: string, query: PropertyUnitQuery = {}): Observable<PaginatedResult<PropertyUnit>> {
+    return this.http.get<PaginatedResult<PropertyUnit>>(`${this.baseUrl}/${propertyId}/units`, {
+      params: this.toHttpParams(query as unknown as Record<string, unknown>),
+    });
+  }
+
+  createUnit(propertyId: string, dto: CreatePropertyUnitDto): Observable<PropertyUnit> {
+    return this.http.post<PropertyUnit>(`${this.baseUrl}/${propertyId}/units`, dto);
+  }
+
+  getUnit(id: string): Observable<PropertyUnit> {
+    return this.http.get<PropertyUnit>(`${environment.apiUrl}/property-units/${id}`);
+  }
+
+  updateUnit(id: string, dto: UpdatePropertyUnitDto): Observable<PropertyUnit> {
+    return this.http.patch<PropertyUnit>(`${environment.apiUrl}/property-units/${id}`, dto);
+  }
+
+  deleteUnit(id: string): Observable<void> {
+    return this.http.delete<void>(`${environment.apiUrl}/property-units/${id}`);
   }
 
   private toHttpParams(query: Record<string, unknown>): HttpParams {

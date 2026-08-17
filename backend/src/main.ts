@@ -17,7 +17,12 @@ async function bootstrap() {
 
   app.use(helmet());
   app.use(cookieParser());
-  app.enableCors(buildCorsConfig(config.get('corsOrigins', { infer: true })));
+  app.enableCors(
+    buildCorsConfig(
+      config.get('corsOrigins', { infer: true }),
+      config.get('nodeEnv', { infer: true }) !== 'production',
+    ),
+  );
   app.useStaticAssets(join(process.cwd(), UPLOADS_ROOT), { prefix: '/uploads' });
 
   app.useGlobalPipes(

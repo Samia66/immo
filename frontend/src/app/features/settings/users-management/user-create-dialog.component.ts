@@ -3,6 +3,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
@@ -19,6 +20,7 @@ import { SettingsApiService } from '../services/settings-api.service';
     MatDialogModule,
     MatButtonModule,
     MatFormFieldModule,
+    MatIconModule,
     MatInputModule,
     MatProgressSpinnerModule,
     MatSelectModule,
@@ -33,6 +35,8 @@ export class UserCreateDialogComponent implements OnInit {
 
   readonly roles = signal<Role[]>([]);
   readonly saving = signal(false);
+  /** Set once creation succeeds — switches the dialog into the "show temp password" view. */
+  readonly createdTempPassword = signal<string | null>(null);
 
   readonly form = this.fb.nonNullable.group({
     firstName: ['', [Validators.required]],
@@ -63,10 +67,23 @@ export class UserCreateDialogComponent implements OnInit {
       })
       .pipe(finalize(() => this.saving.set(false)))
       .subscribe({
-        next: () => {
-          this.notificationService.success('Invitation envoyée.');
-          this.dialogRef.close(true);
+        next: (created) => {
+          this.notificationService.success('Utilisateur créé.');
+          this.createdTempPassword.set(created.tempPassword);
         },
       });
+  }
+
+  copyPassword(): void {
+    const password = this.createdTempPassword();
+    if (!password) return;
+    navigator.clipboard.writeText(password).then(
+      () => this.notificationService.success('Mot de passe copié.'),
+      () => this.notificationService.error('Impossible de copier le mot de passe.'),
+    );
+  }
+
+  done(): void {
+    this.dialogRef.close(true);
   }
 }

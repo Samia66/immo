@@ -40,14 +40,14 @@ class TenantMaintenanceRepository {
   }
 
   Future<MaintenanceRequestModel> create({
-    required String propertyId,
+    required String propertyUnitId,
     required String category,
     required String description,
     MaintenancePriority priority = MaintenancePriority.NORMALE,
   }) async {
     try {
       final response = await _dio.post<Map<String, dynamic>>('/maintenance', data: {
-        'propertyId': propertyId,
+        'propertyUnitId': propertyUnitId,
         'category': category,
         'description': description,
         'priority': priority.name,

@@ -94,7 +94,7 @@ class _MaintenanceInterventionScreenState extends ConsumerState<MaintenanceInter
           onRetry: () => ref.invalidate(managerMaintenanceDetailProvider(widget.requestId)),
         ),
         data: (request) {
-          final property = request.property;
+          final unit = request.propertyUnit;
           final tenant = request.tenant;
           return RefreshIndicator(
             onRefresh: () => ref.refresh(managerMaintenanceDetailProvider(widget.requestId).future),
@@ -124,27 +124,12 @@ class _MaintenanceInterventionScreenState extends ConsumerState<MaintenanceInter
                 Text('Bien', style: theme.textTheme.titleSmall),
                 const SizedBox(height: 8),
                 AppCard(
-                  child: Row(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(property?.title ?? 'Bien inconnu', style: theme.textTheme.titleSmall),
-                            if (property?.addressLine != null)
-                              Text('${property!.addressLine}, ${property.city ?? ''}',
-                                  style: theme.textTheme.bodySmall),
-                          ],
-                        ),
-                      ),
-                      if (property?.latitude != null && property?.longitude != null)
-                        IconButton(
-                          tooltip: 'Ouvrir dans une application de cartes',
-                          icon: const Icon(Icons.map_outlined),
-                          onPressed: () => launchUrl(
-                            Uri.parse('geo:${property!.latitude},${property.longitude}?q=${property.latitude},${property.longitude}(${Uri.encodeComponent(property.title)})'),
-                          ),
-                        ),
+                      Text(unit?.property.title ?? 'Bien inconnu', style: theme.textTheme.titleSmall),
+                      if (unit != null)
+                        Text('Lot ${unit.displayLabel}', style: theme.textTheme.bodySmall),
                     ],
                   ),
                 ),

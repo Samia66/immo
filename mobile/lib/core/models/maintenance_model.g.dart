@@ -27,23 +27,30 @@ _$$MaintenancePropertySummaryModelImplFromJson(Map<String, dynamic> json) =>
     _$MaintenancePropertySummaryModelImpl(
       id: json['id'] as String,
       title: json['title'] as String,
-      reference: json['reference'] as String,
-      addressLine: json['addressLine'] as String?,
-      city: json['city'] as String?,
-      latitude: (json['latitude'] as num?)?.toDouble(),
-      longitude: (json['longitude'] as num?)?.toDouble(),
     );
 
 Map<String, dynamic> _$$MaintenancePropertySummaryModelImplToJson(
   _$MaintenancePropertySummaryModelImpl instance,
+) => <String, dynamic>{'id': instance.id, 'title': instance.title};
+
+_$MaintenanceUnitSummaryModelImpl _$$MaintenanceUnitSummaryModelImplFromJson(
+  Map<String, dynamic> json,
+) => _$MaintenanceUnitSummaryModelImpl(
+  id: json['id'] as String,
+  reference: json['reference'] as String,
+  label: json['label'] as String?,
+  property: MaintenancePropertySummaryModel.fromJson(
+    json['property'] as Map<String, dynamic>,
+  ),
+);
+
+Map<String, dynamic> _$$MaintenanceUnitSummaryModelImplToJson(
+  _$MaintenanceUnitSummaryModelImpl instance,
 ) => <String, dynamic>{
   'id': instance.id,
-  'title': instance.title,
   'reference': instance.reference,
-  'addressLine': instance.addressLine,
-  'city': instance.city,
-  'latitude': instance.latitude,
-  'longitude': instance.longitude,
+  'label': instance.label,
+  'property': instance.property,
 };
 
 _$MaintenanceAttachmentModelImpl _$$MaintenanceAttachmentModelImplFromJson(
@@ -69,11 +76,11 @@ _$MaintenanceRequestModelImpl _$$MaintenanceRequestModelImplFromJson(
 ) => _$MaintenanceRequestModelImpl(
   id: json['id'] as String,
   organizationId: json['organizationId'] as String,
-  propertyId: json['propertyId'] as String,
-  property: json['property'] == null
+  propertyUnitId: json['propertyUnitId'] as String,
+  propertyUnit: json['propertyUnit'] == null
       ? null
-      : MaintenancePropertySummaryModel.fromJson(
-          json['property'] as Map<String, dynamic>,
+      : MaintenanceUnitSummaryModel.fromJson(
+          json['propertyUnit'] as Map<String, dynamic>,
         ),
   tenantId: json['tenantId'] as String?,
   tenant: json['tenant'] == null
@@ -109,8 +116,8 @@ Map<String, dynamic> _$$MaintenanceRequestModelImplToJson(
 ) => <String, dynamic>{
   'id': instance.id,
   'organizationId': instance.organizationId,
-  'propertyId': instance.propertyId,
-  'property': instance.property,
+  'propertyUnitId': instance.propertyUnitId,
+  'propertyUnit': instance.propertyUnit,
   'tenantId': instance.tenantId,
   'tenant': instance.tenant,
   'category': instance.category,

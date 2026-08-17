@@ -1,9 +1,15 @@
-import { Lease, LeaseDocument, LeaseAmendment } from '@prisma/client';
+import { Lease, LeaseDocument, LeaseAmendment, PropertyStatus } from '@prisma/client';
 
 type LeaseWithRelations = Lease & {
   documents?: LeaseDocument[];
   amendments?: LeaseAmendment[];
-  property?: { id: string; title: string; reference: string } | null;
+  propertyUnit?: {
+    id: string;
+    reference: string;
+    label: string | null;
+    status: PropertyStatus;
+    property: { id: string; title: string; reference: string; addressLine: string; city: string };
+  } | null;
   tenant?: { id: string; fullName: string } | null;
 };
 
@@ -12,9 +18,11 @@ export class LeasesMapper {
     return {
       id: lease.id,
       organizationId: lease.organizationId,
-      propertyId: lease.propertyId,
-      property: lease.property,
+      reference: lease.reference,
+      propertyUnitId: lease.propertyUnitId,
+      propertyUnit: lease.propertyUnit,
       ownerId: lease.ownerId,
+      managerId: lease.managerId,
       tenantId: lease.tenantId,
       tenant: lease.tenant,
       startDate: lease.startDate,

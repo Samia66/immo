@@ -39,8 +39,19 @@ export enum PropertyStatus {
   MAINTENANCE = 'MAINTENANCE',
 }
 
+/**
+ * Mirrors the backend's 9-state lease workflow (common/constants/lease-transitions.constant.ts):
+ * BROUILLON -> ENVOYE -> CONSULTE -> ACCEPTE -> ACTIF -> RESILIE, with REFUSE/ANNULE as early
+ * exits and EXPIRE closing out an ACTIF lease past its end date (cron).
+ */
 export enum LeaseStatus {
+  BROUILLON = 'BROUILLON',
+  ENVOYE = 'ENVOYE',
+  CONSULTE = 'CONSULTE',
+  ACCEPTE = 'ACCEPTE',
   ACTIF = 'ACTIF',
+  REFUSE = 'REFUSE',
+  ANNULE = 'ANNULE',
   EXPIRE = 'EXPIRE',
   RESILIE = 'RESILIE',
 }

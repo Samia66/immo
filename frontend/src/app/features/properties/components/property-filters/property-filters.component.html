@@ -16,8 +16,8 @@
   </mat-form-field>
 
   <mat-form-field appearance="outline">
-    <mat-label>Statut</mat-label>
-    <mat-select formControlName="status">
+    <mat-label>Statut d'un logement</mat-label>
+    <mat-select formControlName="unitStatus">
       <mat-option [value]="null">Tous</mat-option>
       @for (status of statuses; track status) {
         <mat-option [value]="status">{{ status }}</mat-option>

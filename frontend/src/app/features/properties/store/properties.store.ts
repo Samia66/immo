@@ -28,8 +28,13 @@ export class PropertiesStore {
   readonly selected = this._selected.asReadonly();
 
   readonly properties = computed(() => this._result()?.data ?? []);
+  /**
+   * "Available" no longer makes sense at the Property level (status moved to PropertyUnit) —
+   * count properties that have at least one unit currently DISPONIBLE instead. Relies on the
+   * list response including `units` (it does — see PropertiesService.mapWithUnits on the backend).
+   */
   readonly availableCount = computed(
-    () => this.properties().filter((p) => p.status === PropertyStatus.DISPONIBLE).length,
+    () => this.properties().filter((p) => p.units?.some((u) => u.status === PropertyStatus.DISPONIBLE)).length,
   );
 
   load(): void {

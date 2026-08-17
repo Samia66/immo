@@ -4,7 +4,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 
 const includeRelations = {
   attachments: true,
-  property: { select: { id: true, title: true, reference: true } },
+  propertyUnit: { select: { id: true, reference: true, label: true, property: { select: { id: true, title: true } } } },
   tenant: { select: { id: true, fullName: true, userId: true } },
   assignedTo: { select: { id: true, firstName: true, lastName: true } },
 } as const;

@@ -1,39 +1,59 @@
-<h2 mat-dialog-title>Inviter un utilisateur</h2>
-<mat-dialog-content>
-  <form [formGroup]="form" class="form-grid" style="grid-template-columns: 1fr;">
-    <mat-form-field appearance="outline">
-      <mat-label>Prénom</mat-label>
-      <input matInput formControlName="firstName" required />
+@if (createdTempPassword(); as tempPassword) {
+  <h2 mat-dialog-title>Utilisateur créé</h2>
+  <mat-dialog-content>
+    <p>
+      L'envoi d'email n'est pas encore activé sur cette instance : communiquez ce mot de passe
+      temporaire vous-même à l'utilisateur. Il devra le changer à sa première connexion.
+    </p>
+    <mat-form-field appearance="outline" style="width: 100%;">
+      <mat-label>Mot de passe temporaire</mat-label>
+      <input matInput [value]="tempPassword" readonly />
+      <button mat-icon-button matSuffix type="button" (click)="copyPassword()" aria-label="Copier">
+        <mat-icon>content_copy</mat-icon>
+      </button>
     </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label>Nom</mat-label>
-      <input matInput formControlName="lastName" required />
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label>Email</mat-label>
-      <input matInput type="email" formControlName="email" required />
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label>Téléphone</mat-label>
-      <input matInput formControlName="phone" />
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label>Rôle</mat-label>
-      <mat-select formControlName="roleId" required>
-        @for (role of roles(); track role.id) {
-          <mat-option [value]="role.id">{{ role.label }}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
-  </form>
-</mat-dialog-content>
-<mat-dialog-actions align="end">
-  <button mat-button (click)="dialogRef.close(false)">Annuler</button>
-  <button mat-flat-button color="primary" [disabled]="saving()" (click)="submit()">
-    @if (saving()) {
-      <mat-spinner diameter="18" />
-    } @else {
-      Inviter
-    }
-  </button>
-</mat-dialog-actions>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-flat-button color="primary" (click)="done()">Fermer</button>
+  </mat-dialog-actions>
+} @else {
+  <h2 mat-dialog-title>Inviter un utilisateur</h2>
+  <mat-dialog-content>
+    <form [formGroup]="form" class="form-grid" style="grid-template-columns: 1fr;">
+      <mat-form-field appearance="outline">
+        <mat-label>Prénom</mat-label>
+        <input matInput formControlName="firstName" required />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Nom</mat-label>
+        <input matInput formControlName="lastName" required />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input matInput type="email" formControlName="email" required />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Téléphone</mat-label>
+        <input matInput formControlName="phone" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Rôle</mat-label>
+        <mat-select formControlName="roleId" required>
+          @for (role of roles(); track role.id) {
+            <mat-option [value]="role.id">{{ role.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="dialogRef.close(false)">Annuler</button>
+    <button mat-flat-button color="primary" [disabled]="saving()" (click)="submit()">
+      @if (saving()) {
+        <mat-spinner diameter="18" />
+      } @else {
+        Inviter
+      }
+    </button>
+  </mat-dialog-actions>
+}

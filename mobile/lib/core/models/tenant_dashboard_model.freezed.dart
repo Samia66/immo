@@ -15,6 +15,270 @@ final _privateConstructorUsedError = UnsupportedError(
   'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
 );
 
+DashboardPropertyUnitSummaryModel _$DashboardPropertyUnitSummaryModelFromJson(
+  Map<String, dynamic> json,
+) {
+  return _DashboardPropertyUnitSummaryModel.fromJson(json);
+}
+
+/// @nodoc
+mixin _$DashboardPropertyUnitSummaryModel {
+  String get id => throw _privateConstructorUsedError;
+  String get reference => throw _privateConstructorUsedError;
+  String? get label => throw _privateConstructorUsedError;
+  LeasePropertySummaryModel get property => throw _privateConstructorUsedError;
+
+  /// Serializes this DashboardPropertyUnitSummaryModel to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of DashboardPropertyUnitSummaryModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $DashboardPropertyUnitSummaryModelCopyWith<DashboardPropertyUnitSummaryModel>
+  get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $DashboardPropertyUnitSummaryModelCopyWith<$Res> {
+  factory $DashboardPropertyUnitSummaryModelCopyWith(
+    DashboardPropertyUnitSummaryModel value,
+    $Res Function(DashboardPropertyUnitSummaryModel) then,
+  ) =
+      _$DashboardPropertyUnitSummaryModelCopyWithImpl<
+        $Res,
+        DashboardPropertyUnitSummaryModel
+      >;
+  @useResult
+  $Res call({
+    String id,
+    String reference,
+    String? label,
+    LeasePropertySummaryModel property,
+  });
+
+  $LeasePropertySummaryModelCopyWith<$Res> get property;
+}
+
+/// @nodoc
+class _$DashboardPropertyUnitSummaryModelCopyWithImpl<
+  $Res,
+  $Val extends DashboardPropertyUnitSummaryModel
+>
+    implements $DashboardPropertyUnitSummaryModelCopyWith<$Res> {
+  _$DashboardPropertyUnitSummaryModelCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of DashboardPropertyUnitSummaryModel
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? reference = null,
+    Object? label = freezed,
+    Object? property = null,
+  }) {
+    return _then(
+      _value.copyWith(
+            id: null == id
+                ? _value.id
+                : id // ignore: cast_nullable_to_non_nullable
+                      as String,
+            reference: null == reference
+                ? _value.reference
+                : reference // ignore: cast_nullable_to_non_nullable
+                      as String,
+            label: freezed == label
+                ? _value.label
+                : label // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            property: null == property
+                ? _value.property
+                : property // ignore: cast_nullable_to_non_nullable
+                      as LeasePropertySummaryModel,
+          )
+          as $Val,
+    );
+  }
+
+  /// Create a copy of DashboardPropertyUnitSummaryModel
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $LeasePropertySummaryModelCopyWith<$Res> get property {
+    return $LeasePropertySummaryModelCopyWith<$Res>(_value.property, (value) {
+      return _then(_value.copyWith(property: value) as $Val);
+    });
+  }
+}
+
+/// @nodoc
+abstract class _$$DashboardPropertyUnitSummaryModelImplCopyWith<$Res>
+    implements $DashboardPropertyUnitSummaryModelCopyWith<$Res> {
+  factory _$$DashboardPropertyUnitSummaryModelImplCopyWith(
+    _$DashboardPropertyUnitSummaryModelImpl value,
+    $Res Function(_$DashboardPropertyUnitSummaryModelImpl) then,
+  ) = __$$DashboardPropertyUnitSummaryModelImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({
+    String id,
+    String reference,
+    String? label,
+    LeasePropertySummaryModel property,
+  });
+
+  @override
+  $LeasePropertySummaryModelCopyWith<$Res> get property;
+}
+
+/// @nodoc
+class __$$DashboardPropertyUnitSummaryModelImplCopyWithImpl<$Res>
+    extends
+        _$DashboardPropertyUnitSummaryModelCopyWithImpl<
+          $Res,
+          _$DashboardPropertyUnitSummaryModelImpl
+        >
+    implements _$$DashboardPropertyUnitSummaryModelImplCopyWith<$Res> {
+  __$$DashboardPropertyUnitSummaryModelImplCopyWithImpl(
+    _$DashboardPropertyUnitSummaryModelImpl _value,
+    $Res Function(_$DashboardPropertyUnitSummaryModelImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of DashboardPropertyUnitSummaryModel
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? reference = null,
+    Object? label = freezed,
+    Object? property = null,
+  }) {
+    return _then(
+      _$DashboardPropertyUnitSummaryModelImpl(
+        id: null == id
+            ? _value.id
+            : id // ignore: cast_nullable_to_non_nullable
+                  as String,
+        reference: null == reference
+            ? _value.reference
+            : reference // ignore: cast_nullable_to_non_nullable
+                  as String,
+        label: freezed == label
+            ? _value.label
+            : label // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        property: null == property
+            ? _value.property
+            : property // ignore: cast_nullable_to_non_nullable
+                  as LeasePropertySummaryModel,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$DashboardPropertyUnitSummaryModelImpl
+    implements _DashboardPropertyUnitSummaryModel {
+  const _$DashboardPropertyUnitSummaryModelImpl({
+    required this.id,
+    required this.reference,
+    this.label,
+    required this.property,
+  });
+
+  factory _$DashboardPropertyUnitSummaryModelImpl.fromJson(
+    Map<String, dynamic> json,
+  ) => _$$DashboardPropertyUnitSummaryModelImplFromJson(json);
+
+  @override
+  final String id;
+  @override
+  final String reference;
+  @override
+  final String? label;
+  @override
+  final LeasePropertySummaryModel property;
+
+  @override
+  String toString() {
+    return 'DashboardPropertyUnitSummaryModel(id: $id, reference: $reference, label: $label, property: $property)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$DashboardPropertyUnitSummaryModelImpl &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.reference, reference) ||
+                other.reference == reference) &&
+            (identical(other.label, label) || other.label == label) &&
+            (identical(other.property, property) ||
+                other.property == property));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, id, reference, label, property);
+
+  /// Create a copy of DashboardPropertyUnitSummaryModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$DashboardPropertyUnitSummaryModelImplCopyWith<
+    _$DashboardPropertyUnitSummaryModelImpl
+  >
+  get copyWith =>
+      __$$DashboardPropertyUnitSummaryModelImplCopyWithImpl<
+        _$DashboardPropertyUnitSummaryModelImpl
+      >(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$DashboardPropertyUnitSummaryModelImplToJson(this);
+  }
+}
+
+abstract class _DashboardPropertyUnitSummaryModel
+    implements DashboardPropertyUnitSummaryModel {
+  const factory _DashboardPropertyUnitSummaryModel({
+    required final String id,
+    required final String reference,
+    final String? label,
+    required final LeasePropertySummaryModel property,
+  }) = _$DashboardPropertyUnitSummaryModelImpl;
+
+  factory _DashboardPropertyUnitSummaryModel.fromJson(
+    Map<String, dynamic> json,
+  ) = _$DashboardPropertyUnitSummaryModelImpl.fromJson;
+
+  @override
+  String get id;
+  @override
+  String get reference;
+  @override
+  String? get label;
+  @override
+  LeasePropertySummaryModel get property;
+
+  /// Create a copy of DashboardPropertyUnitSummaryModel
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$DashboardPropertyUnitSummaryModelImplCopyWith<
+    _$DashboardPropertyUnitSummaryModelImpl
+  >
+  get copyWith => throw _privateConstructorUsedError;
+}
+
 ActiveLeaseSummaryModel _$ActiveLeaseSummaryModelFromJson(
   Map<String, dynamic> json,
 ) {
@@ -24,7 +288,8 @@ ActiveLeaseSummaryModel _$ActiveLeaseSummaryModelFromJson(
 /// @nodoc
 mixin _$ActiveLeaseSummaryModel {
   String get id => throw _privateConstructorUsedError;
-  PropertySummaryModel get property => throw _privateConstructorUsedError;
+  DashboardPropertyUnitSummaryModel get propertyUnit =>
+      throw _privateConstructorUsedError;
   DateTime get startDate => throw _privateConstructorUsedError;
   DateTime? get endDate => throw _privateConstructorUsedError;
   num get rentAmount => throw _privateConstructorUsedError;
@@ -48,13 +313,13 @@ abstract class $ActiveLeaseSummaryModelCopyWith<$Res> {
   @useResult
   $Res call({
     String id,
-    PropertySummaryModel property,
+    DashboardPropertyUnitSummaryModel propertyUnit,
     DateTime startDate,
     DateTime? endDate,
     num rentAmount,
   });
 
-  $PropertySummaryModelCopyWith<$Res> get property;
+  $DashboardPropertyUnitSummaryModelCopyWith<$Res> get propertyUnit;
 }
 
 /// @nodoc
@@ -76,7 +341,7 @@ class _$ActiveLeaseSummaryModelCopyWithImpl<
   @override
   $Res call({
     Object? id = null,
-    Object? property = null,
+    Object? propertyUnit = null,
     Object? startDate = null,
     Object? endDate = freezed,
     Object? rentAmount = null,
@@ -87,10 +352,10 @@ class _$ActiveLeaseSummaryModelCopyWithImpl<
                 ? _value.id
                 : id // ignore: cast_nullable_to_non_nullable
                       as String,
-            property: null == property
-                ? _value.property
-                : property // ignore: cast_nullable_to_non_nullable
-                      as PropertySummaryModel,
+            propertyUnit: null == propertyUnit
+                ? _value.propertyUnit
+                : propertyUnit // ignore: cast_nullable_to_non_nullable
+                      as DashboardPropertyUnitSummaryModel,
             startDate: null == startDate
                 ? _value.startDate
                 : startDate // ignore: cast_nullable_to_non_nullable
@@ -112,10 +377,13 @@ class _$ActiveLeaseSummaryModelCopyWithImpl<
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $PropertySummaryModelCopyWith<$Res> get property {
-    return $PropertySummaryModelCopyWith<$Res>(_value.property, (value) {
-      return _then(_value.copyWith(property: value) as $Val);
-    });
+  $DashboardPropertyUnitSummaryModelCopyWith<$Res> get propertyUnit {
+    return $DashboardPropertyUnitSummaryModelCopyWith<$Res>(
+      _value.propertyUnit,
+      (value) {
+        return _then(_value.copyWith(propertyUnit: value) as $Val);
+      },
+    );
   }
 }
 
@@ -130,14 +398,14 @@ abstract class _$$ActiveLeaseSummaryModelImplCopyWith<$Res>
   @useResult
   $Res call({
     String id,
-    PropertySummaryModel property,
+    DashboardPropertyUnitSummaryModel propertyUnit,
     DateTime startDate,
     DateTime? endDate,
     num rentAmount,
   });
 
   @override
-  $PropertySummaryModelCopyWith<$Res> get property;
+  $DashboardPropertyUnitSummaryModelCopyWith<$Res> get propertyUnit;
 }
 
 /// @nodoc
@@ -159,7 +427,7 @@ class __$$ActiveLeaseSummaryModelImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = null,
-    Object? property = null,
+    Object? propertyUnit = null,
     Object? startDate = null,
     Object? endDate = freezed,
     Object? rentAmount = null,
@@ -170,10 +438,10 @@ class __$$ActiveLeaseSummaryModelImplCopyWithImpl<$Res>
             ? _value.id
             : id // ignore: cast_nullable_to_non_nullable
                   as String,
-        property: null == property
-            ? _value.property
-            : property // ignore: cast_nullable_to_non_nullable
-                  as PropertySummaryModel,
+        propertyUnit: null == propertyUnit
+            ? _value.propertyUnit
+            : propertyUnit // ignore: cast_nullable_to_non_nullable
+                  as DashboardPropertyUnitSummaryModel,
         startDate: null == startDate
             ? _value.startDate
             : startDate // ignore: cast_nullable_to_non_nullable
@@ -196,7 +464,7 @@ class __$$ActiveLeaseSummaryModelImplCopyWithImpl<$Res>
 class _$ActiveLeaseSummaryModelImpl implements _ActiveLeaseSummaryModel {
   const _$ActiveLeaseSummaryModelImpl({
     required this.id,
-    required this.property,
+    required this.propertyUnit,
     required this.startDate,
     this.endDate,
     required this.rentAmount,
@@ -208,7 +476,7 @@ class _$ActiveLeaseSummaryModelImpl implements _ActiveLeaseSummaryModel {
   @override
   final String id;
   @override
-  final PropertySummaryModel property;
+  final DashboardPropertyUnitSummaryModel propertyUnit;
   @override
   final DateTime startDate;
   @override
@@ -218,7 +486,7 @@ class _$ActiveLeaseSummaryModelImpl implements _ActiveLeaseSummaryModel {
 
   @override
   String toString() {
-    return 'ActiveLeaseSummaryModel(id: $id, property: $property, startDate: $startDate, endDate: $endDate, rentAmount: $rentAmount)';
+    return 'ActiveLeaseSummaryModel(id: $id, propertyUnit: $propertyUnit, startDate: $startDate, endDate: $endDate, rentAmount: $rentAmount)';
   }
 
   @override
@@ -227,8 +495,8 @@ class _$ActiveLeaseSummaryModelImpl implements _ActiveLeaseSummaryModel {
         (other.runtimeType == runtimeType &&
             other is _$ActiveLeaseSummaryModelImpl &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.property, property) ||
-                other.property == property) &&
+            (identical(other.propertyUnit, propertyUnit) ||
+                other.propertyUnit == propertyUnit) &&
             (identical(other.startDate, startDate) ||
                 other.startDate == startDate) &&
             (identical(other.endDate, endDate) || other.endDate == endDate) &&
@@ -238,8 +506,14 @@ class _$ActiveLeaseSummaryModelImpl implements _ActiveLeaseSummaryModel {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, property, startDate, endDate, rentAmount);
+  int get hashCode => Object.hash(
+    runtimeType,
+    id,
+    propertyUnit,
+    startDate,
+    endDate,
+    rentAmount,
+  );
 
   /// Create a copy of ActiveLeaseSummaryModel
   /// with the given fields replaced by the non-null parameter values.
@@ -261,7 +535,7 @@ class _$ActiveLeaseSummaryModelImpl implements _ActiveLeaseSummaryModel {
 abstract class _ActiveLeaseSummaryModel implements ActiveLeaseSummaryModel {
   const factory _ActiveLeaseSummaryModel({
     required final String id,
-    required final PropertySummaryModel property,
+    required final DashboardPropertyUnitSummaryModel propertyUnit,
     required final DateTime startDate,
     final DateTime? endDate,
     required final num rentAmount,
@@ -273,7 +547,7 @@ abstract class _ActiveLeaseSummaryModel implements ActiveLeaseSummaryModel {
   @override
   String get id;
   @override
-  PropertySummaryModel get property;
+  DashboardPropertyUnitSummaryModel get propertyUnit;
   @override
   DateTime get startDate;
   @override

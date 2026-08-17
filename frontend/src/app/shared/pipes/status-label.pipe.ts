@@ -6,8 +6,13 @@ const LABELS: Record<string, string> = {
   OCCUPE: 'Occupé',
   RESERVE: 'Réservé',
   MAINTENANCE: 'En maintenance',
-  // Lease
+  // Lease (9-state workflow — see core/models/enums.ts LeaseStatus)
+  BROUILLON: 'Brouillon',
+  ENVOYE: 'Envoyé',
+  CONSULTE: 'Consulté',
+  ACCEPTE: 'Accepté',
   ACTIF: 'Actif',
+  REFUSE: 'Refusé',
   EXPIRE: 'Expiré',
   RESILIE: 'Résilié',
   // Payment

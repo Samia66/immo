@@ -2,7 +2,7 @@
 CREATE TYPE "SubscriptionPlan" AS ENUM ('FREE', 'STARTER', 'PROFESSIONAL', 'ENTERPRISE');
 
 -- CreateEnum
-CREATE TYPE "RoleName" AS ENUM ('SUPER_ADMIN', 'ADMIN_AGENCE', 'GESTIONNAIRE', 'AGENT_IMMOBILIER', 'LOCATAIRE');
+CREATE TYPE "RoleName" AS ENUM ('SUPER_ADMIN', 'ADMIN_AGENCE', 'GESTIONNAIRE', 'AGENT_IMMOBILIER', 'LOCATAIRE', 'PROPRIETAIRE');
 
 -- CreateEnum
 CREATE TYPE "PropertyType" AS ENUM ('MAISON', 'APPARTEMENT', 'STUDIO', 'BUREAU', 'TERRAIN', 'BOUTIQUE');
@@ -11,7 +11,19 @@ CREATE TYPE "PropertyType" AS ENUM ('MAISON', 'APPARTEMENT', 'STUDIO', 'BUREAU',
 CREATE TYPE "PropertyStatus" AS ENUM ('DISPONIBLE', 'OCCUPE', 'RESERVE', 'MAINTENANCE');
 
 -- CreateEnum
-CREATE TYPE "LeaseStatus" AS ENUM ('ACTIF', 'EXPIRE', 'RESILIE');
+CREATE TYPE "LeaseStatus" AS ENUM ('BROUILLON', 'ENVOYE', 'CONSULTE', 'ACCEPTE', 'ACTIF', 'REFUSE', 'ANNULE', 'EXPIRE', 'RESILIE');
+
+-- CreateEnum
+CREATE TYPE "TenantInvitationStatus" AS ENUM ('PENDING', 'ACCEPTED', 'EXPIRED', 'REVOKED');
+
+-- CreateEnum
+CREATE TYPE "OwnerInvitationStatus" AS ENUM ('PENDING', 'ACCEPTED', 'EXPIRED', 'CANCELLED');
+
+-- CreateEnum
+CREATE TYPE "ManagerRelationStatus" AS ENUM ('ACTIVE', 'SUSPENDED', 'ENDED');
+
+-- CreateEnum
+CREATE TYPE "OtpPurpose" AS ENUM ('REGISTER', 'REGISTER_OWNER', 'ACTIVATE_TENANT', 'RESET_PASSWORD');
 
 -- CreateEnum
 CREATE TYPE "PaymentFrequency" AS ENUM ('MENSUEL', 'TRIMESTRIEL', 'SEMESTRIEL', 'ANNUEL');
@@ -136,22 +148,39 @@ CREATE TABLE "Property" (
     "title" TEXT NOT NULL,
     "description" TEXT,
     "type" "PropertyType" NOT NULL,
-    "status" "PropertyStatus" NOT NULL DEFAULT 'DISPONIBLE',
     "addressLine" TEXT NOT NULL,
     "city" TEXT NOT NULL,
     "district" TEXT,
     "latitude" DOUBLE PRECISION,
     "longitude" DOUBLE PRECISION,
-    "rooms" INTEGER,
-    "surfaceM2" DOUBLE PRECISION,
-    "monthlyRent" DECIMAL(12,2) NOT NULL,
-    "monthlyCharges" DECIMAL(12,2),
     "ownerId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "deletedAt" TIMESTAMP(3),
 
     CONSTRAINT "Property_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "PropertyUnit" (
+    "id" TEXT NOT NULL,
+    "organizationId" TEXT NOT NULL,
+    "propertyId" TEXT NOT NULL,
+    "reference" TEXT NOT NULL,
+    "label" TEXT,
+    "floor" TEXT,
+    "type" "PropertyType" NOT NULL,
+    "rooms" INTEGER,
+    "surfaceM2" DOUBLE PRECISION,
+    "monthlyRent" DECIMAL(12,2) NOT NULL,
+    "monthlyCharges" DECIMAL(12,2),
+    "status" "PropertyStatus" NOT NULL DEFAULT 'DISPONIBLE',
+    "description" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "deletedAt" TIMESTAMP(3),
+
+    CONSTRAINT "PropertyUnit_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -183,6 +212,7 @@ CREATE TABLE "PropertyHistory" (
 CREATE TABLE "Owner" (
     "id" TEXT NOT NULL,
     "organizationId" TEXT NOT NULL,
+    "userId" TEXT,
     "fullName" TEXT NOT NULL,
     "phone" TEXT NOT NULL,
     "email" TEXT,
@@ -230,21 +260,36 @@ CREATE TABLE "TenantDocument" (
 CREATE TABLE "Lease" (
     "id" TEXT NOT NULL,
     "organizationId" TEXT NOT NULL,
-    "propertyId" TEXT NOT NULL,
+    "propertyUnitId" TEXT NOT NULL,
     "ownerId" TEXT NOT NULL,
+    "managerId" TEXT NOT NULL,
     "tenantId" TEXT NOT NULL,
+    "reference" TEXT NOT NULL,
     "startDate" TIMESTAMP(3) NOT NULL,
     "endDate" TIMESTAMP(3),
     "rentAmount" DECIMAL(12,2) NOT NULL,
     "depositAmount" DECIMAL(12,2) NOT NULL,
     "paymentFrequency" "PaymentFrequency" NOT NULL DEFAULT 'MENSUEL',
     "indexationRate" DOUBLE PRECISION,
-    "status" "LeaseStatus" NOT NULL DEFAULT 'ACTIF',
+    "status" "LeaseStatus" NOT NULL DEFAULT 'BROUILLON',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "deletedAt" TIMESTAMP(3),
 
     CONSTRAINT "Lease_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "LeaseStatusHistory" (
+    "id" TEXT NOT NULL,
+    "leaseId" TEXT NOT NULL,
+    "fromStatus" "LeaseStatus",
+    "toStatus" "LeaseStatus" NOT NULL,
+    "changedById" TEXT,
+    "note" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "LeaseStatusHistory_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -312,7 +357,7 @@ CREATE TABLE "Expense" (
 CREATE TABLE "MaintenanceRequest" (
     "id" TEXT NOT NULL,
     "organizationId" TEXT NOT NULL,
-    "propertyId" TEXT NOT NULL,
+    "propertyUnitId" TEXT NOT NULL,
     "tenantId" TEXT,
     "category" TEXT NOT NULL,
     "description" TEXT NOT NULL,
@@ -393,6 +438,97 @@ CREATE TABLE "AuditLog" (
     CONSTRAINT "AuditLog_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "TenantInvitation" (
+    "id" TEXT NOT NULL,
+    "organizationId" TEXT NOT NULL,
+    "leaseId" TEXT NOT NULL,
+    "code" TEXT NOT NULL,
+    "status" "TenantInvitationStatus" NOT NULL DEFAULT 'PENDING',
+    "expiresAt" TIMESTAMP(3) NOT NULL,
+    "acceptedAt" TIMESTAMP(3),
+    "acceptedByUserId" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "TenantInvitation_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "ManagerOwner" (
+    "id" TEXT NOT NULL,
+    "organizationId" TEXT NOT NULL,
+    "managerId" TEXT NOT NULL,
+    "ownerId" TEXT NOT NULL,
+    "status" "ManagerRelationStatus" NOT NULL DEFAULT 'ACTIVE',
+    "startDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "endDate" TIMESTAMP(3),
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "ManagerOwner_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "PropertyManagement" (
+    "id" TEXT NOT NULL,
+    "organizationId" TEXT NOT NULL,
+    "propertyId" TEXT NOT NULL,
+    "managerId" TEXT NOT NULL,
+    "status" "ManagerRelationStatus" NOT NULL DEFAULT 'ACTIVE',
+    "startDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "endDate" TIMESTAMP(3),
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "PropertyManagement_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "OwnerInvitation" (
+    "id" TEXT NOT NULL,
+    "organizationId" TEXT NOT NULL,
+    "managerId" TEXT NOT NULL,
+    "firstName" TEXT NOT NULL,
+    "lastName" TEXT NOT NULL,
+    "email" TEXT,
+    "phone" TEXT,
+    "code" TEXT NOT NULL,
+    "status" "OwnerInvitationStatus" NOT NULL DEFAULT 'PENDING',
+    "expiresAt" TIMESTAMP(3) NOT NULL,
+    "acceptedAt" TIMESTAMP(3),
+    "ownerId" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "OwnerInvitation_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Receipt" (
+    "id" TEXT NOT NULL,
+    "organizationId" TEXT NOT NULL,
+    "paymentId" TEXT NOT NULL,
+    "url" TEXT NOT NULL,
+    "period" TEXT NOT NULL,
+    "amount" DECIMAL(12,2) NOT NULL,
+    "generatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Receipt_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "OtpCode" (
+    "id" TEXT NOT NULL,
+    "contact" TEXT NOT NULL,
+    "code" TEXT NOT NULL,
+    "purpose" "OtpPurpose" NOT NULL,
+    "expiresAt" TIMESTAMP(3) NOT NULL,
+    "consumedAt" TIMESTAMP(3),
+    "attempts" INTEGER NOT NULL DEFAULT 0,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "OtpCode_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "Organization_code_key" ON "Organization"("code");
 
@@ -427,19 +563,28 @@ CREATE INDEX "RefreshToken_userId_idx" ON "RefreshToken"("userId");
 CREATE INDEX "RefreshToken_expiresAt_idx" ON "RefreshToken"("expiresAt");
 
 -- CreateIndex
-CREATE INDEX "Property_organizationId_status_idx" ON "Property"("organizationId", "status");
-
--- CreateIndex
 CREATE INDEX "Property_organizationId_city_idx" ON "Property"("organizationId", "city");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Property_organizationId_reference_key" ON "Property"("organizationId", "reference");
 
 -- CreateIndex
+CREATE INDEX "PropertyUnit_organizationId_status_idx" ON "PropertyUnit"("organizationId", "status");
+
+-- CreateIndex
+CREATE INDEX "PropertyUnit_propertyId_idx" ON "PropertyUnit"("propertyId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "PropertyUnit_propertyId_reference_key" ON "PropertyUnit"("propertyId", "reference");
+
+-- CreateIndex
 CREATE INDEX "PropertyImage_propertyId_idx" ON "PropertyImage"("propertyId");
 
 -- CreateIndex
 CREATE INDEX "PropertyHistory_propertyId_idx" ON "PropertyHistory"("propertyId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Owner_userId_key" ON "Owner"("userId");
 
 -- CreateIndex
 CREATE INDEX "Owner_organizationId_idx" ON "Owner"("organizationId");
@@ -457,13 +602,25 @@ CREATE INDEX "TenantDocument_tenantId_idx" ON "TenantDocument"("tenantId");
 CREATE INDEX "Lease_organizationId_status_idx" ON "Lease"("organizationId", "status");
 
 -- CreateIndex
-CREATE INDEX "Lease_propertyId_idx" ON "Lease"("propertyId");
+CREATE INDEX "Lease_propertyUnitId_idx" ON "Lease"("propertyUnitId");
 
 -- CreateIndex
 CREATE INDEX "Lease_tenantId_idx" ON "Lease"("tenantId");
 
 -- CreateIndex
+CREATE INDEX "Lease_ownerId_idx" ON "Lease"("ownerId");
+
+-- CreateIndex
+CREATE INDEX "Lease_managerId_idx" ON "Lease"("managerId");
+
+-- CreateIndex
 CREATE INDEX "Lease_endDate_idx" ON "Lease"("endDate");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Lease_organizationId_reference_key" ON "Lease"("organizationId", "reference");
+
+-- CreateIndex
+CREATE INDEX "LeaseStatusHistory_leaseId_idx" ON "LeaseStatusHistory"("leaseId");
 
 -- CreateIndex
 CREATE INDEX "LeaseDocument_leaseId_idx" ON "LeaseDocument"("leaseId");
@@ -490,7 +647,7 @@ CREATE INDEX "Expense_propertyId_idx" ON "Expense"("propertyId");
 CREATE INDEX "MaintenanceRequest_organizationId_status_idx" ON "MaintenanceRequest"("organizationId", "status");
 
 -- CreateIndex
-CREATE INDEX "MaintenanceRequest_propertyId_idx" ON "MaintenanceRequest"("propertyId");
+CREATE INDEX "MaintenanceRequest_propertyUnitId_idx" ON "MaintenanceRequest"("propertyUnitId");
 
 -- CreateIndex
 CREATE INDEX "MaintenanceRequest_assignedToId_idx" ON "MaintenanceRequest"("assignedToId");
@@ -515,6 +672,42 @@ CREATE INDEX "AuditLog_organizationId_createdAt_idx" ON "AuditLog"("organization
 
 -- CreateIndex
 CREATE INDEX "AuditLog_entity_entityId_idx" ON "AuditLog"("entity", "entityId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "TenantInvitation_code_key" ON "TenantInvitation"("code");
+
+-- CreateIndex
+CREATE INDEX "TenantInvitation_organizationId_status_idx" ON "TenantInvitation"("organizationId", "status");
+
+-- CreateIndex
+CREATE INDEX "ManagerOwner_organizationId_managerId_status_idx" ON "ManagerOwner"("organizationId", "managerId", "status");
+
+-- CreateIndex
+CREATE INDEX "ManagerOwner_ownerId_idx" ON "ManagerOwner"("ownerId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "ManagerOwner_managerId_ownerId_key" ON "ManagerOwner"("managerId", "ownerId");
+
+-- CreateIndex
+CREATE INDEX "PropertyManagement_organizationId_managerId_status_idx" ON "PropertyManagement"("organizationId", "managerId", "status");
+
+-- CreateIndex
+CREATE INDEX "PropertyManagement_propertyId_status_idx" ON "PropertyManagement"("propertyId", "status");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "OwnerInvitation_code_key" ON "OwnerInvitation"("code");
+
+-- CreateIndex
+CREATE INDEX "OwnerInvitation_organizationId_managerId_status_idx" ON "OwnerInvitation"("organizationId", "managerId", "status");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Receipt_paymentId_key" ON "Receipt"("paymentId");
+
+-- CreateIndex
+CREATE INDEX "Receipt_organizationId_idx" ON "Receipt"("organizationId");
+
+-- CreateIndex
+CREATE INDEX "OtpCode_contact_purpose_idx" ON "OtpCode"("contact", "purpose");
 
 -- AddForeignKey
 ALTER TABLE "User" ADD CONSTRAINT "User_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "Organization"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -541,6 +734,12 @@ ALTER TABLE "Property" ADD CONSTRAINT "Property_organizationId_fkey" FOREIGN KEY
 ALTER TABLE "Property" ADD CONSTRAINT "Property_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "Owner"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "PropertyUnit" ADD CONSTRAINT "PropertyUnit_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "Organization"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "PropertyUnit" ADD CONSTRAINT "PropertyUnit_propertyId_fkey" FOREIGN KEY ("propertyId") REFERENCES "Property"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "PropertyImage" ADD CONSTRAINT "PropertyImage_propertyId_fkey" FOREIGN KEY ("propertyId") REFERENCES "Property"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -548,6 +747,9 @@ ALTER TABLE "PropertyHistory" ADD CONSTRAINT "PropertyHistory_propertyId_fkey" F
 
 -- AddForeignKey
 ALTER TABLE "Owner" ADD CONSTRAINT "Owner_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "Organization"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Owner" ADD CONSTRAINT "Owner_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Tenant" ADD CONSTRAINT "Tenant_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "Organization"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -562,10 +764,19 @@ ALTER TABLE "TenantDocument" ADD CONSTRAINT "TenantDocument_tenantId_fkey" FOREI
 ALTER TABLE "Lease" ADD CONSTRAINT "Lease_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "Organization"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Lease" ADD CONSTRAINT "Lease_propertyId_fkey" FOREIGN KEY ("propertyId") REFERENCES "Property"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Lease" ADD CONSTRAINT "Lease_propertyUnitId_fkey" FOREIGN KEY ("propertyUnitId") REFERENCES "PropertyUnit"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Lease" ADD CONSTRAINT "Lease_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "Owner"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Lease" ADD CONSTRAINT "Lease_managerId_fkey" FOREIGN KEY ("managerId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Lease" ADD CONSTRAINT "Lease_tenantId_fkey" FOREIGN KEY ("tenantId") REFERENCES "Tenant"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "LeaseStatusHistory" ADD CONSTRAINT "LeaseStatusHistory_leaseId_fkey" FOREIGN KEY ("leaseId") REFERENCES "Lease"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "LeaseDocument" ADD CONSTRAINT "LeaseDocument_leaseId_fkey" FOREIGN KEY ("leaseId") REFERENCES "Lease"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -589,7 +800,7 @@ ALTER TABLE "Expense" ADD CONSTRAINT "Expense_propertyId_fkey" FOREIGN KEY ("pro
 ALTER TABLE "MaintenanceRequest" ADD CONSTRAINT "MaintenanceRequest_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "Organization"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "MaintenanceRequest" ADD CONSTRAINT "MaintenanceRequest_propertyId_fkey" FOREIGN KEY ("propertyId") REFERENCES "Property"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "MaintenanceRequest" ADD CONSTRAINT "MaintenanceRequest_propertyUnitId_fkey" FOREIGN KEY ("propertyUnitId") REFERENCES "PropertyUnit"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "MaintenanceRequest" ADD CONSTRAINT "MaintenanceRequest_tenantId_fkey" FOREIGN KEY ("tenantId") REFERENCES "Tenant"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -617,3 +828,39 @@ ALTER TABLE "AuditLog" ADD CONSTRAINT "AuditLog_organizationId_fkey" FOREIGN KEY
 
 -- AddForeignKey
 ALTER TABLE "AuditLog" ADD CONSTRAINT "AuditLog_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "TenantInvitation" ADD CONSTRAINT "TenantInvitation_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "Organization"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "TenantInvitation" ADD CONSTRAINT "TenantInvitation_leaseId_fkey" FOREIGN KEY ("leaseId") REFERENCES "Lease"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ManagerOwner" ADD CONSTRAINT "ManagerOwner_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "Organization"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ManagerOwner" ADD CONSTRAINT "ManagerOwner_managerId_fkey" FOREIGN KEY ("managerId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ManagerOwner" ADD CONSTRAINT "ManagerOwner_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "Owner"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "PropertyManagement" ADD CONSTRAINT "PropertyManagement_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "Organization"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "PropertyManagement" ADD CONSTRAINT "PropertyManagement_propertyId_fkey" FOREIGN KEY ("propertyId") REFERENCES "Property"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "PropertyManagement" ADD CONSTRAINT "PropertyManagement_managerId_fkey" FOREIGN KEY ("managerId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "OwnerInvitation" ADD CONSTRAINT "OwnerInvitation_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "Organization"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "OwnerInvitation" ADD CONSTRAINT "OwnerInvitation_managerId_fkey" FOREIGN KEY ("managerId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Receipt" ADD CONSTRAINT "Receipt_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "Organization"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Receipt" ADD CONSTRAINT "Receipt_paymentId_fkey" FOREIGN KEY ("paymentId") REFERENCES "Payment"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

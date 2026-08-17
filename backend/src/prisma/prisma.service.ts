@@ -11,6 +11,7 @@ const TENANT_SCOPED_MODELS = new Set<string>([
   'User',
   'Role',
   'Property',
+  'PropertyUnit',
   'Owner',
   'Tenant',
   'Lease',
@@ -19,6 +20,11 @@ const TENANT_SCOPED_MODELS = new Set<string>([
   'MaintenanceRequest',
   'Notification',
   'AuditLog',
+  'TenantInvitation',
+  'OwnerInvitation',
+  'ManagerOwner',
+  'PropertyManagement',
+  'Receipt',
 ]);
 
 /**

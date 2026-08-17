@@ -3,7 +3,14 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { PaginatedResult } from '../../../core/models';
-import { CreateLeaseDto, Lease, LeaseQuery, TerminateLeaseDto } from '../models/lease.model';
+import {
+  CreateLeaseDto,
+  InvitationResult,
+  Lease,
+  LeaseQuery,
+  RefuseLeaseDto,
+  TerminateLeaseDto,
+} from '../models/lease.model';
 
 @Injectable({ providedIn: 'root' })
 export class LeasesApiService {
@@ -32,12 +39,42 @@ export class LeasesApiService {
     return this.http.patch<Lease>(`${this.baseUrl}/${id}`, dto);
   }
 
-  renew(id: string, endDate: string): Observable<Lease> {
-    return this.http.post<Lease>(`${this.baseUrl}/${id}/renew`, { endDate });
+  renew(id: string, newEndDate: string): Observable<Lease> {
+    return this.http.post<Lease>(`${this.baseUrl}/${id}/renew`, { newEndDate });
   }
 
   terminate(id: string, dto: TerminateLeaseDto): Observable<Lease> {
     return this.http.post<Lease>(`${this.baseUrl}/${id}/terminate`, dto);
+  }
+
+  /** BROUILLON -> ENVOYE (manager action). */
+  send(id: string): Observable<Lease> {
+    return this.http.post<Lease>(`${this.baseUrl}/${id}/send`, {});
+  }
+
+  /** ENVOYE -> CONSULTE (tenant-side in the mobile app; kept here for API symmetry). */
+  acknowledge(id: string): Observable<Lease> {
+    return this.http.post<Lease>(`${this.baseUrl}/${id}/acknowledge`, {});
+  }
+
+  /** -> ACTIF directly, cascading through ACCEPTE (tenant-side; kept here for API symmetry). */
+  accept(id: string): Observable<Lease> {
+    return this.http.post<Lease>(`${this.baseUrl}/${id}/accept`, {});
+  }
+
+  /** Tenant-side refusal; kept here for API symmetry. */
+  refuse(id: string, dto: RefuseLeaseDto): Observable<Lease> {
+    return this.http.post<Lease>(`${this.baseUrl}/${id}/refuse`, dto);
+  }
+
+  /** BROUILLON/ENVOYE/CONSULTE -> ANNULE (manager action). */
+  cancel(id: string): Observable<Lease> {
+    return this.http.post<Lease>(`${this.baseUrl}/${id}/cancel`, {});
+  }
+
+  /** (Re)generates an activation invitation for this lease's tenant (manager action). */
+  invite(id: string): Observable<InvitationResult> {
+    return this.http.post<InvitationResult>(`${this.baseUrl}/${id}/invite`, {});
   }
 
   expiringSoon(days = 30): Observable<Lease[]> {

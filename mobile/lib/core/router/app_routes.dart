@@ -5,10 +5,15 @@ class AppRoutes {
 
   // Auth
   static const String splash = '/';
+  static const String welcome = '/welcome';
   static const String login = '/login';
+  static const String register = '/register';
   static const String forgotPassword = '/forgot-password';
   static const String resetPassword = '/reset-password';
   static const String unsupportedRole = '/unsupported-role';
+  static const String invitationEntry = '/invitation';
+  static const String activateAccount = '/invitation/activate';
+  static const String ownerActivateAccount = '/invitation/owner-activate';
 
   // Tenant
   static const String tenantHome = '/tenant/home';
@@ -35,12 +40,39 @@ class AppRoutes {
   static String agentPropertyDetailPath(String id) => '/agent/properties/$id';
   static String agentVisitDetailPath(String id) => '/agent/visits/$id';
 
-  // Manager (field)
+  // Owner
+  static const String ownerHome = '/owner/home';
+  static const String ownerProperties = '/owner/properties';
+  static const String ownerPropertyDetail = '/owner/properties/:id';
+  static const String ownerProfile = '/owner/profile';
+
+  static String ownerPropertyDetailPath(String id) => '/owner/properties/$id';
+
+  // Manager (GESTIONNAIRE - primary operator, spec §0/§8)
   static const String managerHome = '/manager/home';
+  static const String managerOwners = '/manager/owners';
+  static const String managerOwnerInvite = '/manager/owners/invite';
+  static const String managerOwnerDetail = '/manager/owners/:id';
+  static const String managerProperties = '/manager/properties';
+  static const String managerPropertyDetail = '/manager/properties/:id';
+  static const String managerPropertyNew = '/manager/properties/new';
+  static const String managerTenants = '/manager/tenants';
+  static const String managerTenantNew = '/manager/tenants/new';
+  static const String managerLeases = '/manager/leases';
+  static const String managerLeaseNew = '/manager/leases/new';
+  static const String managerLeaseDetail = '/manager/leases/:id';
+  static const String managerPayments = '/manager/payments';
+  // Overflow menu (spec §8/§52): not primary tabs, reachable from the
+  // manager home screen's account sheet.
   static const String managerAssigned = '/manager/assigned';
   static const String managerAssignedDetail = '/manager/assigned/:id';
   static const String managerAssignedComplete = '/manager/assigned/:id/complete';
+  static const String managerNotifications = '/manager/notifications';
+  static const String managerProfile = '/manager/profile';
 
+  static String managerOwnerDetailPath(String id) => '/manager/owners/$id';
+  static String managerPropertyDetailPath(String id) => '/manager/properties/$id';
+  static String managerLeaseDetailPath(String id) => '/manager/leases/$id';
   static String managerAssignedDetailPath(String id) => '/manager/assigned/$id';
   static String managerAssignedCompletePath(String id) => '/manager/assigned/$id/complete';
 }

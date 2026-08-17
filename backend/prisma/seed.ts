@@ -7,6 +7,10 @@ const prisma = new PrismaClient();
 const DEMO_ORG_CODE = 'DEMO-HORIZON';
 const DEMO_ADMIN_EMAIL = 'admin@horizon-immo.demo';
 const DEMO_ADMIN_PASSWORD = 'Password123!';
+const DEMO_MANAGER_EMAIL = 'gestionnaire@horizon-immo.demo';
+const DEMO_MANAGER_PASSWORD = 'Password123!';
+const DEMO_OWNER_EMAIL = 'proprietaire@horizon-immo.demo';
+const DEMO_OWNER_PASSWORD = 'Password123!';
 
 const PLATFORM_ORG_CODE = 'PLATFORM';
 const SUPER_ADMIN_EMAIL = 'superadmin@immo-platform.demo';
@@ -36,7 +40,10 @@ async function seedOrgRoles(organizationId: string, roleNames: RoleName[]) {
     });
     roleIds.set(roleName, role.id);
 
-    const codes = roleName === 'SUPER_ADMIN' ? PERMISSIONS.map((p) => p.code) : ROLE_PERMISSIONS[roleName as Exclude<RoleName, 'SUPER_ADMIN'>];
+    const codes =
+      roleName === 'SUPER_ADMIN'
+        ? PERMISSIONS.map((p) => p.code)
+        : ROLE_PERMISSIONS[roleName as Exclude<RoleName, 'SUPER_ADMIN'>];
 
     await prisma.rolePermission.deleteMany({ where: { roleId: role.id } });
     const permissionIds = (codes ?? []).map((c) => permissionIdByCode.get(c)).filter((id): id is string => Boolean(id));
@@ -68,8 +75,9 @@ async function main() {
     create: { name: 'Platform', code: PLATFORM_ORG_CODE, subscriptionPlan: 'ENTERPRISE' },
   });
 
-  const allPermissions = await prisma.permission.findMany();
-  let superAdminRole = await prisma.role.findFirst({
+const allPermissions = await prisma.permission.findMany();
+
+let superAdminRole = await prisma.role.findFirst({
   where: {
     organizationId: null,
     name: RoleName.SUPER_ADMIN,
@@ -87,7 +95,9 @@ if (!superAdminRole) {
   });
 } else {
   superAdminRole = await prisma.role.update({
-    where: { id: superAdminRole.id },
+    where: {
+      id: superAdminRole.id,
+    },
     data: {
       label: ROLE_LABELS.SUPER_ADMIN,
       isSystem: true,
@@ -133,7 +143,13 @@ if (!superAdminRole) {
     },
   });
 
-  const demoRoleIds = await seedOrgRoles(demoOrg.id, ['ADMIN_AGENCE', 'GESTIONNAIRE', 'AGENT_IMMOBILIER', 'LOCATAIRE']);
+  const demoRoleIds = await seedOrgRoles(demoOrg.id, [
+    'ADMIN_AGENCE',
+    'GESTIONNAIRE',
+    'AGENT_IMMOBILIER',
+    'LOCATAIRE',
+    'PROPRIETAIRE',
+  ]);
   const adminRoleId = demoRoleIds.get('ADMIN_AGENCE')!;
 
   const adminPasswordHash = await bcrypt.hash(DEMO_ADMIN_PASSWORD, 12);
@@ -152,10 +168,78 @@ if (!superAdminRole) {
     },
   });
 
+  // ---------------------------------------------------------------------
+  // V2 pivot: a demo GESTIONNAIRE + a demo PROPRIETAIRE (with an Owner record and an ACTIVE
+  // ManagerOwner link between them) so the new scoped mobile flows (GET /owners,
+  // GET /properties, GET /dashboard/manager, GET /dashboard/owner, ...) have something to show
+  // out of the box, without over-building a full demo property/lease dataset.
+  // ---------------------------------------------------------------------
+  const managerRoleId = demoRoleIds.get('GESTIONNAIRE')!;
+  const ownerRoleId = demoRoleIds.get('PROPRIETAIRE')!;
+
+  const managerPasswordHash = await bcrypt.hash(DEMO_MANAGER_PASSWORD, 12);
+  const demoManager = await prisma.user.upsert({
+    where: { organizationId_email: { organizationId: demoOrg.id, email: DEMO_MANAGER_EMAIL } },
+    update: {},
+    create: {
+      organizationId: demoOrg.id,
+      email: DEMO_MANAGER_EMAIL,
+      passwordHash: managerPasswordHash,
+      firstName: 'Moussa',
+      lastName: 'Fall',
+      roleId: managerRoleId,
+      isActive: true,
+      isEmailVerified: true,
+    },
+  });
+
+  const ownerPasswordHash = await bcrypt.hash(DEMO_OWNER_PASSWORD, 12);
+  const demoOwnerUser = await prisma.user.upsert({
+    where: { organizationId_email: { organizationId: demoOrg.id, email: DEMO_OWNER_EMAIL } },
+    update: {},
+    create: {
+      organizationId: demoOrg.id,
+      email: DEMO_OWNER_EMAIL,
+      passwordHash: ownerPasswordHash,
+      firstName: 'Fatou',
+      lastName: 'Ndiaye',
+      roleId: ownerRoleId,
+      isActive: true,
+      isEmailVerified: true,
+    },
+  });
+
+  const demoOwner = await prisma.owner.upsert({
+    where: { userId: demoOwnerUser.id },
+    update: {},
+    create: {
+      organizationId: demoOrg.id,
+      userId: demoOwnerUser.id,
+      fullName: 'Fatou Ndiaye',
+      phone: '+221 77 111 22 33',
+      email: DEMO_OWNER_EMAIL,
+    },
+  });
+
+  await prisma.managerOwner.upsert({
+    where: { managerId_ownerId: { managerId: demoManager.id, ownerId: demoOwner.id } },
+    update: { status: 'ACTIVE' },
+    create: {
+      organizationId: demoOrg.id,
+      managerId: demoManager.id,
+      ownerId: demoOwner.id,
+      status: 'ACTIVE',
+    },
+  });
+
   console.log('\nSeed completed.');
   console.log('----------------------------------------------------');
-  console.log(`SUPER_ADMIN login  : ${SUPER_ADMIN_EMAIL} / ${SUPER_ADMIN_PASSWORD}`);
-  console.log(`ADMIN_AGENCE login : ${DEMO_ADMIN_EMAIL} / ${DEMO_ADMIN_PASSWORD} (org: ${demoOrg.code})`);
+  console.log(`SUPER_ADMIN login   : ${SUPER_ADMIN_EMAIL} / ${SUPER_ADMIN_PASSWORD}`);
+  console.log(`ADMIN_AGENCE login  : ${DEMO_ADMIN_EMAIL} / ${DEMO_ADMIN_PASSWORD} (org: ${demoOrg.code})`);
+  console.log(`GESTIONNAIRE login  : ${DEMO_MANAGER_EMAIL} / ${DEMO_MANAGER_PASSWORD} (org: ${demoOrg.code})`);
+  console.log(
+    `PROPRIETAIRE login  : ${DEMO_OWNER_EMAIL} / ${DEMO_OWNER_PASSWORD} (org: ${demoOrg.code}, managed by ${DEMO_MANAGER_EMAIL})`,
+  );
   console.log('----------------------------------------------------');
 }
 

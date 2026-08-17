@@ -80,7 +80,7 @@ class _NewMaintenanceScreenState extends ConsumerState<NewMaintenanceScreen> {
     }
   }
 
-  Future<void> _submit(String propertyId) async {
+  Future<void> _submit(String propertyUnitId) async {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _submitting = true);
     try {
@@ -91,7 +91,7 @@ class _NewMaintenanceScreenState extends ConsumerState<NewMaintenanceScreen> {
       }
       final repo = ref.read(tenantMaintenanceRepositoryProvider);
       final created = await repo.create(
-        propertyId: propertyId,
+        propertyUnitId: propertyUnitId,
         category: _category,
         description: description,
         priority: _priority,
@@ -133,8 +133,8 @@ class _NewMaintenanceScreenState extends ConsumerState<NewMaintenanceScreen> {
           title: 'Impossible de charger votre bail',
         ),
         data: (dashboard) {
-          final propertyId = dashboard.activeLease?.property.id;
-          if (propertyId == null) {
+          final propertyUnitId = dashboard.activeLease?.propertyUnit.id;
+          if (propertyUnitId == null) {
             return const EmptyStateView(
               icon: Icons.home_work_outlined,
               title: 'Aucun bail actif',
@@ -202,7 +202,7 @@ class _NewMaintenanceScreenState extends ConsumerState<NewMaintenanceScreen> {
                 ),
                 const SizedBox(height: 28),
                 FilledButton(
-                  onPressed: _submitting ? null : () => _submit(propertyId),
+                  onPressed: _submitting ? null : () => _submit(propertyUnitId),
                   child: _submitting
                       ? const SizedBox(
                           width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2.5))

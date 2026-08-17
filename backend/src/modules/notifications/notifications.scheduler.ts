@@ -124,6 +124,28 @@ export class NotificationsScheduler {
     this.logger.log(`leaseExpirationJob: ${leases.length} contrat(s) proche(s) de l'échéance.`);
   }
 
+  /**
+   * Flips ACTIF leases whose endDate has actually passed to EXPIRE and frees their unit back to
+   * DISPONIBLE (mirrors `terminate()`'s unit flip, see leases.service.ts) — quotidien 08:45.
+   */
+  @Cron('45 8 * * *')
+  async expireLeasesJob() {
+    const overdue = await this.prisma.lease.findMany({
+      where: { status: 'ACTIF', endDate: { lt: startOfDay(new Date()) } },
+    });
+
+    for (const lease of overdue) {
+      await this.prisma.$transaction([
+        this.prisma.lease.update({ where: { id: lease.id }, data: { status: 'EXPIRE' } }),
+        this.prisma.propertyUnit.update({ where: { id: lease.propertyUnitId }, data: { status: 'DISPONIBLE' } }),
+        this.prisma.leaseStatusHistory.create({
+          data: { leaseId: lease.id, fromStatus: 'ACTIF', toStatus: 'EXPIRE', note: 'Expiration automatique (cron).' },
+        }),
+      ]);
+    }
+    this.logger.log(`expireLeasesJob: ${overdue.length} contrat(s) expiré(s).`);
+  }
+
   /** Génère les échéances du mois pour chaque bail actif — 1er du mois 00:30 */
   @Cron('30 0 1 * *')
   async generateMonthlyPaymentsJob() {

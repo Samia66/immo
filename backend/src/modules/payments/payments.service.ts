@@ -13,6 +13,7 @@ import { PaginatedResponseDto } from '../../common/dto';
 import { PrismaService } from '../../prisma/prisma.service';
 import { AuthenticatedUser } from '../../common/interfaces';
 import { generatePdfStub } from '../../common/utils/pdf-generator.util';
+import { monthKey } from '../../common/utils/date-helpers.util';
 import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
@@ -26,7 +27,7 @@ export class PaymentsService {
   async findAll(organizationId: string, query: QueryPaymentDto) {
     const where: Prisma.PaymentWhereInput = { organizationId, deletedAt: null };
     if (query.status) where.status = query.status;
-    if (query.propertyId) where.lease = { propertyId: query.propertyId };
+    if (query.propertyUnitId) where.lease = { propertyUnitId: query.propertyUnitId };
     if (query.fromDate || query.toDate) {
       where.dueDate = {};
       if (query.fromDate) where.dueDate.gte = new Date(query.fromDate);
@@ -83,6 +84,21 @@ export class PaymentsService {
       transactionRef: dto.transactionRef,
       receiptUrl,
     });
+
+    // Receipt (explicit model, spec §3): created alongside receiptUrl the moment a payment is
+    // fully settled. record() rejects any further call on an already-PAYE payment (see the
+    // guard above), so this can never run twice for the same payment.
+    if (status === 'PAYE') {
+      await this.prisma.receipt.create({
+        data: {
+          organization: { connect: { id: payment.organizationId } },
+          payment: { connect: { id } },
+          url: receiptUrl!,
+          period: monthKey(payment.dueDate),
+          amount: newAmountPaid,
+        },
+      });
+    }
 
     const lease = await this.prisma.lease.findUnique({ where: { id: payment.leaseId }, include: { tenant: true } });
     if (lease?.tenant.userId) {

@@ -15,58 +15,60 @@ final _privateConstructorUsedError = UnsupportedError(
   'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
 );
 
-PropertySummaryModel _$PropertySummaryModelFromJson(Map<String, dynamic> json) {
-  return _PropertySummaryModel.fromJson(json);
+LeasePropertySummaryModel _$LeasePropertySummaryModelFromJson(
+  Map<String, dynamic> json,
+) {
+  return _LeasePropertySummaryModel.fromJson(json);
 }
 
 /// @nodoc
-mixin _$PropertySummaryModel {
+mixin _$LeasePropertySummaryModel {
   String get id => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
   String get reference => throw _privateConstructorUsedError;
-  String? get addressLine => throw _privateConstructorUsedError;
-  String? get city => throw _privateConstructorUsedError;
+  String get addressLine => throw _privateConstructorUsedError;
+  String get city => throw _privateConstructorUsedError;
 
-  /// Serializes this PropertySummaryModel to a JSON map.
+  /// Serializes this LeasePropertySummaryModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
-  /// Create a copy of PropertySummaryModel
+  /// Create a copy of LeasePropertySummaryModel
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $PropertySummaryModelCopyWith<PropertySummaryModel> get copyWith =>
+  $LeasePropertySummaryModelCopyWith<LeasePropertySummaryModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $PropertySummaryModelCopyWith<$Res> {
-  factory $PropertySummaryModelCopyWith(
-    PropertySummaryModel value,
-    $Res Function(PropertySummaryModel) then,
-  ) = _$PropertySummaryModelCopyWithImpl<$Res, PropertySummaryModel>;
+abstract class $LeasePropertySummaryModelCopyWith<$Res> {
+  factory $LeasePropertySummaryModelCopyWith(
+    LeasePropertySummaryModel value,
+    $Res Function(LeasePropertySummaryModel) then,
+  ) = _$LeasePropertySummaryModelCopyWithImpl<$Res, LeasePropertySummaryModel>;
   @useResult
   $Res call({
     String id,
     String title,
     String reference,
-    String? addressLine,
-    String? city,
+    String addressLine,
+    String city,
   });
 }
 
 /// @nodoc
-class _$PropertySummaryModelCopyWithImpl<
+class _$LeasePropertySummaryModelCopyWithImpl<
   $Res,
-  $Val extends PropertySummaryModel
+  $Val extends LeasePropertySummaryModel
 >
-    implements $PropertySummaryModelCopyWith<$Res> {
-  _$PropertySummaryModelCopyWithImpl(this._value, this._then);
+    implements $LeasePropertySummaryModelCopyWith<$Res> {
+  _$LeasePropertySummaryModelCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of PropertySummaryModel
+  /// Create a copy of LeasePropertySummaryModel
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -74,8 +76,8 @@ class _$PropertySummaryModelCopyWithImpl<
     Object? id = null,
     Object? title = null,
     Object? reference = null,
-    Object? addressLine = freezed,
-    Object? city = freezed,
+    Object? addressLine = null,
+    Object? city = null,
   }) {
     return _then(
       _value.copyWith(
@@ -91,14 +93,14 @@ class _$PropertySummaryModelCopyWithImpl<
                 ? _value.reference
                 : reference // ignore: cast_nullable_to_non_nullable
                       as String,
-            addressLine: freezed == addressLine
+            addressLine: null == addressLine
                 ? _value.addressLine
                 : addressLine // ignore: cast_nullable_to_non_nullable
-                      as String?,
-            city: freezed == city
+                      as String,
+            city: null == city
                 ? _value.city
                 : city // ignore: cast_nullable_to_non_nullable
-                      as String?,
+                      as String,
           )
           as $Val,
     );
@@ -106,33 +108,37 @@ class _$PropertySummaryModelCopyWithImpl<
 }
 
 /// @nodoc
-abstract class _$$PropertySummaryModelImplCopyWith<$Res>
-    implements $PropertySummaryModelCopyWith<$Res> {
-  factory _$$PropertySummaryModelImplCopyWith(
-    _$PropertySummaryModelImpl value,
-    $Res Function(_$PropertySummaryModelImpl) then,
-  ) = __$$PropertySummaryModelImplCopyWithImpl<$Res>;
+abstract class _$$LeasePropertySummaryModelImplCopyWith<$Res>
+    implements $LeasePropertySummaryModelCopyWith<$Res> {
+  factory _$$LeasePropertySummaryModelImplCopyWith(
+    _$LeasePropertySummaryModelImpl value,
+    $Res Function(_$LeasePropertySummaryModelImpl) then,
+  ) = __$$LeasePropertySummaryModelImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({
     String id,
     String title,
     String reference,
-    String? addressLine,
-    String? city,
+    String addressLine,
+    String city,
   });
 }
 
 /// @nodoc
-class __$$PropertySummaryModelImplCopyWithImpl<$Res>
-    extends _$PropertySummaryModelCopyWithImpl<$Res, _$PropertySummaryModelImpl>
-    implements _$$PropertySummaryModelImplCopyWith<$Res> {
-  __$$PropertySummaryModelImplCopyWithImpl(
-    _$PropertySummaryModelImpl _value,
-    $Res Function(_$PropertySummaryModelImpl) _then,
+class __$$LeasePropertySummaryModelImplCopyWithImpl<$Res>
+    extends
+        _$LeasePropertySummaryModelCopyWithImpl<
+          $Res,
+          _$LeasePropertySummaryModelImpl
+        >
+    implements _$$LeasePropertySummaryModelImplCopyWith<$Res> {
+  __$$LeasePropertySummaryModelImplCopyWithImpl(
+    _$LeasePropertySummaryModelImpl _value,
+    $Res Function(_$LeasePropertySummaryModelImpl) _then,
   ) : super(_value, _then);
 
-  /// Create a copy of PropertySummaryModel
+  /// Create a copy of LeasePropertySummaryModel
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -140,11 +146,11 @@ class __$$PropertySummaryModelImplCopyWithImpl<$Res>
     Object? id = null,
     Object? title = null,
     Object? reference = null,
-    Object? addressLine = freezed,
-    Object? city = freezed,
+    Object? addressLine = null,
+    Object? city = null,
   }) {
     return _then(
-      _$PropertySummaryModelImpl(
+      _$LeasePropertySummaryModelImpl(
         id: null == id
             ? _value.id
             : id // ignore: cast_nullable_to_non_nullable
@@ -157,14 +163,14 @@ class __$$PropertySummaryModelImplCopyWithImpl<$Res>
             ? _value.reference
             : reference // ignore: cast_nullable_to_non_nullable
                   as String,
-        addressLine: freezed == addressLine
+        addressLine: null == addressLine
             ? _value.addressLine
             : addressLine // ignore: cast_nullable_to_non_nullable
-                  as String?,
-        city: freezed == city
+                  as String,
+        city: null == city
             ? _value.city
             : city // ignore: cast_nullable_to_non_nullable
-                  as String?,
+                  as String,
       ),
     );
   }
@@ -172,17 +178,17 @@ class __$$PropertySummaryModelImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$PropertySummaryModelImpl implements _PropertySummaryModel {
-  const _$PropertySummaryModelImpl({
+class _$LeasePropertySummaryModelImpl implements _LeasePropertySummaryModel {
+  const _$LeasePropertySummaryModelImpl({
     required this.id,
     required this.title,
     required this.reference,
-    this.addressLine,
-    this.city,
+    required this.addressLine,
+    required this.city,
   });
 
-  factory _$PropertySummaryModelImpl.fromJson(Map<String, dynamic> json) =>
-      _$$PropertySummaryModelImplFromJson(json);
+  factory _$LeasePropertySummaryModelImpl.fromJson(Map<String, dynamic> json) =>
+      _$$LeasePropertySummaryModelImplFromJson(json);
 
   @override
   final String id;
@@ -191,20 +197,20 @@ class _$PropertySummaryModelImpl implements _PropertySummaryModel {
   @override
   final String reference;
   @override
-  final String? addressLine;
+  final String addressLine;
   @override
-  final String? city;
+  final String city;
 
   @override
   String toString() {
-    return 'PropertySummaryModel(id: $id, title: $title, reference: $reference, addressLine: $addressLine, city: $city)';
+    return 'LeasePropertySummaryModel(id: $id, title: $title, reference: $reference, addressLine: $addressLine, city: $city)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$PropertySummaryModelImpl &&
+            other is _$LeasePropertySummaryModelImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.title, title) || other.title == title) &&
             (identical(other.reference, reference) ||
@@ -219,35 +225,34 @@ class _$PropertySummaryModelImpl implements _PropertySummaryModel {
   int get hashCode =>
       Object.hash(runtimeType, id, title, reference, addressLine, city);
 
-  /// Create a copy of PropertySummaryModel
+  /// Create a copy of LeasePropertySummaryModel
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$PropertySummaryModelImplCopyWith<_$PropertySummaryModelImpl>
+  _$$LeasePropertySummaryModelImplCopyWith<_$LeasePropertySummaryModelImpl>
   get copyWith =>
-      __$$PropertySummaryModelImplCopyWithImpl<_$PropertySummaryModelImpl>(
-        this,
-        _$identity,
-      );
+      __$$LeasePropertySummaryModelImplCopyWithImpl<
+        _$LeasePropertySummaryModelImpl
+      >(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$PropertySummaryModelImplToJson(this);
+    return _$$LeasePropertySummaryModelImplToJson(this);
   }
 }
 
-abstract class _PropertySummaryModel implements PropertySummaryModel {
-  const factory _PropertySummaryModel({
+abstract class _LeasePropertySummaryModel implements LeasePropertySummaryModel {
+  const factory _LeasePropertySummaryModel({
     required final String id,
     required final String title,
     required final String reference,
-    final String? addressLine,
-    final String? city,
-  }) = _$PropertySummaryModelImpl;
+    required final String addressLine,
+    required final String city,
+  }) = _$LeasePropertySummaryModelImpl;
 
-  factory _PropertySummaryModel.fromJson(Map<String, dynamic> json) =
-      _$PropertySummaryModelImpl.fromJson;
+  factory _LeasePropertySummaryModel.fromJson(Map<String, dynamic> json) =
+      _$LeasePropertySummaryModelImpl.fromJson;
 
   @override
   String get id;
@@ -256,15 +261,496 @@ abstract class _PropertySummaryModel implements PropertySummaryModel {
   @override
   String get reference;
   @override
-  String? get addressLine;
+  String get addressLine;
   @override
-  String? get city;
+  String get city;
 
-  /// Create a copy of PropertySummaryModel
+  /// Create a copy of LeasePropertySummaryModel
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$PropertySummaryModelImplCopyWith<_$PropertySummaryModelImpl>
+  _$$LeasePropertySummaryModelImplCopyWith<_$LeasePropertySummaryModelImpl>
+  get copyWith => throw _privateConstructorUsedError;
+}
+
+PropertyUnitSummaryModel _$PropertyUnitSummaryModelFromJson(
+  Map<String, dynamic> json,
+) {
+  return _PropertyUnitSummaryModel.fromJson(json);
+}
+
+/// @nodoc
+mixin _$PropertyUnitSummaryModel {
+  String get id => throw _privateConstructorUsedError;
+  String get reference => throw _privateConstructorUsedError;
+  String? get label => throw _privateConstructorUsedError;
+  PropertyStatus get status => throw _privateConstructorUsedError;
+  LeasePropertySummaryModel get property => throw _privateConstructorUsedError;
+
+  /// Serializes this PropertyUnitSummaryModel to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of PropertyUnitSummaryModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $PropertyUnitSummaryModelCopyWith<PropertyUnitSummaryModel> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $PropertyUnitSummaryModelCopyWith<$Res> {
+  factory $PropertyUnitSummaryModelCopyWith(
+    PropertyUnitSummaryModel value,
+    $Res Function(PropertyUnitSummaryModel) then,
+  ) = _$PropertyUnitSummaryModelCopyWithImpl<$Res, PropertyUnitSummaryModel>;
+  @useResult
+  $Res call({
+    String id,
+    String reference,
+    String? label,
+    PropertyStatus status,
+    LeasePropertySummaryModel property,
+  });
+
+  $LeasePropertySummaryModelCopyWith<$Res> get property;
+}
+
+/// @nodoc
+class _$PropertyUnitSummaryModelCopyWithImpl<
+  $Res,
+  $Val extends PropertyUnitSummaryModel
+>
+    implements $PropertyUnitSummaryModelCopyWith<$Res> {
+  _$PropertyUnitSummaryModelCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of PropertyUnitSummaryModel
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? reference = null,
+    Object? label = freezed,
+    Object? status = null,
+    Object? property = null,
+  }) {
+    return _then(
+      _value.copyWith(
+            id: null == id
+                ? _value.id
+                : id // ignore: cast_nullable_to_non_nullable
+                      as String,
+            reference: null == reference
+                ? _value.reference
+                : reference // ignore: cast_nullable_to_non_nullable
+                      as String,
+            label: freezed == label
+                ? _value.label
+                : label // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            status: null == status
+                ? _value.status
+                : status // ignore: cast_nullable_to_non_nullable
+                      as PropertyStatus,
+            property: null == property
+                ? _value.property
+                : property // ignore: cast_nullable_to_non_nullable
+                      as LeasePropertySummaryModel,
+          )
+          as $Val,
+    );
+  }
+
+  /// Create a copy of PropertyUnitSummaryModel
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $LeasePropertySummaryModelCopyWith<$Res> get property {
+    return $LeasePropertySummaryModelCopyWith<$Res>(_value.property, (value) {
+      return _then(_value.copyWith(property: value) as $Val);
+    });
+  }
+}
+
+/// @nodoc
+abstract class _$$PropertyUnitSummaryModelImplCopyWith<$Res>
+    implements $PropertyUnitSummaryModelCopyWith<$Res> {
+  factory _$$PropertyUnitSummaryModelImplCopyWith(
+    _$PropertyUnitSummaryModelImpl value,
+    $Res Function(_$PropertyUnitSummaryModelImpl) then,
+  ) = __$$PropertyUnitSummaryModelImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({
+    String id,
+    String reference,
+    String? label,
+    PropertyStatus status,
+    LeasePropertySummaryModel property,
+  });
+
+  @override
+  $LeasePropertySummaryModelCopyWith<$Res> get property;
+}
+
+/// @nodoc
+class __$$PropertyUnitSummaryModelImplCopyWithImpl<$Res>
+    extends
+        _$PropertyUnitSummaryModelCopyWithImpl<
+          $Res,
+          _$PropertyUnitSummaryModelImpl
+        >
+    implements _$$PropertyUnitSummaryModelImplCopyWith<$Res> {
+  __$$PropertyUnitSummaryModelImplCopyWithImpl(
+    _$PropertyUnitSummaryModelImpl _value,
+    $Res Function(_$PropertyUnitSummaryModelImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of PropertyUnitSummaryModel
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? reference = null,
+    Object? label = freezed,
+    Object? status = null,
+    Object? property = null,
+  }) {
+    return _then(
+      _$PropertyUnitSummaryModelImpl(
+        id: null == id
+            ? _value.id
+            : id // ignore: cast_nullable_to_non_nullable
+                  as String,
+        reference: null == reference
+            ? _value.reference
+            : reference // ignore: cast_nullable_to_non_nullable
+                  as String,
+        label: freezed == label
+            ? _value.label
+            : label // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        status: null == status
+            ? _value.status
+            : status // ignore: cast_nullable_to_non_nullable
+                  as PropertyStatus,
+        property: null == property
+            ? _value.property
+            : property // ignore: cast_nullable_to_non_nullable
+                  as LeasePropertySummaryModel,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$PropertyUnitSummaryModelImpl implements _PropertyUnitSummaryModel {
+  const _$PropertyUnitSummaryModelImpl({
+    required this.id,
+    required this.reference,
+    this.label,
+    required this.status,
+    required this.property,
+  });
+
+  factory _$PropertyUnitSummaryModelImpl.fromJson(Map<String, dynamic> json) =>
+      _$$PropertyUnitSummaryModelImplFromJson(json);
+
+  @override
+  final String id;
+  @override
+  final String reference;
+  @override
+  final String? label;
+  @override
+  final PropertyStatus status;
+  @override
+  final LeasePropertySummaryModel property;
+
+  @override
+  String toString() {
+    return 'PropertyUnitSummaryModel(id: $id, reference: $reference, label: $label, status: $status, property: $property)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$PropertyUnitSummaryModelImpl &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.reference, reference) ||
+                other.reference == reference) &&
+            (identical(other.label, label) || other.label == label) &&
+            (identical(other.status, status) || other.status == status) &&
+            (identical(other.property, property) ||
+                other.property == property));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, id, reference, label, status, property);
+
+  /// Create a copy of PropertyUnitSummaryModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$PropertyUnitSummaryModelImplCopyWith<_$PropertyUnitSummaryModelImpl>
+  get copyWith =>
+      __$$PropertyUnitSummaryModelImplCopyWithImpl<
+        _$PropertyUnitSummaryModelImpl
+      >(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$PropertyUnitSummaryModelImplToJson(this);
+  }
+}
+
+abstract class _PropertyUnitSummaryModel implements PropertyUnitSummaryModel {
+  const factory _PropertyUnitSummaryModel({
+    required final String id,
+    required final String reference,
+    final String? label,
+    required final PropertyStatus status,
+    required final LeasePropertySummaryModel property,
+  }) = _$PropertyUnitSummaryModelImpl;
+
+  factory _PropertyUnitSummaryModel.fromJson(Map<String, dynamic> json) =
+      _$PropertyUnitSummaryModelImpl.fromJson;
+
+  @override
+  String get id;
+  @override
+  String get reference;
+  @override
+  String? get label;
+  @override
+  PropertyStatus get status;
+  @override
+  LeasePropertySummaryModel get property;
+
+  /// Create a copy of PropertyUnitSummaryModel
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$PropertyUnitSummaryModelImplCopyWith<_$PropertyUnitSummaryModelImpl>
+  get copyWith => throw _privateConstructorUsedError;
+}
+
+LeaseTenantSummaryModel _$LeaseTenantSummaryModelFromJson(
+  Map<String, dynamic> json,
+) {
+  return _LeaseTenantSummaryModel.fromJson(json);
+}
+
+/// @nodoc
+mixin _$LeaseTenantSummaryModel {
+  String get id => throw _privateConstructorUsedError;
+  String get fullName => throw _privateConstructorUsedError;
+  String? get userId => throw _privateConstructorUsedError;
+
+  /// Serializes this LeaseTenantSummaryModel to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of LeaseTenantSummaryModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $LeaseTenantSummaryModelCopyWith<LeaseTenantSummaryModel> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $LeaseTenantSummaryModelCopyWith<$Res> {
+  factory $LeaseTenantSummaryModelCopyWith(
+    LeaseTenantSummaryModel value,
+    $Res Function(LeaseTenantSummaryModel) then,
+  ) = _$LeaseTenantSummaryModelCopyWithImpl<$Res, LeaseTenantSummaryModel>;
+  @useResult
+  $Res call({String id, String fullName, String? userId});
+}
+
+/// @nodoc
+class _$LeaseTenantSummaryModelCopyWithImpl<
+  $Res,
+  $Val extends LeaseTenantSummaryModel
+>
+    implements $LeaseTenantSummaryModelCopyWith<$Res> {
+  _$LeaseTenantSummaryModelCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of LeaseTenantSummaryModel
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? fullName = null,
+    Object? userId = freezed,
+  }) {
+    return _then(
+      _value.copyWith(
+            id: null == id
+                ? _value.id
+                : id // ignore: cast_nullable_to_non_nullable
+                      as String,
+            fullName: null == fullName
+                ? _value.fullName
+                : fullName // ignore: cast_nullable_to_non_nullable
+                      as String,
+            userId: freezed == userId
+                ? _value.userId
+                : userId // ignore: cast_nullable_to_non_nullable
+                      as String?,
+          )
+          as $Val,
+    );
+  }
+}
+
+/// @nodoc
+abstract class _$$LeaseTenantSummaryModelImplCopyWith<$Res>
+    implements $LeaseTenantSummaryModelCopyWith<$Res> {
+  factory _$$LeaseTenantSummaryModelImplCopyWith(
+    _$LeaseTenantSummaryModelImpl value,
+    $Res Function(_$LeaseTenantSummaryModelImpl) then,
+  ) = __$$LeaseTenantSummaryModelImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String id, String fullName, String? userId});
+}
+
+/// @nodoc
+class __$$LeaseTenantSummaryModelImplCopyWithImpl<$Res>
+    extends
+        _$LeaseTenantSummaryModelCopyWithImpl<
+          $Res,
+          _$LeaseTenantSummaryModelImpl
+        >
+    implements _$$LeaseTenantSummaryModelImplCopyWith<$Res> {
+  __$$LeaseTenantSummaryModelImplCopyWithImpl(
+    _$LeaseTenantSummaryModelImpl _value,
+    $Res Function(_$LeaseTenantSummaryModelImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of LeaseTenantSummaryModel
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? fullName = null,
+    Object? userId = freezed,
+  }) {
+    return _then(
+      _$LeaseTenantSummaryModelImpl(
+        id: null == id
+            ? _value.id
+            : id // ignore: cast_nullable_to_non_nullable
+                  as String,
+        fullName: null == fullName
+            ? _value.fullName
+            : fullName // ignore: cast_nullable_to_non_nullable
+                  as String,
+        userId: freezed == userId
+            ? _value.userId
+            : userId // ignore: cast_nullable_to_non_nullable
+                  as String?,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$LeaseTenantSummaryModelImpl implements _LeaseTenantSummaryModel {
+  const _$LeaseTenantSummaryModelImpl({
+    required this.id,
+    required this.fullName,
+    this.userId,
+  });
+
+  factory _$LeaseTenantSummaryModelImpl.fromJson(Map<String, dynamic> json) =>
+      _$$LeaseTenantSummaryModelImplFromJson(json);
+
+  @override
+  final String id;
+  @override
+  final String fullName;
+  @override
+  final String? userId;
+
+  @override
+  String toString() {
+    return 'LeaseTenantSummaryModel(id: $id, fullName: $fullName, userId: $userId)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$LeaseTenantSummaryModelImpl &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.fullName, fullName) ||
+                other.fullName == fullName) &&
+            (identical(other.userId, userId) || other.userId == userId));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, id, fullName, userId);
+
+  /// Create a copy of LeaseTenantSummaryModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$LeaseTenantSummaryModelImplCopyWith<_$LeaseTenantSummaryModelImpl>
+  get copyWith =>
+      __$$LeaseTenantSummaryModelImplCopyWithImpl<
+        _$LeaseTenantSummaryModelImpl
+      >(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$LeaseTenantSummaryModelImplToJson(this);
+  }
+}
+
+abstract class _LeaseTenantSummaryModel implements LeaseTenantSummaryModel {
+  const factory _LeaseTenantSummaryModel({
+    required final String id,
+    required final String fullName,
+    final String? userId,
+  }) = _$LeaseTenantSummaryModelImpl;
+
+  factory _LeaseTenantSummaryModel.fromJson(Map<String, dynamic> json) =
+      _$LeaseTenantSummaryModelImpl.fromJson;
+
+  @override
+  String get id;
+  @override
+  String get fullName;
+  @override
+  String? get userId;
+
+  /// Create a copy of LeaseTenantSummaryModel
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$LeaseTenantSummaryModelImplCopyWith<_$LeaseTenantSummaryModelImpl>
   get copyWith => throw _privateConstructorUsedError;
 }
 
@@ -276,10 +762,14 @@ LeaseModel _$LeaseModelFromJson(Map<String, dynamic> json) {
 mixin _$LeaseModel {
   String get id => throw _privateConstructorUsedError;
   String get organizationId => throw _privateConstructorUsedError;
-  String get propertyId => throw _privateConstructorUsedError;
-  PropertySummaryModel? get property => throw _privateConstructorUsedError;
+  String get reference => throw _privateConstructorUsedError;
+  String get propertyUnitId => throw _privateConstructorUsedError;
+  PropertyUnitSummaryModel? get propertyUnit =>
+      throw _privateConstructorUsedError;
   String get ownerId => throw _privateConstructorUsedError;
+  String get managerId => throw _privateConstructorUsedError;
   String get tenantId => throw _privateConstructorUsedError;
+  LeaseTenantSummaryModel? get tenant => throw _privateConstructorUsedError;
   DateTime get startDate => throw _privateConstructorUsedError;
   DateTime? get endDate => throw _privateConstructorUsedError;
   num get rentAmount => throw _privateConstructorUsedError;
@@ -310,10 +800,13 @@ abstract class $LeaseModelCopyWith<$Res> {
   $Res call({
     String id,
     String organizationId,
-    String propertyId,
-    PropertySummaryModel? property,
+    String reference,
+    String propertyUnitId,
+    PropertyUnitSummaryModel? propertyUnit,
     String ownerId,
+    String managerId,
     String tenantId,
+    LeaseTenantSummaryModel? tenant,
     DateTime startDate,
     DateTime? endDate,
     num rentAmount,
@@ -325,7 +818,8 @@ abstract class $LeaseModelCopyWith<$Res> {
     DateTime updatedAt,
   });
 
-  $PropertySummaryModelCopyWith<$Res>? get property;
+  $PropertyUnitSummaryModelCopyWith<$Res>? get propertyUnit;
+  $LeaseTenantSummaryModelCopyWith<$Res>? get tenant;
 }
 
 /// @nodoc
@@ -345,10 +839,13 @@ class _$LeaseModelCopyWithImpl<$Res, $Val extends LeaseModel>
   $Res call({
     Object? id = null,
     Object? organizationId = null,
-    Object? propertyId = null,
-    Object? property = freezed,
+    Object? reference = null,
+    Object? propertyUnitId = null,
+    Object? propertyUnit = freezed,
     Object? ownerId = null,
+    Object? managerId = null,
     Object? tenantId = null,
+    Object? tenant = freezed,
     Object? startDate = null,
     Object? endDate = freezed,
     Object? rentAmount = null,
@@ -369,22 +866,34 @@ class _$LeaseModelCopyWithImpl<$Res, $Val extends LeaseModel>
                 ? _value.organizationId
                 : organizationId // ignore: cast_nullable_to_non_nullable
                       as String,
-            propertyId: null == propertyId
-                ? _value.propertyId
-                : propertyId // ignore: cast_nullable_to_non_nullable
+            reference: null == reference
+                ? _value.reference
+                : reference // ignore: cast_nullable_to_non_nullable
                       as String,
-            property: freezed == property
-                ? _value.property
-                : property // ignore: cast_nullable_to_non_nullable
-                      as PropertySummaryModel?,
+            propertyUnitId: null == propertyUnitId
+                ? _value.propertyUnitId
+                : propertyUnitId // ignore: cast_nullable_to_non_nullable
+                      as String,
+            propertyUnit: freezed == propertyUnit
+                ? _value.propertyUnit
+                : propertyUnit // ignore: cast_nullable_to_non_nullable
+                      as PropertyUnitSummaryModel?,
             ownerId: null == ownerId
                 ? _value.ownerId
                 : ownerId // ignore: cast_nullable_to_non_nullable
+                      as String,
+            managerId: null == managerId
+                ? _value.managerId
+                : managerId // ignore: cast_nullable_to_non_nullable
                       as String,
             tenantId: null == tenantId
                 ? _value.tenantId
                 : tenantId // ignore: cast_nullable_to_non_nullable
                       as String,
+            tenant: freezed == tenant
+                ? _value.tenant
+                : tenant // ignore: cast_nullable_to_non_nullable
+                      as LeaseTenantSummaryModel?,
             startDate: null == startDate
                 ? _value.startDate
                 : startDate // ignore: cast_nullable_to_non_nullable
@@ -430,13 +939,29 @@ class _$LeaseModelCopyWithImpl<$Res, $Val extends LeaseModel>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $PropertySummaryModelCopyWith<$Res>? get property {
-    if (_value.property == null) {
+  $PropertyUnitSummaryModelCopyWith<$Res>? get propertyUnit {
+    if (_value.propertyUnit == null) {
       return null;
     }
 
-    return $PropertySummaryModelCopyWith<$Res>(_value.property!, (value) {
-      return _then(_value.copyWith(property: value) as $Val);
+    return $PropertyUnitSummaryModelCopyWith<$Res>(_value.propertyUnit!, (
+      value,
+    ) {
+      return _then(_value.copyWith(propertyUnit: value) as $Val);
+    });
+  }
+
+  /// Create a copy of LeaseModel
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $LeaseTenantSummaryModelCopyWith<$Res>? get tenant {
+    if (_value.tenant == null) {
+      return null;
+    }
+
+    return $LeaseTenantSummaryModelCopyWith<$Res>(_value.tenant!, (value) {
+      return _then(_value.copyWith(tenant: value) as $Val);
     });
   }
 }
@@ -453,10 +978,13 @@ abstract class _$$LeaseModelImplCopyWith<$Res>
   $Res call({
     String id,
     String organizationId,
-    String propertyId,
-    PropertySummaryModel? property,
+    String reference,
+    String propertyUnitId,
+    PropertyUnitSummaryModel? propertyUnit,
     String ownerId,
+    String managerId,
     String tenantId,
+    LeaseTenantSummaryModel? tenant,
     DateTime startDate,
     DateTime? endDate,
     num rentAmount,
@@ -469,7 +997,9 @@ abstract class _$$LeaseModelImplCopyWith<$Res>
   });
 
   @override
-  $PropertySummaryModelCopyWith<$Res>? get property;
+  $PropertyUnitSummaryModelCopyWith<$Res>? get propertyUnit;
+  @override
+  $LeaseTenantSummaryModelCopyWith<$Res>? get tenant;
 }
 
 /// @nodoc
@@ -488,10 +1018,13 @@ class __$$LeaseModelImplCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? organizationId = null,
-    Object? propertyId = null,
-    Object? property = freezed,
+    Object? reference = null,
+    Object? propertyUnitId = null,
+    Object? propertyUnit = freezed,
     Object? ownerId = null,
+    Object? managerId = null,
     Object? tenantId = null,
+    Object? tenant = freezed,
     Object? startDate = null,
     Object? endDate = freezed,
     Object? rentAmount = null,
@@ -512,22 +1045,34 @@ class __$$LeaseModelImplCopyWithImpl<$Res>
             ? _value.organizationId
             : organizationId // ignore: cast_nullable_to_non_nullable
                   as String,
-        propertyId: null == propertyId
-            ? _value.propertyId
-            : propertyId // ignore: cast_nullable_to_non_nullable
+        reference: null == reference
+            ? _value.reference
+            : reference // ignore: cast_nullable_to_non_nullable
                   as String,
-        property: freezed == property
-            ? _value.property
-            : property // ignore: cast_nullable_to_non_nullable
-                  as PropertySummaryModel?,
+        propertyUnitId: null == propertyUnitId
+            ? _value.propertyUnitId
+            : propertyUnitId // ignore: cast_nullable_to_non_nullable
+                  as String,
+        propertyUnit: freezed == propertyUnit
+            ? _value.propertyUnit
+            : propertyUnit // ignore: cast_nullable_to_non_nullable
+                  as PropertyUnitSummaryModel?,
         ownerId: null == ownerId
             ? _value.ownerId
             : ownerId // ignore: cast_nullable_to_non_nullable
+                  as String,
+        managerId: null == managerId
+            ? _value.managerId
+            : managerId // ignore: cast_nullable_to_non_nullable
                   as String,
         tenantId: null == tenantId
             ? _value.tenantId
             : tenantId // ignore: cast_nullable_to_non_nullable
                   as String,
+        tenant: freezed == tenant
+            ? _value.tenant
+            : tenant // ignore: cast_nullable_to_non_nullable
+                  as LeaseTenantSummaryModel?,
         startDate: null == startDate
             ? _value.startDate
             : startDate // ignore: cast_nullable_to_non_nullable
@@ -575,10 +1120,13 @@ class _$LeaseModelImpl implements _LeaseModel {
   const _$LeaseModelImpl({
     required this.id,
     required this.organizationId,
-    required this.propertyId,
-    this.property,
+    required this.reference,
+    required this.propertyUnitId,
+    this.propertyUnit,
     required this.ownerId,
+    required this.managerId,
     required this.tenantId,
+    this.tenant,
     required this.startDate,
     this.endDate,
     required this.rentAmount,
@@ -598,13 +1146,19 @@ class _$LeaseModelImpl implements _LeaseModel {
   @override
   final String organizationId;
   @override
-  final String propertyId;
+  final String reference;
   @override
-  final PropertySummaryModel? property;
+  final String propertyUnitId;
+  @override
+  final PropertyUnitSummaryModel? propertyUnit;
   @override
   final String ownerId;
   @override
+  final String managerId;
+  @override
   final String tenantId;
+  @override
+  final LeaseTenantSummaryModel? tenant;
   @override
   final DateTime startDate;
   @override
@@ -626,7 +1180,7 @@ class _$LeaseModelImpl implements _LeaseModel {
 
   @override
   String toString() {
-    return 'LeaseModel(id: $id, organizationId: $organizationId, propertyId: $propertyId, property: $property, ownerId: $ownerId, tenantId: $tenantId, startDate: $startDate, endDate: $endDate, rentAmount: $rentAmount, depositAmount: $depositAmount, paymentFrequency: $paymentFrequency, indexationRate: $indexationRate, status: $status, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'LeaseModel(id: $id, organizationId: $organizationId, reference: $reference, propertyUnitId: $propertyUnitId, propertyUnit: $propertyUnit, ownerId: $ownerId, managerId: $managerId, tenantId: $tenantId, tenant: $tenant, startDate: $startDate, endDate: $endDate, rentAmount: $rentAmount, depositAmount: $depositAmount, paymentFrequency: $paymentFrequency, indexationRate: $indexationRate, status: $status, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -637,13 +1191,18 @@ class _$LeaseModelImpl implements _LeaseModel {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.organizationId, organizationId) ||
                 other.organizationId == organizationId) &&
-            (identical(other.propertyId, propertyId) ||
-                other.propertyId == propertyId) &&
-            (identical(other.property, property) ||
-                other.property == property) &&
+            (identical(other.reference, reference) ||
+                other.reference == reference) &&
+            (identical(other.propertyUnitId, propertyUnitId) ||
+                other.propertyUnitId == propertyUnitId) &&
+            (identical(other.propertyUnit, propertyUnit) ||
+                other.propertyUnit == propertyUnit) &&
             (identical(other.ownerId, ownerId) || other.ownerId == ownerId) &&
+            (identical(other.managerId, managerId) ||
+                other.managerId == managerId) &&
             (identical(other.tenantId, tenantId) ||
                 other.tenantId == tenantId) &&
+            (identical(other.tenant, tenant) || other.tenant == tenant) &&
             (identical(other.startDate, startDate) ||
                 other.startDate == startDate) &&
             (identical(other.endDate, endDate) || other.endDate == endDate) &&
@@ -668,10 +1227,13 @@ class _$LeaseModelImpl implements _LeaseModel {
     runtimeType,
     id,
     organizationId,
-    propertyId,
-    property,
+    reference,
+    propertyUnitId,
+    propertyUnit,
     ownerId,
+    managerId,
     tenantId,
+    tenant,
     startDate,
     endDate,
     rentAmount,
@@ -701,10 +1263,13 @@ abstract class _LeaseModel implements LeaseModel {
   const factory _LeaseModel({
     required final String id,
     required final String organizationId,
-    required final String propertyId,
-    final PropertySummaryModel? property,
+    required final String reference,
+    required final String propertyUnitId,
+    final PropertyUnitSummaryModel? propertyUnit,
     required final String ownerId,
+    required final String managerId,
     required final String tenantId,
+    final LeaseTenantSummaryModel? tenant,
     required final DateTime startDate,
     final DateTime? endDate,
     required final num rentAmount,
@@ -724,13 +1289,19 @@ abstract class _LeaseModel implements LeaseModel {
   @override
   String get organizationId;
   @override
-  String get propertyId;
+  String get reference;
   @override
-  PropertySummaryModel? get property;
+  String get propertyUnitId;
+  @override
+  PropertyUnitSummaryModel? get propertyUnit;
   @override
   String get ownerId;
   @override
+  String get managerId;
+  @override
   String get tenantId;
+  @override
+  LeaseTenantSummaryModel? get tenant;
   @override
   DateTime get startDate;
   @override

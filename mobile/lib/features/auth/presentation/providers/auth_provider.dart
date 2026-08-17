@@ -8,6 +8,8 @@ import '../../../../core/network/api_exception.dart';
 import '../../../../core/network/auth_event_bus.dart';
 import '../../../../core/providers/core_providers.dart';
 import '../../data/auth_repository.dart';
+import '../../data/invitation_repository.dart';
+import '../../data/owner_invitation_repository.dart';
 
 enum AuthStatus {
   /// Initial state, before the splash screen has resolved whether a stored
@@ -94,6 +96,43 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
+  /// Self-service registration (spec §5.1) - always creates a `GESTIONNAIRE`,
+  /// so a successful call always resolves to [AuthStatus.authenticated] with
+  /// `role == MobileRole.manager`.
+  Future<void> register({
+    String? organizationName,
+    required String email,
+    required String password,
+    required String firstName,
+    required String lastName,
+  }) async {
+    state = state.copyWith(status: AuthStatus.authenticating, clearError: true);
+    try {
+      final user = await _repository.register(
+        organizationName: organizationName,
+        email: email,
+        password: password,
+        firstName: firstName,
+        lastName: lastName,
+      );
+      _applyLoggedInUser(user);
+    } on ApiException catch (e) {
+      state = AuthState(status: AuthStatus.unauthenticated, errorMessage: e.message);
+    } catch (e) {
+      state = AuthState(
+        status: AuthStatus.unauthenticated,
+        errorMessage: 'Une erreur inattendue est survenue.',
+      );
+    }
+  }
+
+  /// Applies a user that was just authenticated by some flow other than
+  /// `login()` (e.g. the invitation-activation flow, whose repository
+  /// already persisted the access token / refresh cookie exactly like
+  /// [login] does) - lets the router's existing role-based redirect take
+  /// over from here.
+  void applyLoggedInUser(UserModel user) => _applyLoggedInUser(user);
+
   void _applyLoggedInUser(UserModel user) {
     final role = mobileRoleFromBackendRole(user.roleName);
     if (role == null) {
@@ -124,4 +163,18 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
 
 final authNotifierProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
   return AuthNotifier(ref.watch(authRepositoryProvider));
+});
+
+final invitationRepositoryProvider = Provider<InvitationRepository>((ref) {
+  return InvitationRepository(
+    dio: ref.watch(dioProvider),
+    secureStorage: ref.watch(secureStorageProvider),
+  );
+});
+
+final ownerInvitationRepositoryProvider = Provider<OwnerInvitationRepository>((ref) {
+  return OwnerInvitationRepository(
+    dio: ref.watch(dioProvider),
+    secureStorage: ref.watch(secureStorageProvider),
+  );
 });

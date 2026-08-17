@@ -21,20 +21,51 @@ class AuthRepository {
         '/auth/login',
         data: {'email': email, 'password': password},
       );
-      final data = response.data!;
-      final accessToken = data['accessToken'] as String;
-      await _secureStorage.saveAccessToken(accessToken);
-
-      final setCookie = response.headers.map['set-cookie'];
-      final cookie = SecureStorageService.extractRefreshCookie(setCookie);
-      if (cookie != null) {
-        await _secureStorage.saveRefreshCookie(cookie);
-      }
-
-      return UserModel.fromJson(data['user'] as Map<String, dynamic>);
+      return _applyAuthResponse(response);
     } on DioException catch (e) {
       throw ApiException.fromDioException(e);
     }
+  }
+
+  /// `POST /auth/register` - self-service entry point (spec §5.1): creates a
+  /// brand-new Organization + a `GESTIONNAIRE` user. `organizationName` is
+  /// optional server-side (falls back to "Espace de {firstName} {lastName}"
+  /// when omitted/blank). Response shape is identical to [login]'s, so the
+  /// session is persisted and applied the same way.
+  Future<UserModel> register({
+    String? organizationName,
+    required String email,
+    required String password,
+    required String firstName,
+    required String lastName,
+  }) async {
+    try {
+      final response = await _dio.post<Map<String, dynamic>>('/auth/register', data: {
+        if (organizationName != null && organizationName.isNotEmpty)
+          'organizationName': organizationName,
+        'email': email,
+        'password': password,
+        'firstName': firstName,
+        'lastName': lastName,
+      });
+      return _applyAuthResponse(response);
+    } on DioException catch (e) {
+      throw ApiException.fromDioException(e);
+    }
+  }
+
+  Future<UserModel> _applyAuthResponse(Response<Map<String, dynamic>> response) async {
+    final data = response.data!;
+    final accessToken = data['accessToken'] as String;
+    await _secureStorage.saveAccessToken(accessToken);
+
+    final setCookie = response.headers.map['set-cookie'];
+    final cookie = SecureStorageService.extractRefreshCookie(setCookie);
+    if (cookie != null) {
+      await _secureStorage.saveRefreshCookie(cookie);
+    }
+
+    return UserModel.fromJson(data['user'] as Map<String, dynamic>);
   }
 
   Future<UserModel> me() async {
@@ -76,4 +107,34 @@ class AuthRepository {
   }
 
   Future<String?> readStoredAccessToken() => _secureStorage.readAccessToken();
+
+  /// `POST /auth/otp/request` - public, triggers a stub-logged 6-digit code
+  /// server-side (no real SMS/email delivery yet). `purpose` is one of the
+  /// backend's `OtpPurpose` enum values, e.g. `'ACTIVATE_TENANT'`.
+  Future<void> requestOtp({required String contact, required String purpose}) async {
+    try {
+      await _dio.post('/auth/otp/request', data: {'contact': contact, 'purpose': purpose});
+    } on DioException catch (e) {
+      throw ApiException.fromDioException(e);
+    }
+  }
+
+  /// `POST /auth/otp/verify` - a non-consuming dry-run check; the actual
+  /// consumption happens inside `POST /invitations/:code/activate`.
+  Future<bool> verifyOtp({
+    required String contact,
+    required String purpose,
+    required String code,
+  }) async {
+    try {
+      final response = await _dio.post<Map<String, dynamic>>('/auth/otp/verify', data: {
+        'contact': contact,
+        'purpose': purpose,
+        'code': code,
+      });
+      return response.data?['valid'] == true;
+    } on DioException catch (e) {
+      throw ApiException.fromDioException(e);
+    }
+  }
 }

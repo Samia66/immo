@@ -5,19 +5,30 @@ import { JwtService } from '@nestjs/jwt';
 import { Throttle } from '@nestjs/throttler';
 import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
+import { OtpService } from './otp.service';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
 import { REFRESH_COOKIE_NAME } from './strategies/jwt-refresh.strategy';
 import { Public, CurrentUser } from '../../common/decorators';
 import { JwtAuthGuard } from '../../common/guards';
 import { AppConfig } from '../../config/configuration';
-import { LoginDto, RegisterDto, ForgotPasswordDto, ResetPasswordDto, VerifyEmailDto, ChangePasswordDto } from './dto';
+import {
+  LoginDto,
+  RegisterDto,
+  ForgotPasswordDto,
+  ResetPasswordDto,
+  VerifyEmailDto,
+  ChangePasswordDto,
+  RequestOtpDto,
+  VerifyOtpDto,
+} from './dto';
 
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
+    private readonly otpService: OtpService,
     private readonly config: ConfigService<AppConfig, true>,
     private readonly jwt: JwtService,
   ) {}
@@ -120,5 +131,23 @@ export class AuthController {
   @Get('me')
   async me(@CurrentUser('id') userId: string) {
     return this.authService.me(userId);
+  }
+
+  @Public()
+  @Throttle({ default: { limit: 5, ttl: 60_000 } })
+  @Post('otp/request')
+  @HttpCode(HttpStatus.OK)
+  async requestOtp(@Body() dto: RequestOtpDto) {
+    return this.otpService.request(dto.contact, dto.purpose);
+  }
+
+  /** Dry-run check (does not consume the code) — real consumption happens in POST /invitations/:code/activate. */
+  @Public()
+  @Throttle({ default: { limit: 10, ttl: 60_000 } })
+  @Post('otp/verify')
+  @HttpCode(HttpStatus.OK)
+  async verifyOtp(@Body() dto: VerifyOtpDto) {
+    const valid = await this.otpService.verify(dto.contact, dto.purpose, dto.code);
+    return { valid };
   }
 }

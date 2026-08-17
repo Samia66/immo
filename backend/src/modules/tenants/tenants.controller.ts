@@ -14,7 +14,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { TenantsService } from './tenants.service';
-import { CreateTenantDto, UpdateTenantDto, QueryTenantDto, UploadTenantDocumentDto } from './dto';
+import { CreateTenantDto, UpdateTenantDto, QueryTenantDto, UploadTenantDocumentDto, LinkTenantUserDto } from './dto';
 import { JwtAuthGuard, PermissionsGuard } from '../../common/guards';
 import { Permissions, CurrentUser } from '../../common/decorators';
 import { ParseUuidPipe } from '../../common/pipes';
@@ -31,13 +31,13 @@ export class TenantsController {
   @Get()
   @Permissions('tenants:read')
   findAll(@CurrentUser() user: AuthenticatedUser, @Query() query: QueryTenantDto) {
-    return this.service.findAll(user.organizationId, query);
+    return this.service.findAll(user, query);
   }
 
   @Get(':id')
   @Permissions('tenants:read_detail')
-  findOne(@Param('id', ParseUuidPipe) id: string) {
-    return this.service.findOne(id);
+  findOne(@CurrentUser() user: AuthenticatedUser, @Param('id', ParseUuidPipe) id: string) {
+    return this.service.findOne(id, user);
   }
 
   @Post()
@@ -50,6 +50,12 @@ export class TenantsController {
   @Permissions('tenants:update')
   update(@Param('id', ParseUuidPipe) id: string, @Body() dto: UpdateTenantDto) {
     return this.service.update(id, dto);
+  }
+
+  @Patch(':id/link-user')
+  @Permissions('tenants:update')
+  linkUser(@Param('id', ParseUuidPipe) id: string, @Body() dto: LinkTenantUserDto) {
+    return this.service.linkUser(id, dto);
   }
 
   @Post(':id/documents')

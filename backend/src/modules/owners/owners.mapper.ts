@@ -5,6 +5,7 @@ export class OwnersMapper {
     return {
       id: owner.id,
       organizationId: owner.organizationId,
+      userId: owner.userId,
       fullName: owner.fullName,
       phone: owner.phone,
       email: owner.email,

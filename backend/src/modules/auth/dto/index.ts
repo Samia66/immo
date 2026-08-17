@@ -5,3 +5,5 @@ export * from './forgot-password.dto';
 export * from './verify-email.dto';
 export * from './change-password.dto';
 export * from './auth-response.dto';
+export * from './request-otp.dto';
+export * from './verify-otp.dto';

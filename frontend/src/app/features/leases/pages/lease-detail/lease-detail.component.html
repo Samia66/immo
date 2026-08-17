@@ -4,15 +4,38 @@
   </div>
 } @else if (store.selected(); as lease) {
   <app-page-header
-    [title]="'Contrat — ' + (lease.property?.title ?? lease.propertyId)"
-    [breadcrumbs]="[{ label: 'Contrats', link: '/app/leases' }, { label: 'Détail' }]"
+    [title]="'Contrat ' + lease.reference"
+    [subtitle]="lease.propertyUnit?.property?.title ?? lease.propertyUnitId"
+    [breadcrumbs]="[{ label: 'Contrats', link: '/app/leases' }, { label: lease.reference }]"
   >
     <button mat-stroked-button (click)="downloadContract()">
       <mat-icon>picture_as_pdf</mat-icon>
       Contrat PDF
     </button>
+    @if (lease.status === LeaseStatus.BROUILLON) {
+      <button mat-flat-button color="primary" *appHasPermission="'leases:update'" [disabled]="processing()" (click)="send()">
+        <mat-icon>send</mat-icon>
+        Envoyer au locataire
+      </button>
+    }
+    @if (canCancel(lease.status)) {
+      <button mat-stroked-button color="warn" *appHasPermission="'leases:update'" [disabled]="processing()" (click)="cancel()">
+        <mat-icon>cancel</mat-icon>
+        Annuler
+      </button>
+    }
+    @if (lease.status !== LeaseStatus.BROUILLON && lease.tenant) {
+      <button mat-stroked-button *appHasPermission="'leases:update'" [disabled]="processing()" (click)="invite()">
+        <mat-icon>mail</mat-icon>
+        Inviter le locataire
+      </button>
+    }
     @if (lease.status === LeaseStatus.ACTIF) {
-      <button mat-flat-button color="warn" *appHasPermission="'leases:update'" [disabled]="processing()" (click)="terminate()">
+      <button mat-stroked-button *appHasPermission="'leases:renew'" [disabled]="processing()" (click)="renew()">
+        <mat-icon>autorenew</mat-icon>
+        Renouveler
+      </button>
+      <button mat-flat-button color="warn" *appHasPermission="'leases:terminate'" [disabled]="processing()" (click)="terminate()">
         <mat-icon>block</mat-icon>
         Résilier
       </button>
@@ -20,12 +43,22 @@
   </app-page-header>
 
   <div class="card">
-    <mat-chip>{{ lease.status | statusLabel }}</mat-chip>
+    <span class="lease-detail__status-badge" [attr.data-accent]="statusAccent(lease.status)">
+      {{ lease.status | statusLabel }}
+    </span>
 
     <div class="form-grid" style="margin-top: 1rem;">
       <div>
+        <span style="display:block; font-size: 0.75rem; color: var(--immo-text-muted);">Référence</span>
+        <strong>{{ lease.reference }}</strong>
+      </div>
+      <div>
         <span style="display:block; font-size: 0.75rem; color: var(--immo-text-muted);">Bien</span>
-        <strong>{{ lease.property?.title ?? lease.propertyId }}</strong>
+        <strong>{{ lease.propertyUnit?.property?.title ?? '—' }}</strong>
+      </div>
+      <div>
+        <span style="display:block; font-size: 0.75rem; color: var(--immo-text-muted);">Logement</span>
+        <strong>{{ lease.propertyUnit?.label ?? lease.propertyUnit?.reference ?? lease.propertyUnitId }}</strong>
       </div>
       <div>
         <span style="display:block; font-size: 0.75rem; color: var(--immo-text-muted);">Locataire</span>

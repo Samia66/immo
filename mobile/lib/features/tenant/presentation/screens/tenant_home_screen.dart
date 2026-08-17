@@ -81,7 +81,7 @@ class TenantHomeScreen extends ConsumerWidget {
                                   Icon(Icons.home_work_outlined, color: theme.colorScheme.primary),
                                   const SizedBox(width: 8),
                                   Expanded(
-                                    child: Text(lease.property.title,
+                                    child: Text(lease.propertyUnit.property.title,
                                         style: theme.textTheme.titleMedium,
                                         overflow: TextOverflow.ellipsis),
                                   ),
@@ -89,7 +89,7 @@ class TenantHomeScreen extends ConsumerWidget {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                '${lease.property.addressLine ?? ''}, ${lease.property.city ?? ''}',
+                                '${lease.propertyUnit.property.addressLine}, ${lease.propertyUnit.property.city}',
                                 style: theme.textTheme.bodySmall
                                     ?.copyWith(color: theme.colorScheme.outline),
                               ),

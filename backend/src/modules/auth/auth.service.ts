@@ -42,13 +42,18 @@ export class AuthService {
   // Registration (self-service org onboarding, spec §8.1)
   // ---------------------------------------------------------------------
   async register(dto: RegisterDto): Promise<AuthResponseDto> {
-    const code = await this.generateUniqueOrgCode(dto.organizationName);
+    // V2 pivot (spec §5.1): self-registration now creates a GESTIONNAIRE, not an ADMIN_AGENCE —
+    // the mobile "Créer un compte" flow no longer assumes an agency name is the natural first
+    // thing a self-registering manager types, so an empty/omitted organizationName falls back
+    // to a personal default rather than being required.
+    const organizationName = dto.organizationName?.trim() || `Espace de ${dto.firstName} ${dto.lastName}`;
+    const code = await this.generateUniqueOrgCode(organizationName);
     const passwordHash = await bcrypt.hash(dto.password, this.config.get('security.bcryptSaltRounds', { infer: true }));
 
     const result = await this.prisma.$transaction(async (tx) => {
       const organization = await tx.organization.create({
         data: {
-          name: dto.organizationName,
+          name: organizationName,
           code,
         },
       });
@@ -56,7 +61,13 @@ export class AuthService {
       const allPermissions = await tx.permission.findMany();
       const permissionsByCode = new Map(allPermissions.map((p) => [p.code, p.id]));
 
-      const rolesToCreate: RoleName[] = ['ADMIN_AGENCE', 'GESTIONNAIRE', 'AGENT_IMMOBILIER', 'LOCATAIRE'];
+      const rolesToCreate: RoleName[] = [
+        'ADMIN_AGENCE',
+        'GESTIONNAIRE',
+        'AGENT_IMMOBILIER',
+        'LOCATAIRE',
+        'PROPRIETAIRE',
+      ];
       const createdRoles = new Map<RoleName, string>();
 
       for (const roleName of rolesToCreate) {
@@ -81,7 +92,7 @@ export class AuthService {
         }
       }
 
-      const adminRoleId = createdRoles.get('ADMIN_AGENCE') as string;
+      const gestionnaireRoleId = createdRoles.get('GESTIONNAIRE') as string;
 
       const user = await tx.user.create({
         data: {
@@ -90,12 +101,12 @@ export class AuthService {
           passwordHash,
           firstName: dto.firstName,
           lastName: dto.lastName,
-          roleId: adminRoleId,
+          roleId: gestionnaireRoleId,
           isEmailVerified: false,
         },
       });
 
-      return { organization, user, roleName: RoleName.ADMIN_AGENCE };
+      return { organization, user, roleName: RoleName.GESTIONNAIRE };
     });
 
     const verifyToken = this.jwt.sign(
@@ -108,18 +119,18 @@ export class AuthService {
       `Bienvenue sur la plateforme. Vérifiez votre email : ${this.config.get('frontendUrl', { infer: true })}/auth/verify-email/${verifyToken}`,
     );
 
-    const permissions = ROLE_PERMISSIONS.ADMIN_AGENCE;
+    const permissions = ROLE_PERMISSIONS.GESTIONNAIRE;
     const accessToken = this.signAccessToken({
       sub: result.user.id,
       organizationId: result.organization.id,
       roleId: result.user.roleId,
-      roleName: RoleName.ADMIN_AGENCE,
+      roleName: RoleName.GESTIONNAIRE,
       email: result.user.email,
     });
 
     return {
       accessToken,
-      user: this.toAuthUserDto(result.user, RoleName.ADMIN_AGENCE, permissions, result.organization.id),
+      user: this.toAuthUserDto(result.user, RoleName.GESTIONNAIRE, permissions, result.organization.id),
     };
   }
 

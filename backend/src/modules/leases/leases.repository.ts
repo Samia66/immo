@@ -1,11 +1,19 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { LeaseStatus, Prisma } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 
 const includeRelations = {
   documents: true,
   amendments: { orderBy: { createdAt: 'desc' as const } },
-  property: { select: { id: true, title: true, reference: true } },
+  propertyUnit: {
+    select: {
+      id: true,
+      reference: true,
+      label: true,
+      status: true,
+      property: { select: { id: true, title: true, reference: true, addressLine: true, city: true } },
+    },
+  },
   tenant: { select: { id: true, fullName: true, userId: true } },
 };
 
@@ -47,5 +55,17 @@ export class LeasesRepository {
 
   addAmendment(leaseId: string, description: string, effectiveDate: Date) {
     return this.prisma.leaseAmendment.create({ data: { leaseId, description, effectiveDate } });
+  }
+
+  addHistory(
+    leaseId: string,
+    fromStatus: LeaseStatus | null,
+    toStatus: LeaseStatus,
+    changedById?: string,
+    note?: string,
+  ) {
+    return this.prisma.leaseStatusHistory.create({
+      data: { leaseId, fromStatus: fromStatus ?? undefined, toStatus, changedById, note },
+    });
   }
 }

@@ -35,7 +35,15 @@ export class LeaseListComponent implements OnInit {
   readonly statuses = Object.values(LeaseStatus);
 
   readonly columns: DataTableColumn<Lease>[] = [
-    { key: 'property', header: 'Bien', value: (row) => row.property?.title ?? row.propertyId },
+    { key: 'reference', header: 'Référence' },
+    {
+      key: 'propertyUnit',
+      header: 'Bien / Logement',
+      value: (row) =>
+        row.propertyUnit
+          ? `${row.propertyUnit.property.title} — ${row.propertyUnit.label ?? row.propertyUnit.reference}`
+          : row.propertyUnitId,
+    },
     { key: 'tenant', header: 'Locataire', value: (row) => row.tenant?.fullName ?? row.tenantId },
     { key: 'startDate', header: 'Début', value: (row) => new Date(row.startDate).toLocaleDateString('fr-FR') },
     {

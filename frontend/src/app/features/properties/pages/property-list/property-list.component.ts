@@ -13,9 +13,9 @@ import {
 import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header.component';
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { HasPermissionDirective } from '../../../../shared/directives/has-permission.directive';
-import { CurrencyXofPipe } from '../../../../shared/pipes/currency-xof.pipe';
 import { StatusLabelPipe } from '../../../../shared/pipes/status-label.pipe';
 import { NotificationService } from '../../../../core/services/notification.service';
+import { PropertyStatus } from '../../../../core/models/enums';
 import { PropertiesStore } from '../../store/properties.store';
 import { Property, PropertyFilters } from '../../models/property.model';
 import { PropertiesApiService } from '../../services/properties-api.service';
@@ -42,7 +42,6 @@ export class PropertyListComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly dialog = inject(MatDialog);
   private readonly notificationService = inject(NotificationService);
-  private readonly currencyXofPipe = new CurrencyXofPipe();
   private readonly statusLabelPipe = new StatusLabelPipe();
 
   readonly rowActionsRef = viewChild.required<TemplateRef<{ $implicit: Property }>>('rowActionsTpl');
@@ -53,17 +52,27 @@ export class PropertyListComponent implements OnInit {
     { key: 'city', header: 'Ville', sortable: true },
     { key: 'type', header: 'Type', value: (row) => this.statusLabelPipe.transform(row.type) },
     {
-      key: 'monthlyRent',
-      header: 'Loyer mensuel',
-      align: 'end',
-      value: (row) => this.currencyXofPipe.transform(row.monthlyRent),
-    },
-    {
-      key: 'status',
-      header: 'Statut',
-      value: (row) => this.statusLabelPipe.transform(row.status),
+      key: 'units',
+      header: 'Logements',
+      value: (row) => this.unitsSummary(row),
     },
   ];
+
+  /**
+   * `GET /properties` includes each property's `units` array (see backend
+   * PropertiesService.mapWithUnits), so the breakdown can be computed client-side without an
+   * extra request per row. Falls back to a plain count if `units` is ever omitted.
+   */
+  private unitsSummary(property: Property): string {
+    const units = property.units ?? [];
+    if (!units.length) {
+      return 'Aucun logement';
+    }
+    const occupied = units.filter((u) => u.status === PropertyStatus.OCCUPE).length;
+    const available = units.filter((u) => u.status === PropertyStatus.DISPONIBLE).length;
+    const label = units.length > 1 ? 'logements' : 'logement';
+    return `${units.length} ${label} · ${occupied} occupé(s) · ${available} disponible(s)`;
+  }
 
   ngOnInit(): void {
     this.store.load();

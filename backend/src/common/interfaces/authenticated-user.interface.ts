@@ -15,4 +15,5 @@ export interface AuthenticatedUser {
   /** Flattened list of permission codes effective for this user's role (e.g. "properties:read"). */
   permissions: string[];
   tenantProfileId?: string | null;
+  ownerProfileId?: string | null;
 }

@@ -2,7 +2,12 @@ import { MaintenanceRequest, MaintenanceAttachment } from '@prisma/client';
 
 type MaintenanceWithRelations = MaintenanceRequest & {
   attachments?: MaintenanceAttachment[];
-  property?: { id: string; title: string; reference: string } | null;
+  propertyUnit?: {
+    id: string;
+    reference: string;
+    label: string | null;
+    property: { id: string; title: string };
+  } | null;
   tenant?: { id: string; fullName: string } | null;
   assignedTo?: { id: string; firstName: string; lastName: string } | null;
 };
@@ -12,8 +17,8 @@ export class MaintenanceMapper {
     return {
       id: request.id,
       organizationId: request.organizationId,
-      propertyId: request.propertyId,
-      property: request.property,
+      propertyUnitId: request.propertyUnitId,
+      propertyUnit: request.propertyUnit,
       tenantId: request.tenantId,
       tenant: request.tenant,
       category: request.category,

@@ -1,0 +1,16 @@
+<h2 mat-dialog-title>Renouveler le contrat</h2>
+<mat-dialog-content>
+  <form [formGroup]="form" class="form-grid" style="grid-template-columns: 1fr;">
+    <mat-form-field appearance="outline">
+      <mat-label>Nouvelle date de fin</mat-label>
+      <input matInput type="date" formControlName="newEndDate" required />
+      @if (form.controls.newEndDate.hasError('required')) {
+        <mat-error>La date de fin est requise.</mat-error>
+      }
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="dialogRef.close()">Annuler</button>
+  <button mat-flat-button color="primary" (click)="confirm()">Renouveler</button>
+</mat-dialog-actions>

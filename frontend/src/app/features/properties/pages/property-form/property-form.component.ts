@@ -53,10 +53,8 @@ export class PropertyFormComponent implements OnInit {
     addressLine: ['', [Validators.required]],
     city: ['', [Validators.required]],
     district: [''],
-    rooms: [null as number | null],
-    surfaceM2: [null as number | null],
-    monthlyRent: [0, [Validators.required, Validators.min(0)]],
-    monthlyCharges: [null as number | null],
+    latitude: [null as number | null],
+    longitude: [null as number | null],
     ownerId: ['', [Validators.required]],
   });
 
@@ -74,10 +72,8 @@ export class PropertyFormComponent implements OnInit {
             addressLine: property.addressLine,
             city: property.city,
             district: property.district ?? '',
-            rooms: property.rooms ?? null,
-            surfaceM2: property.surfaceM2 ?? null,
-            monthlyRent: property.monthlyRent,
-            monthlyCharges: property.monthlyCharges ?? null,
+            latitude: property.latitude ?? null,
+            longitude: property.longitude ?? null,
             ownerId: property.ownerId,
           });
           this.loading.set(false);
@@ -101,10 +97,8 @@ export class PropertyFormComponent implements OnInit {
       addressLine: raw.addressLine,
       city: raw.city,
       district: raw.district || undefined,
-      rooms: raw.rooms ?? undefined,
-      surfaceM2: raw.surfaceM2 ?? undefined,
-      monthlyRent: raw.monthlyRent,
-      monthlyCharges: raw.monthlyCharges ?? undefined,
+      latitude: raw.latitude ?? undefined,
+      longitude: raw.longitude ?? undefined,
       ownerId: raw.ownerId,
     };
 

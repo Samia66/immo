@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { PropertyType } from '@prisma/client';
-import { IsEnum, IsInt, IsNumber, IsOptional, IsString, IsUUID, Min } from 'class-validator';
+import { IsEnum, IsNumber, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class CreatePropertyDto {
   @ApiProperty()
@@ -12,7 +12,10 @@ export class CreatePropertyDto {
   @IsString()
   description?: string;
 
-  @ApiProperty({ enum: PropertyType })
+  @ApiProperty({
+    enum: PropertyType,
+    description: 'Descripteur du bâtiment/annonce (le détail locatif vit sur PropertyUnit).',
+  })
   @IsEnum(PropertyType)
   type: PropertyType;
 
@@ -38,29 +41,6 @@ export class CreatePropertyDto {
   @IsOptional()
   @IsNumber()
   longitude?: number;
-
-  @ApiProperty({ required: false })
-  @IsOptional()
-  @IsInt()
-  @Min(0)
-  rooms?: number;
-
-  @ApiProperty({ required: false })
-  @IsOptional()
-  @IsNumber()
-  @Min(0)
-  surfaceM2?: number;
-
-  @ApiProperty()
-  @IsNumber()
-  @Min(0)
-  monthlyRent: number;
-
-  @ApiProperty({ required: false })
-  @IsOptional()
-  @IsNumber()
-  @Min(0)
-  monthlyCharges?: number;
 
   @ApiProperty()
   @IsUUID()

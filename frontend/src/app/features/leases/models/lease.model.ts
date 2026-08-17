@@ -5,6 +5,17 @@ export interface LeasePropertySummary {
   id: string;
   title: string;
   reference: string;
+  addressLine: string;
+  city: string;
+}
+
+/** Matches the backend's `Lease.propertyUnit` shape (LeasesMapper) — the unit plus its parent building. */
+export interface LeasePropertyUnitSummary {
+  id: string;
+  reference: string;
+  label: string | null;
+  status: string;
+  property: LeasePropertySummary;
 }
 
 export interface LeaseTenantSummary {
@@ -15,8 +26,9 @@ export interface LeaseTenantSummary {
 export interface Lease {
   id: string;
   organizationId: string;
-  propertyId: string;
-  property?: LeasePropertySummary;
+  reference: string;
+  propertyUnitId: string;
+  propertyUnit?: LeasePropertyUnitSummary | null;
   ownerId: string;
   tenantId: string;
   tenant?: LeaseTenantSummary;
@@ -32,7 +44,7 @@ export interface Lease {
 }
 
 export interface CreateLeaseDto {
-  propertyId: string;
+  propertyUnitId: string;
   tenantId: string;
   startDate: string;
   endDate?: string;
@@ -47,8 +59,21 @@ export interface TerminateLeaseDto {
   reason?: string;
 }
 
+export interface RefuseLeaseDto {
+  reason?: string;
+}
+
+/** Response of `POST /leases/:id/invite` — an activation invitation for the lease's tenant. */
+export interface InvitationResult {
+  id: string;
+  code: string;
+  status: string;
+  expiresAt: string;
+  shareMessage: string;
+}
+
 export interface LeaseQuery extends PaginationQuery {
   status?: LeaseStatus;
-  propertyId?: string;
+  propertyUnitId?: string;
   tenantId?: string;
 }

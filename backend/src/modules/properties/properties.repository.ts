@@ -2,7 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 
-const includeImages = { images: { orderBy: { order: 'asc' as const } } };
+const includeRelations = {
+  images: { orderBy: { order: 'asc' as const } },
+  units: { where: { deletedAt: null }, orderBy: { reference: 'asc' as const } },
+};
 
 @Injectable()
 export class PropertiesRepository {
@@ -14,7 +17,7 @@ export class PropertiesRepository {
     take: number,
     orderBy: Prisma.PropertyOrderByWithRelationInput,
   ) {
-    return this.prisma.property.findMany({ where, skip, take, orderBy, include: includeImages });
+    return this.prisma.property.findMany({ where, skip, take, orderBy, include: includeRelations });
   }
 
   count(where: Prisma.PropertyWhereInput) {
@@ -22,7 +25,7 @@ export class PropertiesRepository {
   }
 
   findById(id: string) {
-    return this.prisma.property.findUnique({ where: { id }, include: includeImages });
+    return this.prisma.property.findUnique({ where: { id }, include: includeRelations });
   }
 
   countForOrgAndYear(organizationId: string, year: number) {
@@ -32,15 +35,15 @@ export class PropertiesRepository {
   }
 
   create(data: Prisma.PropertyCreateInput) {
-    return this.prisma.property.create({ data, include: includeImages });
+    return this.prisma.property.create({ data, include: includeRelations });
   }
 
   update(id: string, data: Prisma.PropertyUpdateInput) {
-    return this.prisma.property.update({ where: { id }, data, include: includeImages });
+    return this.prisma.property.update({ where: { id }, data, include: includeRelations });
   }
 
   softDelete(id: string) {
-    return this.prisma.property.update({ where: { id }, data: { deletedAt: new Date() }, include: includeImages });
+    return this.prisma.property.update({ where: { id }, data: { deletedAt: new Date() }, include: includeRelations });
   }
 
   history(propertyId: string) {
@@ -55,7 +58,7 @@ export class PropertiesRepository {
   findAllWithCoordinates(organizationId: string) {
     return this.prisma.property.findMany({
       where: { organizationId, deletedAt: null, latitude: { not: null }, longitude: { not: null } },
-      include: includeImages,
+      include: includeRelations,
     });
   }
 }

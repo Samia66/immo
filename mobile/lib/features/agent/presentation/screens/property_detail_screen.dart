@@ -8,12 +8,11 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/models/owner_model.dart';
 import '../../../../core/models/property_model.dart';
 import '../../../../core/router/app_routes.dart';
-import '../../../../core/utils/formatters.dart';
 import '../../../../shared/widgets/app_card.dart';
 import '../../../../shared/widgets/cached_thumb.dart';
 import '../../../../shared/widgets/error_view.dart';
 import '../../../../shared/widgets/loading_skeleton.dart';
-import '../../../../shared/widgets/status_chip.dart';
+import '../../../../shared/widgets/unit_status_card.dart';
 import '../providers/agent_providers.dart';
 
 class PropertyDetailScreen extends ConsumerWidget {
@@ -54,42 +53,39 @@ class PropertyDetailScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(child: Text(property.title, style: theme.textTheme.headlineSmall)),
-                      PropertyStatusChip(status: property.status),
-                    ],
-                  ),
+                  Text(property.title, style: theme.textTheme.headlineSmall),
                   const SizedBox(height: 4),
                   Text(
                     '${property.reference} · ${property.addressLine}, ${property.city}',
                     style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.outline),
                   ),
                   const SizedBox(height: 16),
-                  Text(Formatters.amount(property.monthlyRent), style: theme.textTheme.headlineMedium),
-                  if (property.monthlyCharges != null)
-                    Text(
-                      '+ ${Formatters.amount(property.monthlyCharges!)} de charges',
-                      style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.outline),
-                    ),
-                  const SizedBox(height: 20),
                   AppCard(
                     child: Wrap(
                       spacing: 24,
                       runSpacing: 12,
                       children: [
                         _Characteristic(icon: Icons.category_outlined, label: property.type.label),
-                        if (property.rooms != null)
-                          _Characteristic(
-                              icon: Icons.meeting_room_outlined, label: '${property.rooms} pièces'),
-                        if (property.surfaceM2 != null)
-                          _Characteristic(
-                              icon: Icons.square_foot_outlined,
-                              label: '${property.surfaceM2!.toStringAsFixed(0)} m²'),
+                        _Characteristic(
+                          icon: Icons.meeting_room_outlined,
+                          label: '${property.units?.length ?? 0} lot(s)',
+                        ),
                       ],
                     ),
                   ),
+                  const SizedBox(height: 20),
+                  Text('Lots disponibles à la visite', style: theme.textTheme.titleSmall),
+                  const SizedBox(height: 8),
+                  if (property.units == null || property.units!.isEmpty)
+                    Text('Aucun lot enregistré pour ce bien.',
+                        style: theme.textTheme.bodyMedium
+                            ?.copyWith(color: theme.colorScheme.outline))
+                  else
+                    for (final unit in property.units!)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: UnitStatusCard(unit: unit, showTenant: false),
+                      ),
                   if (property.description != null && property.description!.isNotEmpty) ...[
                     const SizedBox(height: 20),
                     Text('Description', style: theme.textTheme.titleSmall),

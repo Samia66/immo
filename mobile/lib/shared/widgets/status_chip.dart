@@ -144,9 +144,15 @@ class LeaseStatusChip extends StatelessWidget {
   final LeaseStatus status;
 
   Color _color() => switch (status) {
+        LeaseStatus.BROUILLON => Colors.blueGrey,
+        LeaseStatus.ENVOYE => Colors.indigo,
+        LeaseStatus.CONSULTE => Colors.blue,
+        LeaseStatus.ACCEPTE => Colors.teal,
         LeaseStatus.ACTIF => Colors.green,
+        LeaseStatus.REFUSE => Colors.red,
+        LeaseStatus.ANNULE => Colors.grey,
         LeaseStatus.EXPIRE => Colors.orange,
-        LeaseStatus.RESILIE => Colors.red,
+        LeaseStatus.RESILIE => Colors.deepOrange,
       };
 
   @override

@@ -224,11 +224,6 @@ MaintenancePropertySummaryModel _$MaintenancePropertySummaryModelFromJson(
 mixin _$MaintenancePropertySummaryModel {
   String get id => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
-  String get reference => throw _privateConstructorUsedError;
-  String? get addressLine => throw _privateConstructorUsedError;
-  String? get city => throw _privateConstructorUsedError;
-  double? get latitude => throw _privateConstructorUsedError;
-  double? get longitude => throw _privateConstructorUsedError;
 
   /// Serializes this MaintenancePropertySummaryModel to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -251,15 +246,7 @@ abstract class $MaintenancePropertySummaryModelCopyWith<$Res> {
         MaintenancePropertySummaryModel
       >;
   @useResult
-  $Res call({
-    String id,
-    String title,
-    String reference,
-    String? addressLine,
-    String? city,
-    double? latitude,
-    double? longitude,
-  });
+  $Res call({String id, String title});
 }
 
 /// @nodoc
@@ -279,15 +266,7 @@ class _$MaintenancePropertySummaryModelCopyWithImpl<
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? id = null,
-    Object? title = null,
-    Object? reference = null,
-    Object? addressLine = freezed,
-    Object? city = freezed,
-    Object? latitude = freezed,
-    Object? longitude = freezed,
-  }) {
+  $Res call({Object? id = null, Object? title = null}) {
     return _then(
       _value.copyWith(
             id: null == id
@@ -298,26 +277,6 @@ class _$MaintenancePropertySummaryModelCopyWithImpl<
                 ? _value.title
                 : title // ignore: cast_nullable_to_non_nullable
                       as String,
-            reference: null == reference
-                ? _value.reference
-                : reference // ignore: cast_nullable_to_non_nullable
-                      as String,
-            addressLine: freezed == addressLine
-                ? _value.addressLine
-                : addressLine // ignore: cast_nullable_to_non_nullable
-                      as String?,
-            city: freezed == city
-                ? _value.city
-                : city // ignore: cast_nullable_to_non_nullable
-                      as String?,
-            latitude: freezed == latitude
-                ? _value.latitude
-                : latitude // ignore: cast_nullable_to_non_nullable
-                      as double?,
-            longitude: freezed == longitude
-                ? _value.longitude
-                : longitude // ignore: cast_nullable_to_non_nullable
-                      as double?,
           )
           as $Val,
     );
@@ -333,15 +292,7 @@ abstract class _$$MaintenancePropertySummaryModelImplCopyWith<$Res>
   ) = __$$MaintenancePropertySummaryModelImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({
-    String id,
-    String title,
-    String reference,
-    String? addressLine,
-    String? city,
-    double? latitude,
-    double? longitude,
-  });
+  $Res call({String id, String title});
 }
 
 /// @nodoc
@@ -361,15 +312,7 @@ class __$$MaintenancePropertySummaryModelImplCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? id = null,
-    Object? title = null,
-    Object? reference = null,
-    Object? addressLine = freezed,
-    Object? city = freezed,
-    Object? latitude = freezed,
-    Object? longitude = freezed,
-  }) {
+  $Res call({Object? id = null, Object? title = null}) {
     return _then(
       _$MaintenancePropertySummaryModelImpl(
         id: null == id
@@ -380,26 +323,6 @@ class __$$MaintenancePropertySummaryModelImplCopyWithImpl<$Res>
             ? _value.title
             : title // ignore: cast_nullable_to_non_nullable
                   as String,
-        reference: null == reference
-            ? _value.reference
-            : reference // ignore: cast_nullable_to_non_nullable
-                  as String,
-        addressLine: freezed == addressLine
-            ? _value.addressLine
-            : addressLine // ignore: cast_nullable_to_non_nullable
-                  as String?,
-        city: freezed == city
-            ? _value.city
-            : city // ignore: cast_nullable_to_non_nullable
-                  as String?,
-        latitude: freezed == latitude
-            ? _value.latitude
-            : latitude // ignore: cast_nullable_to_non_nullable
-                  as double?,
-        longitude: freezed == longitude
-            ? _value.longitude
-            : longitude // ignore: cast_nullable_to_non_nullable
-                  as double?,
       ),
     );
   }
@@ -412,11 +335,6 @@ class _$MaintenancePropertySummaryModelImpl
   const _$MaintenancePropertySummaryModelImpl({
     required this.id,
     required this.title,
-    required this.reference,
-    this.addressLine,
-    this.city,
-    this.latitude,
-    this.longitude,
   });
 
   factory _$MaintenancePropertySummaryModelImpl.fromJson(
@@ -427,20 +345,10 @@ class _$MaintenancePropertySummaryModelImpl
   final String id;
   @override
   final String title;
-  @override
-  final String reference;
-  @override
-  final String? addressLine;
-  @override
-  final String? city;
-  @override
-  final double? latitude;
-  @override
-  final double? longitude;
 
   @override
   String toString() {
-    return 'MaintenancePropertySummaryModel(id: $id, title: $title, reference: $reference, addressLine: $addressLine, city: $city, latitude: $latitude, longitude: $longitude)';
+    return 'MaintenancePropertySummaryModel(id: $id, title: $title)';
   }
 
   @override
@@ -449,30 +357,12 @@ class _$MaintenancePropertySummaryModelImpl
         (other.runtimeType == runtimeType &&
             other is _$MaintenancePropertySummaryModelImpl &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.title, title) || other.title == title) &&
-            (identical(other.reference, reference) ||
-                other.reference == reference) &&
-            (identical(other.addressLine, addressLine) ||
-                other.addressLine == addressLine) &&
-            (identical(other.city, city) || other.city == city) &&
-            (identical(other.latitude, latitude) ||
-                other.latitude == latitude) &&
-            (identical(other.longitude, longitude) ||
-                other.longitude == longitude));
+            (identical(other.title, title) || other.title == title));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    id,
-    title,
-    reference,
-    addressLine,
-    city,
-    latitude,
-    longitude,
-  );
+  int get hashCode => Object.hash(runtimeType, id, title);
 
   /// Create a copy of MaintenancePropertySummaryModel
   /// with the given fields replaced by the non-null parameter values.
@@ -498,11 +388,6 @@ abstract class _MaintenancePropertySummaryModel
   const factory _MaintenancePropertySummaryModel({
     required final String id,
     required final String title,
-    required final String reference,
-    final String? addressLine,
-    final String? city,
-    final double? latitude,
-    final double? longitude,
   }) = _$MaintenancePropertySummaryModelImpl;
 
   factory _MaintenancePropertySummaryModel.fromJson(Map<String, dynamic> json) =
@@ -512,16 +397,6 @@ abstract class _MaintenancePropertySummaryModel
   String get id;
   @override
   String get title;
-  @override
-  String get reference;
-  @override
-  String? get addressLine;
-  @override
-  String? get city;
-  @override
-  double? get latitude;
-  @override
-  double? get longitude;
 
   /// Create a copy of MaintenancePropertySummaryModel
   /// with the given fields replaced by the non-null parameter values.
@@ -530,6 +405,268 @@ abstract class _MaintenancePropertySummaryModel
   _$$MaintenancePropertySummaryModelImplCopyWith<
     _$MaintenancePropertySummaryModelImpl
   >
+  get copyWith => throw _privateConstructorUsedError;
+}
+
+MaintenanceUnitSummaryModel _$MaintenanceUnitSummaryModelFromJson(
+  Map<String, dynamic> json,
+) {
+  return _MaintenanceUnitSummaryModel.fromJson(json);
+}
+
+/// @nodoc
+mixin _$MaintenanceUnitSummaryModel {
+  String get id => throw _privateConstructorUsedError;
+  String get reference => throw _privateConstructorUsedError;
+  String? get label => throw _privateConstructorUsedError;
+  MaintenancePropertySummaryModel get property =>
+      throw _privateConstructorUsedError;
+
+  /// Serializes this MaintenanceUnitSummaryModel to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of MaintenanceUnitSummaryModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $MaintenanceUnitSummaryModelCopyWith<MaintenanceUnitSummaryModel>
+  get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $MaintenanceUnitSummaryModelCopyWith<$Res> {
+  factory $MaintenanceUnitSummaryModelCopyWith(
+    MaintenanceUnitSummaryModel value,
+    $Res Function(MaintenanceUnitSummaryModel) then,
+  ) =
+      _$MaintenanceUnitSummaryModelCopyWithImpl<
+        $Res,
+        MaintenanceUnitSummaryModel
+      >;
+  @useResult
+  $Res call({
+    String id,
+    String reference,
+    String? label,
+    MaintenancePropertySummaryModel property,
+  });
+
+  $MaintenancePropertySummaryModelCopyWith<$Res> get property;
+}
+
+/// @nodoc
+class _$MaintenanceUnitSummaryModelCopyWithImpl<
+  $Res,
+  $Val extends MaintenanceUnitSummaryModel
+>
+    implements $MaintenanceUnitSummaryModelCopyWith<$Res> {
+  _$MaintenanceUnitSummaryModelCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of MaintenanceUnitSummaryModel
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? reference = null,
+    Object? label = freezed,
+    Object? property = null,
+  }) {
+    return _then(
+      _value.copyWith(
+            id: null == id
+                ? _value.id
+                : id // ignore: cast_nullable_to_non_nullable
+                      as String,
+            reference: null == reference
+                ? _value.reference
+                : reference // ignore: cast_nullable_to_non_nullable
+                      as String,
+            label: freezed == label
+                ? _value.label
+                : label // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            property: null == property
+                ? _value.property
+                : property // ignore: cast_nullable_to_non_nullable
+                      as MaintenancePropertySummaryModel,
+          )
+          as $Val,
+    );
+  }
+
+  /// Create a copy of MaintenanceUnitSummaryModel
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $MaintenancePropertySummaryModelCopyWith<$Res> get property {
+    return $MaintenancePropertySummaryModelCopyWith<$Res>(_value.property, (
+      value,
+    ) {
+      return _then(_value.copyWith(property: value) as $Val);
+    });
+  }
+}
+
+/// @nodoc
+abstract class _$$MaintenanceUnitSummaryModelImplCopyWith<$Res>
+    implements $MaintenanceUnitSummaryModelCopyWith<$Res> {
+  factory _$$MaintenanceUnitSummaryModelImplCopyWith(
+    _$MaintenanceUnitSummaryModelImpl value,
+    $Res Function(_$MaintenanceUnitSummaryModelImpl) then,
+  ) = __$$MaintenanceUnitSummaryModelImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({
+    String id,
+    String reference,
+    String? label,
+    MaintenancePropertySummaryModel property,
+  });
+
+  @override
+  $MaintenancePropertySummaryModelCopyWith<$Res> get property;
+}
+
+/// @nodoc
+class __$$MaintenanceUnitSummaryModelImplCopyWithImpl<$Res>
+    extends
+        _$MaintenanceUnitSummaryModelCopyWithImpl<
+          $Res,
+          _$MaintenanceUnitSummaryModelImpl
+        >
+    implements _$$MaintenanceUnitSummaryModelImplCopyWith<$Res> {
+  __$$MaintenanceUnitSummaryModelImplCopyWithImpl(
+    _$MaintenanceUnitSummaryModelImpl _value,
+    $Res Function(_$MaintenanceUnitSummaryModelImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of MaintenanceUnitSummaryModel
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? reference = null,
+    Object? label = freezed,
+    Object? property = null,
+  }) {
+    return _then(
+      _$MaintenanceUnitSummaryModelImpl(
+        id: null == id
+            ? _value.id
+            : id // ignore: cast_nullable_to_non_nullable
+                  as String,
+        reference: null == reference
+            ? _value.reference
+            : reference // ignore: cast_nullable_to_non_nullable
+                  as String,
+        label: freezed == label
+            ? _value.label
+            : label // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        property: null == property
+            ? _value.property
+            : property // ignore: cast_nullable_to_non_nullable
+                  as MaintenancePropertySummaryModel,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$MaintenanceUnitSummaryModelImpl
+    implements _MaintenanceUnitSummaryModel {
+  const _$MaintenanceUnitSummaryModelImpl({
+    required this.id,
+    required this.reference,
+    this.label,
+    required this.property,
+  });
+
+  factory _$MaintenanceUnitSummaryModelImpl.fromJson(
+    Map<String, dynamic> json,
+  ) => _$$MaintenanceUnitSummaryModelImplFromJson(json);
+
+  @override
+  final String id;
+  @override
+  final String reference;
+  @override
+  final String? label;
+  @override
+  final MaintenancePropertySummaryModel property;
+
+  @override
+  String toString() {
+    return 'MaintenanceUnitSummaryModel(id: $id, reference: $reference, label: $label, property: $property)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$MaintenanceUnitSummaryModelImpl &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.reference, reference) ||
+                other.reference == reference) &&
+            (identical(other.label, label) || other.label == label) &&
+            (identical(other.property, property) ||
+                other.property == property));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, id, reference, label, property);
+
+  /// Create a copy of MaintenanceUnitSummaryModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$MaintenanceUnitSummaryModelImplCopyWith<_$MaintenanceUnitSummaryModelImpl>
+  get copyWith =>
+      __$$MaintenanceUnitSummaryModelImplCopyWithImpl<
+        _$MaintenanceUnitSummaryModelImpl
+      >(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$MaintenanceUnitSummaryModelImplToJson(this);
+  }
+}
+
+abstract class _MaintenanceUnitSummaryModel
+    implements MaintenanceUnitSummaryModel {
+  const factory _MaintenanceUnitSummaryModel({
+    required final String id,
+    required final String reference,
+    final String? label,
+    required final MaintenancePropertySummaryModel property,
+  }) = _$MaintenanceUnitSummaryModelImpl;
+
+  factory _MaintenanceUnitSummaryModel.fromJson(Map<String, dynamic> json) =
+      _$MaintenanceUnitSummaryModelImpl.fromJson;
+
+  @override
+  String get id;
+  @override
+  String get reference;
+  @override
+  String? get label;
+  @override
+  MaintenancePropertySummaryModel get property;
+
+  /// Create a copy of MaintenanceUnitSummaryModel
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$MaintenanceUnitSummaryModelImplCopyWith<_$MaintenanceUnitSummaryModelImpl>
   get copyWith => throw _privateConstructorUsedError;
 }
 
@@ -775,8 +912,8 @@ MaintenanceRequestModel _$MaintenanceRequestModelFromJson(
 mixin _$MaintenanceRequestModel {
   String get id => throw _privateConstructorUsedError;
   String get organizationId => throw _privateConstructorUsedError;
-  String get propertyId => throw _privateConstructorUsedError;
-  MaintenancePropertySummaryModel? get property =>
+  String get propertyUnitId => throw _privateConstructorUsedError;
+  MaintenanceUnitSummaryModel? get propertyUnit =>
       throw _privateConstructorUsedError;
   String? get tenantId => throw _privateConstructorUsedError;
   TenantSummaryModel? get tenant => throw _privateConstructorUsedError;
@@ -815,8 +952,8 @@ abstract class $MaintenanceRequestModelCopyWith<$Res> {
   $Res call({
     String id,
     String organizationId,
-    String propertyId,
-    MaintenancePropertySummaryModel? property,
+    String propertyUnitId,
+    MaintenanceUnitSummaryModel? propertyUnit,
     String? tenantId,
     TenantSummaryModel? tenant,
     String category,
@@ -834,7 +971,7 @@ abstract class $MaintenanceRequestModelCopyWith<$Res> {
     DateTime updatedAt,
   });
 
-  $MaintenancePropertySummaryModelCopyWith<$Res>? get property;
+  $MaintenanceUnitSummaryModelCopyWith<$Res>? get propertyUnit;
   $TenantSummaryModelCopyWith<$Res>? get tenant;
 }
 
@@ -858,8 +995,8 @@ class _$MaintenanceRequestModelCopyWithImpl<
   $Res call({
     Object? id = null,
     Object? organizationId = null,
-    Object? propertyId = null,
-    Object? property = freezed,
+    Object? propertyUnitId = null,
+    Object? propertyUnit = freezed,
     Object? tenantId = freezed,
     Object? tenant = freezed,
     Object? category = null,
@@ -886,14 +1023,14 @@ class _$MaintenanceRequestModelCopyWithImpl<
                 ? _value.organizationId
                 : organizationId // ignore: cast_nullable_to_non_nullable
                       as String,
-            propertyId: null == propertyId
-                ? _value.propertyId
-                : propertyId // ignore: cast_nullable_to_non_nullable
+            propertyUnitId: null == propertyUnitId
+                ? _value.propertyUnitId
+                : propertyUnitId // ignore: cast_nullable_to_non_nullable
                       as String,
-            property: freezed == property
-                ? _value.property
-                : property // ignore: cast_nullable_to_non_nullable
-                      as MaintenancePropertySummaryModel?,
+            propertyUnit: freezed == propertyUnit
+                ? _value.propertyUnit
+                : propertyUnit // ignore: cast_nullable_to_non_nullable
+                      as MaintenanceUnitSummaryModel?,
             tenantId: freezed == tenantId
                 ? _value.tenantId
                 : tenantId // ignore: cast_nullable_to_non_nullable
@@ -963,15 +1100,15 @@ class _$MaintenanceRequestModelCopyWithImpl<
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $MaintenancePropertySummaryModelCopyWith<$Res>? get property {
-    if (_value.property == null) {
+  $MaintenanceUnitSummaryModelCopyWith<$Res>? get propertyUnit {
+    if (_value.propertyUnit == null) {
       return null;
     }
 
-    return $MaintenancePropertySummaryModelCopyWith<$Res>(_value.property!, (
+    return $MaintenanceUnitSummaryModelCopyWith<$Res>(_value.propertyUnit!, (
       value,
     ) {
-      return _then(_value.copyWith(property: value) as $Val);
+      return _then(_value.copyWith(propertyUnit: value) as $Val);
     });
   }
 
@@ -1002,8 +1139,8 @@ abstract class _$$MaintenanceRequestModelImplCopyWith<$Res>
   $Res call({
     String id,
     String organizationId,
-    String propertyId,
-    MaintenancePropertySummaryModel? property,
+    String propertyUnitId,
+    MaintenanceUnitSummaryModel? propertyUnit,
     String? tenantId,
     TenantSummaryModel? tenant,
     String category,
@@ -1022,7 +1159,7 @@ abstract class _$$MaintenanceRequestModelImplCopyWith<$Res>
   });
 
   @override
-  $MaintenancePropertySummaryModelCopyWith<$Res>? get property;
+  $MaintenanceUnitSummaryModelCopyWith<$Res>? get propertyUnit;
   @override
   $TenantSummaryModelCopyWith<$Res>? get tenant;
 }
@@ -1047,8 +1184,8 @@ class __$$MaintenanceRequestModelImplCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? organizationId = null,
-    Object? propertyId = null,
-    Object? property = freezed,
+    Object? propertyUnitId = null,
+    Object? propertyUnit = freezed,
     Object? tenantId = freezed,
     Object? tenant = freezed,
     Object? category = null,
@@ -1075,14 +1212,14 @@ class __$$MaintenanceRequestModelImplCopyWithImpl<$Res>
             ? _value.organizationId
             : organizationId // ignore: cast_nullable_to_non_nullable
                   as String,
-        propertyId: null == propertyId
-            ? _value.propertyId
-            : propertyId // ignore: cast_nullable_to_non_nullable
+        propertyUnitId: null == propertyUnitId
+            ? _value.propertyUnitId
+            : propertyUnitId // ignore: cast_nullable_to_non_nullable
                   as String,
-        property: freezed == property
-            ? _value.property
-            : property // ignore: cast_nullable_to_non_nullable
-                  as MaintenancePropertySummaryModel?,
+        propertyUnit: freezed == propertyUnit
+            ? _value.propertyUnit
+            : propertyUnit // ignore: cast_nullable_to_non_nullable
+                  as MaintenanceUnitSummaryModel?,
         tenantId: freezed == tenantId
             ? _value.tenantId
             : tenantId // ignore: cast_nullable_to_non_nullable
@@ -1154,8 +1291,8 @@ class _$MaintenanceRequestModelImpl implements _MaintenanceRequestModel {
   const _$MaintenanceRequestModelImpl({
     required this.id,
     required this.organizationId,
-    required this.propertyId,
-    this.property,
+    required this.propertyUnitId,
+    this.propertyUnit,
     this.tenantId,
     this.tenant,
     required this.category,
@@ -1181,9 +1318,9 @@ class _$MaintenanceRequestModelImpl implements _MaintenanceRequestModel {
   @override
   final String organizationId;
   @override
-  final String propertyId;
+  final String propertyUnitId;
   @override
-  final MaintenancePropertySummaryModel? property;
+  final MaintenanceUnitSummaryModel? propertyUnit;
   @override
   final String? tenantId;
   @override
@@ -1225,7 +1362,7 @@ class _$MaintenanceRequestModelImpl implements _MaintenanceRequestModel {
 
   @override
   String toString() {
-    return 'MaintenanceRequestModel(id: $id, organizationId: $organizationId, propertyId: $propertyId, property: $property, tenantId: $tenantId, tenant: $tenant, category: $category, description: $description, priority: $priority, status: $status, assignedToId: $assignedToId, estimatedCost: $estimatedCost, actualCost: $actualCost, scheduledAt: $scheduledAt, startedAt: $startedAt, completedAt: $completedAt, attachments: $attachments, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'MaintenanceRequestModel(id: $id, organizationId: $organizationId, propertyUnitId: $propertyUnitId, propertyUnit: $propertyUnit, tenantId: $tenantId, tenant: $tenant, category: $category, description: $description, priority: $priority, status: $status, assignedToId: $assignedToId, estimatedCost: $estimatedCost, actualCost: $actualCost, scheduledAt: $scheduledAt, startedAt: $startedAt, completedAt: $completedAt, attachments: $attachments, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -1236,10 +1373,10 @@ class _$MaintenanceRequestModelImpl implements _MaintenanceRequestModel {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.organizationId, organizationId) ||
                 other.organizationId == organizationId) &&
-            (identical(other.propertyId, propertyId) ||
-                other.propertyId == propertyId) &&
-            (identical(other.property, property) ||
-                other.property == property) &&
+            (identical(other.propertyUnitId, propertyUnitId) ||
+                other.propertyUnitId == propertyUnitId) &&
+            (identical(other.propertyUnit, propertyUnit) ||
+                other.propertyUnit == propertyUnit) &&
             (identical(other.tenantId, tenantId) ||
                 other.tenantId == tenantId) &&
             (identical(other.tenant, tenant) || other.tenant == tenant) &&
@@ -1278,8 +1415,8 @@ class _$MaintenanceRequestModelImpl implements _MaintenanceRequestModel {
     runtimeType,
     id,
     organizationId,
-    propertyId,
-    property,
+    propertyUnitId,
+    propertyUnit,
     tenantId,
     tenant,
     category,
@@ -1318,8 +1455,8 @@ abstract class _MaintenanceRequestModel implements MaintenanceRequestModel {
   const factory _MaintenanceRequestModel({
     required final String id,
     required final String organizationId,
-    required final String propertyId,
-    final MaintenancePropertySummaryModel? property,
+    required final String propertyUnitId,
+    final MaintenanceUnitSummaryModel? propertyUnit,
     final String? tenantId,
     final TenantSummaryModel? tenant,
     required final String category,
@@ -1345,9 +1482,9 @@ abstract class _MaintenanceRequestModel implements MaintenanceRequestModel {
   @override
   String get organizationId;
   @override
-  String get propertyId;
+  String get propertyUnitId;
   @override
-  MaintenancePropertySummaryModel? get property;
+  MaintenanceUnitSummaryModel? get propertyUnit;
   @override
   String? get tenantId;
   @override

@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { OwnersService } from './owners.service';
-import { CreateOwnerDto, UpdateOwnerDto, QueryOwnerDto } from './dto';
+import { CreateOwnerDto, UpdateOwnerDto, QueryOwnerDto, LinkOwnerUserDto } from './dto';
 import { JwtAuthGuard, PermissionsGuard } from '../../common/guards';
 import { Permissions, CurrentUser } from '../../common/decorators';
 import { ParseUuidPipe } from '../../common/pipes';
@@ -17,13 +17,13 @@ export class OwnersController {
   @Get()
   @Permissions('owners:read')
   findAll(@CurrentUser() user: AuthenticatedUser, @Query() query: QueryOwnerDto) {
-    return this.service.findAll(user.organizationId, query);
+    return this.service.findAll(user, query);
   }
 
   @Get(':id')
   @Permissions('owners:read')
-  findOne(@Param('id', ParseUuidPipe) id: string) {
-    return this.service.findOne(id);
+  findOne(@CurrentUser() user: AuthenticatedUser, @Param('id', ParseUuidPipe) id: string) {
+    return this.service.findOne(id, user);
   }
 
   @Post()
@@ -36,6 +36,12 @@ export class OwnersController {
   @Permissions('owners:update')
   update(@Param('id', ParseUuidPipe) id: string, @Body() dto: UpdateOwnerDto) {
     return this.service.update(id, dto);
+  }
+
+  @Patch(':id/link-user')
+  @Permissions('owners:update')
+  linkUser(@Param('id', ParseUuidPipe) id: string, @Body() dto: LinkOwnerUserDto) {
+    return this.service.linkUser(id, dto);
   }
 
   @Delete(':id')

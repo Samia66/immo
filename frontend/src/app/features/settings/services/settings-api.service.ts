@@ -31,8 +31,11 @@ export class SettingsApiService {
     return this.http.get<PaginatedResult<User>>(`${this.apiUrl}/users`, { params });
   }
 
-  createUser(dto: CreateUserDto): Observable<User> {
-    return this.http.post<User>(`${this.apiUrl}/users`, dto);
+  createUser(dto: CreateUserDto): Observable<User & { tempPassword: string }> {
+    // The backend's email delivery is a logged stub (no real SMTP yet), so it returns the
+    // generated temporary password once, directly in this response, as the only way the admin
+    // can currently retrieve it — see users.service.ts's `create()`.
+    return this.http.post<User & { tempPassword: string }>(`${this.apiUrl}/users`, dto);
   }
 
   updateUser(id: string, dto: UpdateUserDto): Observable<User> {

@@ -16,6 +16,7 @@ import { UsersModule } from './modules/users/users.module';
 import { RolesModule } from './modules/roles/roles.module';
 import { PermissionsModule } from './modules/permissions/permissions.module';
 import { PropertiesModule } from './modules/properties/properties.module';
+import { PropertyUnitsModule } from './modules/property-units/property-units.module';
 import { OwnersModule } from './modules/owners/owners.module';
 import { TenantsModule } from './modules/tenants/tenants.module';
 import { LeasesModule } from './modules/leases/leases.module';
@@ -26,6 +27,9 @@ import { VisitsModule } from './modules/visits/visits.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { AuditLogModule } from './modules/audit-log/audit-log.module';
+import { TenantInvitationsModule } from './modules/tenant-invitations/tenant-invitations.module';
+import { OwnerInvitationsModule } from './modules/owners/owner-invitations/owner-invitations.module';
+import { ReceiptsModule } from './modules/receipts/receipts.module';
 
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { PrismaExceptionFilter } from './common/filters/prisma-exception.filter';
@@ -59,6 +63,7 @@ import { AuditInterceptor } from './common/interceptors/audit.interceptor';
     RolesModule,
     PermissionsModule,
     PropertiesModule,
+    PropertyUnitsModule,
     OwnersModule,
     TenantsModule,
     LeasesModule,
@@ -69,6 +74,9 @@ import { AuditInterceptor } from './common/interceptors/audit.interceptor';
     NotificationsModule,
     DashboardModule,
     AuditLogModule,
+    TenantInvitationsModule,
+    OwnerInvitationsModule,
+    ReceiptsModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: ThrottlerGuard },

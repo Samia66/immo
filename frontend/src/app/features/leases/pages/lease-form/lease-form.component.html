@@ -16,6 +16,24 @@
     </mat-form-field>
 
     <mat-form-field appearance="outline">
+      <mat-label>Logement</mat-label>
+      <mat-select formControlName="propertyUnitId" required [disabled]="!form.controls.propertyId.value">
+        @for (unit of units(); track unit.id) {
+          <mat-option [value]="unit.id">
+            {{ unit.label ?? unit.reference }} — {{ unit.monthlyRent }} XOF
+          </mat-option>
+        } @empty {
+          @if (!loadingUnits() && form.controls.propertyId.value) {
+            <mat-option [value]="''" disabled>Aucun logement disponible</mat-option>
+          }
+        }
+      </mat-select>
+      @if (loadingUnits()) {
+        <mat-spinner matSuffix diameter="18" />
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
       <mat-label>Locataire</mat-label>
       <mat-select formControlName="tenantId" required>
         @for (tenant of tenants(); track tenant.id) {

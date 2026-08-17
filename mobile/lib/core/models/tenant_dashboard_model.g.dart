@@ -6,12 +6,32 @@ part of 'tenant_dashboard_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+_$DashboardPropertyUnitSummaryModelImpl
+_$$DashboardPropertyUnitSummaryModelImplFromJson(Map<String, dynamic> json) =>
+    _$DashboardPropertyUnitSummaryModelImpl(
+      id: json['id'] as String,
+      reference: json['reference'] as String,
+      label: json['label'] as String?,
+      property: LeasePropertySummaryModel.fromJson(
+        json['property'] as Map<String, dynamic>,
+      ),
+    );
+
+Map<String, dynamic> _$$DashboardPropertyUnitSummaryModelImplToJson(
+  _$DashboardPropertyUnitSummaryModelImpl instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'reference': instance.reference,
+  'label': instance.label,
+  'property': instance.property,
+};
+
 _$ActiveLeaseSummaryModelImpl _$$ActiveLeaseSummaryModelImplFromJson(
   Map<String, dynamic> json,
 ) => _$ActiveLeaseSummaryModelImpl(
   id: json['id'] as String,
-  property: PropertySummaryModel.fromJson(
-    json['property'] as Map<String, dynamic>,
+  propertyUnit: DashboardPropertyUnitSummaryModel.fromJson(
+    json['propertyUnit'] as Map<String, dynamic>,
   ),
   startDate: DateTime.parse(json['startDate'] as String),
   endDate: json['endDate'] == null
@@ -24,7 +44,7 @@ Map<String, dynamic> _$$ActiveLeaseSummaryModelImplToJson(
   _$ActiveLeaseSummaryModelImpl instance,
 ) => <String, dynamic>{
   'id': instance.id,
-  'property': instance.property,
+  'propertyUnit': instance.propertyUnit,
   'startDate': instance.startDate.toIso8601String(),
   'endDate': instance.endDate?.toIso8601String(),
   'rentAmount': instance.rentAmount,
