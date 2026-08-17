@@ -43,7 +43,7 @@ export class TenantsController {
   @Post()
   @Permissions('tenants:create')
   create(@CurrentUser() user: AuthenticatedUser, @Body() dto: CreateTenantDto) {
-    return this.service.create(user.organizationId, dto);
+    return this.service.create(user, dto);
   }
 
   @Patch(':id')

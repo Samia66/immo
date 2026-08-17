@@ -16,21 +16,33 @@ export class TenantsService {
   ) {}
 
   /**
-   * V2 pivot (spec §0/§6): a GESTIONNAIRE only sees tenants with at least one Lease they manage
-   * (denormalized Lease.managerId). ADMIN_AGENCE/SUPER_ADMIN keep the unscoped org-wide view.
+   * V2 pivot (spec §0/§6): a GESTIONNAIRE sees tenants they created (createdByManagerId) OR that
+   * have at least one Lease they manage (denormalized Lease.managerId) — the "created" branch is
+   * required because a freshly-created tenant has no Lease yet, and would otherwise be invisible
+   * to the very manager who just created it. ADMIN_AGENCE/SUPER_ADMIN keep the unscoped org-wide view.
    */
   async findAll(user: AuthenticatedUser, query: QueryTenantDto) {
     const where: Prisma.TenantWhereInput = { organizationId: user.organizationId, deletedAt: null };
+    const andConditions: Prisma.TenantWhereInput[] = [];
+
     if (query.search) {
-      where.OR = [
-        { fullName: { contains: query.search, mode: 'insensitive' } },
-        { phone: { contains: query.search, mode: 'insensitive' } },
-        { email: { contains: query.search, mode: 'insensitive' } },
-      ];
+      andConditions.push({
+        OR: [
+          { fullName: { contains: query.search, mode: 'insensitive' } },
+          { phone: { contains: query.search, mode: 'insensitive' } },
+          { email: { contains: query.search, mode: 'insensitive' } },
+        ],
+      });
     }
 
     if (user.roleName === RoleName.GESTIONNAIRE) {
-      where.leases = { some: { managerId: user.id } };
+      andConditions.push({
+        OR: [{ createdByManagerId: user.id }, { leases: { some: { managerId: user.id } } }],
+      });
+    }
+
+    if (andConditions.length > 0) {
+      where.AND = andConditions;
     }
 
     const [items, total] = await Promise.all([
@@ -52,7 +64,7 @@ export class TenantsService {
     const tenant = await this.repo.findById(id);
     if (!tenant) throw new NotFoundException('Locataire introuvable.');
 
-    if (user.roleName === RoleName.GESTIONNAIRE) {
+    if (user.roleName === RoleName.GESTIONNAIRE && tenant.createdByManagerId !== user.id) {
       const managed = await this.prisma.lease.findFirst({ where: { tenantId: id, managerId: user.id } });
       if (!managed) throw new NotFoundException('Locataire introuvable.');
     }
@@ -87,13 +99,14 @@ export class TenantsService {
    * link-user/invitation step needed. Otherwise the tenant is created unlinked, the "new
    * account, needs invitation" path (§12/§13): a manager later calls POST /leases/:id/invite.
    */
-  async create(organizationId: string, dto: CreateTenantDto) {
-    const matchedUserId = await this.findLinkableExistingUser(organizationId, dto.email, dto.phone);
+  async create(user: AuthenticatedUser, dto: CreateTenantDto) {
+    const matchedUserId = await this.findLinkableExistingUser(user.organizationId, dto.email, dto.phone);
 
     const tenant = await this.repo.create({
-      organization: { connect: { id: organizationId } },
+      organization: { connect: { id: user.organizationId } },
       ...dto,
       user: matchedUserId ? { connect: { id: matchedUserId } } : undefined,
+      createdByManager: user.roleName === RoleName.GESTIONNAIRE ? { connect: { id: user.id } } : undefined,
     });
     return TenantsMapper.toResponse(tenant);
   }

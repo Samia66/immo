@@ -237,6 +237,7 @@ model User {
   managedProperties    PropertyManagement[] @relation("PropertyManagementManager")
   ownerInvitationsSent OwnerInvitation[]    @relation("OwnerInvitationManager")
   leasesManaged        Lease[]              @relation("LeaseManager")
+  tenantsCreated       Tenant[]             @relation("TenantCreatedByManager")
 
   @@unique([organizationId, email])
   @@index([organizationId])
@@ -425,6 +426,12 @@ model Tenant {
   userId String? @unique // lien optionnel vers un compte User (portail locataire)
   user   User?   @relation("UserTenantProfile", fields: [userId], references: [id])
 
+  // V2 pivot: qui a créé cette fiche (typiquement le GESTIONNAIRE) — nécessaire pour que le
+  // gestionnaire voie ses propres locataires avant même la création d'un premier contrat
+  // (le scoping normal via Lease.managerId ne s'applique qu'une fois un bail créé).
+  createdByManagerId String?
+  createdByManager   User?   @relation("TenantCreatedByManager", fields: [createdByManagerId], references: [id])
+
   fullName      String
   phone         String
   email         String?
@@ -441,6 +448,7 @@ model Tenant {
   deletedAt DateTime?
 
   @@index([organizationId])
+  @@index([createdByManagerId])
 }
 
 model TenantDocument {
