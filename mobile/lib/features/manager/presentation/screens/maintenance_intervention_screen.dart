@@ -13,12 +13,14 @@ import '../../../../shared/widgets/error_view.dart';
 import '../../../../shared/widgets/loading_skeleton.dart';
 import '../../../../shared/widgets/photo_picker_widget.dart';
 import '../../../../shared/widgets/status_chip.dart';
+import '../../../auth/presentation/providers/auth_provider.dart';
 import '../providers/manager_providers.dart';
 
-/// Property/tenant info, "start intervention" (ASSIGNEE → EN_COURS), and
-/// before-photo capture. The mobile field-manager flow only drives
-/// ASSIGNEE→EN_COURS here and EN_COURS→TERMINEE on the completion screen -
-/// the rest of the maintenance state machine is office-side.
+/// Request triage (NOUVELLE → VALIDEE → ASSIGNEE, to the manager themselves -
+/// there's no separate office/technician role in this app, the manager runs
+/// the whole flow from mobile), "start intervention" (ASSIGNEE → EN_COURS),
+/// and before-photo capture; EN_COURS → TERMINEE happens on the completion
+/// screen.
 class MaintenanceInterventionScreen extends ConsumerStatefulWidget {
   const MaintenanceInterventionScreen({super.key, required this.requestId});
 
@@ -34,11 +36,47 @@ class _MaintenanceInterventionScreenState extends ConsumerState<MaintenanceInter
   List<XFile> _beforePhotos = [];
   bool _starting = false;
   bool _uploadingPhotos = false;
+  bool _validating = false;
+  bool _assigning = false;
 
   @override
   void dispose() {
     _notesController.dispose();
     super.dispose();
+  }
+
+  Future<void> _validate() async {
+    setState(() => _validating = true);
+    try {
+      await ref.read(managerMaintenanceRepositoryProvider).validate(widget.requestId);
+      ref.invalidate(managerMaintenanceDetailProvider(widget.requestId));
+      ref.read(managerMaintenanceQueueProvider.notifier).refresh();
+    } on ApiException catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.message)));
+    } finally {
+      if (mounted) setState(() => _validating = false);
+    }
+  }
+
+  Future<void> _assignToMe() async {
+    final userId = ref.read(authNotifierProvider).user?.id;
+    if (userId == null) return;
+    setState(() => _assigning = true);
+    try {
+      await ref.read(managerMaintenanceRepositoryProvider).assign(
+            id: widget.requestId,
+            assignedToId: userId,
+          );
+      ref.invalidate(managerMaintenanceDetailProvider(widget.requestId));
+      ref.read(managerMaintenanceQueueProvider.notifier).refresh();
+      ref.read(assignedMaintenanceProvider.notifier).refresh();
+    } on ApiException catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.message)));
+    } finally {
+      if (mounted) setState(() => _assigning = false);
+    }
   }
 
   Future<void> _start() async {
@@ -157,6 +195,24 @@ class _MaintenanceInterventionScreenState extends ConsumerState<MaintenanceInter
                   ),
                 ),
                 const SizedBox(height: 20),
+                if (request.status == MaintenanceStatus.NOUVELLE)
+                  FilledButton.icon(
+                    onPressed: _validating ? null : _validate,
+                    icon: _validating
+                        ? const SizedBox(
+                            width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
+                        : const Icon(Icons.check_circle_outline),
+                    label: const Text('Valider la demande'),
+                  ),
+                if (request.status == MaintenanceStatus.VALIDEE)
+                  FilledButton.icon(
+                    onPressed: _assigning ? null : _assignToMe,
+                    icon: _assigning
+                        ? const SizedBox(
+                            width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
+                        : const Icon(Icons.assignment_ind_outlined),
+                    label: const Text("M'assigner cette demande"),
+                  ),
                 if (request.status == MaintenanceStatus.ASSIGNEE)
                   FilledButton.icon(
                     onPressed: _starting ? null : _start,

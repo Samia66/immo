@@ -64,6 +64,7 @@ class AppRoutes {
   static const String managerPayments = '/manager/payments';
   // Overflow menu (spec §8/§52): not primary tabs, reachable from the
   // manager home screen's account sheet.
+  static const String managerMaintenanceQueue = '/manager/maintenance';
   static const String managerAssigned = '/manager/assigned';
   static const String managerAssignedDetail = '/manager/assigned/:id';
   static const String managerAssignedComplete = '/manager/assigned/:id/complete';

@@ -111,6 +111,32 @@ final assignedMaintenanceProvider = StateNotifierProvider<AssignedMaintenanceNot
   return AssignedMaintenanceNotifier(ref.watch(managerMaintenanceRepositoryProvider), userId);
 });
 
+/// The general maintenance queue (every request on a managed property,
+/// regardless of assignee) - what a manager needs to see a tenant's
+/// brand-new NOUVELLE request, which [AssignedMaintenanceNotifier] above
+/// never shows.
+class ManagerMaintenanceQueueNotifier extends PaginatedNotifier<MaintenanceRequestModel> {
+  ManagerMaintenanceQueueNotifier(this._repository) : super(pageSize: 20);
+
+  final ManagerMaintenanceRepository _repository;
+  MaintenanceStatus? statusFilter;
+
+  @override
+  Future<PaginatedResult<MaintenanceRequestModel>> fetchPage(int page, int limit) {
+    return _repository.list(page: page, limit: limit, status: statusFilter);
+  }
+
+  void setStatusFilter(MaintenanceStatus? status) {
+    statusFilter = status;
+    loadFirstPage();
+  }
+}
+
+final managerMaintenanceQueueProvider = StateNotifierProvider<ManagerMaintenanceQueueNotifier,
+    AsyncValue<List<MaintenanceRequestModel>>>((ref) {
+  return ManagerMaintenanceQueueNotifier(ref.watch(managerMaintenanceRepositoryProvider));
+});
+
 final managerMaintenanceDetailProvider =
     FutureProvider.family<MaintenanceRequestModel, String>((ref, id) async {
   return ref.watch(managerMaintenanceRepositoryProvider).getDetail(id);

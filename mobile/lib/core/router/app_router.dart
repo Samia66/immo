@@ -27,6 +27,7 @@ import '../../features/manager/presentation/screens/leases/manager_leases_screen
 import '../../features/manager/presentation/screens/leases/new_lease_screen.dart';
 import '../../features/manager/presentation/screens/maintenance_completion_screen.dart';
 import '../../features/manager/presentation/screens/maintenance_intervention_screen.dart';
+import '../../features/manager/presentation/screens/manager_maintenance_queue_screen.dart';
 import '../../features/manager/presentation/screens/manager_home_screen.dart';
 import '../../features/manager/presentation/screens/manager_profile_screen.dart';
 import '../../features/manager/presentation/screens/manager_property_detail_screen.dart';
@@ -342,6 +343,10 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => ManagerLeaseDetailScreen(leaseId: state.pathParameters['id']!),
       ),
       // --- Manager overflow menu (spec §8/§52) ----------------------------
+      GoRoute(
+        path: AppRoutes.managerMaintenanceQueue,
+        builder: (context, state) => const ManagerMaintenanceQueueScreen(),
+      ),
       GoRoute(
         path: AppRoutes.managerAssigned,
         builder: (context, state) => const AssignedMaintenanceScreen(),

@@ -5,13 +5,68 @@ import '../../../core/models/maintenance_model.dart';
 import '../../../core/models/paginated_result.dart';
 import '../../../core/network/api_exception.dart';
 
-/// Field-manager view of maintenance requests: `GET /maintenance` filtered by
-/// `assignedToId` (the current user), plus the status-transition and
-/// attachment-upload actions the field workflow needs.
+/// Manager view of maintenance requests: `GET /maintenance` either unfiltered
+/// (the general queue, scoped server-side to this manager's own managed
+/// properties) or filtered by `assignedToId` (the current user's "field"
+/// work), plus the validate/assign/status-transition and attachment-upload
+/// actions the manager workflow needs.
 class ManagerMaintenanceRepository {
   ManagerMaintenanceRepository(this._dio);
 
   final Dio _dio;
+
+  /// The general queue: every request on a property this manager manages,
+  /// regardless of who (if anyone) it's assigned to. This is what surfaces a
+  /// brand-new NOUVELLE request a tenant just created - `assignedTo()` below
+  /// never will, since a new request has no assignee yet.
+  Future<PaginatedResult<MaintenanceRequestModel>> list({
+    int page = 1,
+    int limit = 20,
+    MaintenanceStatus? status,
+  }) async {
+    try {
+      final response = await _dio.get<Map<String, dynamic>>('/maintenance', queryParameters: {
+        'page': page,
+        'limit': limit,
+        if (status != null) 'status': status.name,
+      });
+      return PaginatedResult<MaintenanceRequestModel>.fromJson(
+        response.data!,
+        (json) => MaintenanceRequestModel.fromJson(json as Map<String, dynamic>),
+      );
+    } on DioException catch (e) {
+      throw ApiException.fromDioException(e);
+    }
+  }
+
+  /// NOUVELLE -> VALIDEE.
+  Future<MaintenanceRequestModel> validate(String id) async {
+    try {
+      final response = await _dio.patch<Map<String, dynamic>>('/maintenance/$id/validate');
+      return MaintenanceRequestModel.fromJson(response.data!);
+    } on DioException catch (e) {
+      throw ApiException.fromDioException(e);
+    }
+  }
+
+  /// VALIDEE -> ASSIGNEE.
+  Future<MaintenanceRequestModel> assign({
+    required String id,
+    required String assignedToId,
+    DateTime? scheduledAt,
+    num? estimatedCost,
+  }) async {
+    try {
+      final response = await _dio.patch<Map<String, dynamic>>('/maintenance/$id/assign', data: {
+        'assignedToId': assignedToId,
+        if (scheduledAt != null) 'scheduledAt': scheduledAt.toIso8601String(),
+        'estimatedCost': ?estimatedCost,
+      });
+      return MaintenanceRequestModel.fromJson(response.data!);
+    } on DioException catch (e) {
+      throw ApiException.fromDioException(e);
+    }
+  }
 
   Future<PaginatedResult<MaintenanceRequestModel>> assignedTo({
     required String userId,
