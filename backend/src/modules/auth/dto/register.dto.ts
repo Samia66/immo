@@ -10,9 +10,15 @@ export class RegisterDto {
   @IsString()
   organizationName?: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional({ description: 'Email du compte. Un email ou un téléphone est requis.' })
+  @IsOptional()
   @IsEmail()
-  email: string;
+  email?: string;
+
+  @ApiPropertyOptional({ description: 'Téléphone du compte, utilisable à la place de l\'email. Un email ou un téléphone est requis.' })
+  @IsOptional()
+  @IsString()
+  phone?: string;
 
   @ApiProperty()
   @IsString()

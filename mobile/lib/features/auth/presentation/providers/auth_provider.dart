@@ -101,7 +101,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
   /// `role == MobileRole.manager`.
   Future<void> register({
     String? organizationName,
-    required String email,
+    String? email,
+    String? phone,
     required String password,
     required String firstName,
     required String lastName,
@@ -111,6 +112,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       final user = await _repository.register(
         organizationName: organizationName,
         email: email,
+        phone: phone,
         password: password,
         firstName: firstName,
         lastName: lastName,

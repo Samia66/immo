@@ -27,4 +27,11 @@ export const validationSchema = Joi.object({
 
   FRONTEND_URL: Joi.string().default('http://localhost:4200'),
   POSTGRES_PASSWORD: Joi.string().optional(),
+
+  // Optional: real SMS delivery for OTP codes via the MTN Developer Portal
+  // (src/common/utils/mailer.util.ts's `sendSms`). Omit all three to keep the dev fallback
+  // (logged to the server console instead of sent).
+  MTN_CONSUMER_KEY: Joi.string().optional(),
+  MTN_CONSUMER_SECRET: Joi.string().optional(),
+  MTN_SENDER_ADDRESS: Joi.string().optional(),
 });

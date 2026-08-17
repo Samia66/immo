@@ -8,11 +8,9 @@ import '../providers/auth_provider.dart';
 /// is optional (backend falls back to "Espace de {prénom} {nom}" when left
 /// blank), so it's offered here as an optional field rather than required.
 ///
-/// NOTE (judgment call, see report): the real `RegisterDto` only accepts
-/// `organizationName?, email, password, firstName, lastName` - no `phone`
-/// field - and the backend's global `ValidationPipe` runs with
-/// `forbidNonWhitelisted: true`, so sending an extra `phone` key would 400.
-/// A phone field is therefore intentionally not collected here.
+/// Email and phone are both optional individually, but at least one of the
+/// two is required - checked in [_submit] since a per-field validator can't
+/// see the other field's value.
 class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});
 
@@ -26,11 +24,13 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
   final _emailController = TextEditingController();
+  final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
   bool _obscurePassword = true;
   bool _obscureConfirm = true;
+  String? _contactError;
 
   @override
   void dispose() {
@@ -38,17 +38,26 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     _firstNameController.dispose();
     _lastNameController.dispose();
     _emailController.dispose();
+    _phoneController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
   }
 
   void _submit() {
-    if (!_formKey.currentState!.validate()) return;
+    final email = _emailController.text.trim();
+    final phone = _phoneController.text.trim();
+    setState(() {
+      _contactError = (email.isEmpty && phone.isEmpty)
+          ? 'Renseignez un email ou un numéro de téléphone'
+          : null;
+    });
+    if (!_formKey.currentState!.validate() || _contactError != null) return;
     FocusScope.of(context).unfocus();
     ref.read(authNotifierProvider.notifier).register(
           organizationName: _organizationNameController.text.trim(),
-          email: _emailController.text.trim(),
+          email: email.isEmpty ? null : email,
+          phone: phone.isEmpty ? null : phone,
           password: _passwordController.text,
           firstName: _firstNameController.text.trim(),
           lastName: _lastNameController.text.trim(),
@@ -126,14 +135,25 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
                       decoration: const InputDecoration(
-                        labelText: 'Email',
+                        labelText: 'Email (facultatif si téléphone renseigné)',
                         prefixIcon: Icon(Icons.email_outlined),
                       ),
                       validator: (value) {
-                        if (value == null || value.trim().isEmpty) return 'Email requis';
-                        if (!value.contains('@')) return 'Email invalide';
+                        if (value != null && value.trim().isNotEmpty && !value.contains('@')) {
+                          return 'Email invalide';
+                        }
                         return null;
                       },
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _phoneController,
+                      keyboardType: TextInputType.phone,
+                      decoration: InputDecoration(
+                        labelText: 'Téléphone (facultatif si email renseigné)',
+                        prefixIcon: const Icon(Icons.phone_outlined),
+                        errorText: _contactError,
+                      ),
                     ),
                     const SizedBox(height: 16),
                     TextFormField(

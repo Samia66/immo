@@ -178,19 +178,33 @@ export class DashboardService {
       return { activeLease: null, nextPayment: null, recentPayments: [] };
     }
 
-    const activeLease = await this.prisma.lease.findFirst({
-      where: { tenantId: tenant.id, status: 'ACTIF' },
-      include: {
-        propertyUnit: {
-          select: {
-            id: true,
-            reference: true,
-            label: true,
-            property: { select: { id: true, title: true, reference: true, addressLine: true, city: true } },
-          },
+    const leaseInclude = {
+      propertyUnit: {
+        select: {
+          id: true,
+          reference: true,
+          label: true,
+          property: { select: { id: true, title: true, reference: true, addressLine: true, city: true } },
         },
       },
-    });
+    } as const;
+
+    // Prefer an ACTIF lease; if there isn't one yet, fall back to the most
+    // recent lease still pending the tenant's response (ENVOYE/CONSULTE/
+    // ACCEPTE) so the mobile app has something to show the accept/refuse
+    // actions for. Without this fallback a freshly-sent lease is invisible
+    // to the tenant - "Aucun bail actif" - with no way to reach the screen
+    // that lets them accept or refuse it.
+    const activeLease =
+      (await this.prisma.lease.findFirst({
+        where: { tenantId: tenant.id, status: 'ACTIF' },
+        include: leaseInclude,
+      })) ??
+      (await this.prisma.lease.findFirst({
+        where: { tenantId: tenant.id, status: { in: ['ENVOYE', 'CONSULTE', 'ACCEPTE'] } },
+        orderBy: { createdAt: 'desc' },
+        include: leaseInclude,
+      }));
 
     const nextPayment = activeLease
       ? await this.prisma.payment.findFirst({

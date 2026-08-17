@@ -74,8 +74,11 @@ class ManagerMaintenanceRepository {
       final formData = FormData.fromMap({
         'phase': phase.name,
         'files': [
+          // MultipartFile.fromFile() reads via dart:io, unsupported on Flutter
+          // Web (file.path there is a blob: URL, not a real filesystem path)
+          // - fromBytes() works on every platform.
           for (final file in files)
-            await MultipartFile.fromFile(file.path, filename: file.name),
+            MultipartFile.fromBytes(await file.readAsBytes(), filename: file.name),
         ],
       });
       await _dio.post('/maintenance/$requestId/attachments', data: formData);

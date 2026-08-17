@@ -93,10 +93,11 @@ export class MaintenanceController {
     }),
   )
   addAttachments(
+    @CurrentUser() user: AuthenticatedUser,
     @Param('id', ParseUuidPipe) id: string,
     @Body() dto: UploadMaintenanceAttachmentDto,
     @UploadedFiles() files: Express.Multer.File[],
   ) {
-    return this.attachmentsService.addAttachments(id, dto.phase, files ?? []);
+    return this.attachmentsService.addAttachments(id, dto.phase, files ?? [], user);
   }
 }

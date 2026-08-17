@@ -276,6 +276,7 @@ export const ROLE_PERMISSIONS: Record<Exclude<RoleName, 'SUPER_ADMIN'>, string[]
     'maintenance:read_detail',
     'maintenance:create',
     'maintenance:read_own',
+    'maintenance:manage_attachments',
     'notifications:read',
     'notifications:manage',
     'dashboard:tenant',

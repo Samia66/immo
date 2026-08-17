@@ -1,9 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsString, MinLength } from 'class-validator';
+import { IsNotEmpty, IsString, MinLength } from 'class-validator';
 
 export class LoginDto {
-  @ApiProperty()
-  @IsEmail()
+  @ApiProperty({
+    description:
+      "Email, ou numéro de téléphone pour un compte activé par invitation (locataire/propriétaire) sans email renseigné.",
+  })
+  @IsString()
+  @IsNotEmpty()
   email: string;
 
   @ApiProperty()

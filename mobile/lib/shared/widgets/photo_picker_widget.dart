@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -98,11 +98,26 @@ class PhotoPickerWidget extends StatelessWidget {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12),
-                    child: Image.file(
-                      File(file.path),
-                      width: 88,
-                      height: 88,
-                      fit: BoxFit.cover,
+                    // `dart:io`'s File isn't supported on Flutter Web, so the
+                    // thumbnail is built from bytes (XFile.readAsBytes works
+                    // on every platform) rather than Image.file.
+                    child: FutureBuilder<Uint8List>(
+                      future: file.readAsBytes(),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          return Container(
+                            width: 88,
+                            height: 88,
+                            color: theme.colorScheme.surfaceContainerHighest,
+                          );
+                        }
+                        return Image.memory(
+                          snapshot.data!,
+                          width: 88,
+                          height: 88,
+                          fit: BoxFit.cover,
+                        );
+                      },
                     ),
                   ),
                   Positioned(

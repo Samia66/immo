@@ -86,14 +86,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       keyboardType: TextInputType.emailAddress,
                       textInputAction: TextInputAction.next,
                       decoration: const InputDecoration(
-                        labelText: 'Email',
-                        prefixIcon: Icon(Icons.email_outlined),
+                        labelText: 'Email ou téléphone',
+                        prefixIcon: Icon(Icons.person_outline),
                       ),
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
-                          return 'Veuillez saisir votre email';
+                          return 'Veuillez saisir votre email ou téléphone';
                         }
-                        if (!value.contains('@')) return 'Email invalide';
                         return null;
                       },
                     ),

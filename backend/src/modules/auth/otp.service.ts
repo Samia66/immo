@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { randomInt } from 'crypto';
 import { OtpPurpose } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
-import { logStubEmail, logStubSms } from '../../common/utils/mailer.util';
+import { logStubEmail, sendSms } from '../../common/utils/mailer.util';
 
 const OTP_TTL_MINUTES = 10;
 const MAX_ATTEMPTS = 5;
@@ -29,7 +29,7 @@ export class OtpService {
 
     const message = `Votre code de vérification est : ${code} (valide ${OTP_TTL_MINUTES} minutes).`;
     if (looksLikePhone(contact)) {
-      logStubSms(contact, message);
+      await sendSms(contact, message);
     } else {
       logStubEmail(contact, 'Votre code de vérification', message);
     }

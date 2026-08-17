@@ -15,6 +15,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { AppConfig } from '../../config/configuration';
 import { ROLE_LABELS, ROLE_PERMISSIONS } from '../../common/constants/permissions.constant';
 import { logStubEmail } from '../../common/utils/mailer.util';
+import { isEmailContact, syntheticEmailForPhone } from '../../common/utils/contact.util';
 import { RegisterDto } from './dto/register.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
@@ -27,6 +28,7 @@ interface RequestMeta {
 
 const RESET_TOKEN_PURPOSE = 'reset-password';
 const VERIFY_TOKEN_PURPOSE = 'verify-email';
+const MANAGER_SYNTHETIC_EMAIL_DOMAIN = 'manager.phone.local';
 
 @Injectable()
 export class AuthService {
@@ -42,6 +44,10 @@ export class AuthService {
   // Registration (self-service org onboarding, spec §8.1)
   // ---------------------------------------------------------------------
   async register(dto: RegisterDto): Promise<AuthResponseDto> {
+    if (!dto.email && !dto.phone) {
+      throw new BadRequestException('Un email ou un numéro de téléphone est requis.');
+    }
+
     // V2 pivot (spec §5.1): self-registration now creates a GESTIONNAIRE, not an ADMIN_AGENCE —
     // the mobile "Créer un compte" flow no longer assumes an agency name is the natural first
     // thing a self-registering manager types, so an empty/omitted organizationName falls back
@@ -94,10 +100,19 @@ export class AuthService {
 
       const gestionnaireRoleId = createdRoles.get('GESTIONNAIRE') as string;
 
+      // A phone-only signup still needs a User.email (required + unique-per-org, see schema),
+      // so it gets the same kind of synthetic placeholder as phone-activated tenant/owner
+      // accounts (see contact.util.ts) - the real contact is preserved in User.phone, and
+      // validateUser() already knows to look non-email identifiers up by phone.
+      const email = dto.email
+        ? dto.email.toLowerCase().trim()
+        : syntheticEmailForPhone(dto.phone as string, organization.id, MANAGER_SYNTHETIC_EMAIL_DOMAIN);
+
       const user = await tx.user.create({
         data: {
           organizationId: organization.id,
-          email: dto.email.toLowerCase().trim(),
+          email,
+          phone: dto.phone,
           passwordHash,
           firstName: dto.firstName,
           lastName: dto.lastName,
@@ -109,15 +124,17 @@ export class AuthService {
       return { organization, user, roleName: RoleName.GESTIONNAIRE };
     });
 
-    const verifyToken = this.jwt.sign(
-      { sub: result.user.id, purpose: VERIFY_TOKEN_PURPOSE },
-      { secret: this.config.get('jwt.accessSecret', { infer: true }), expiresIn: '24h' },
-    );
-    logStubEmail(
-      result.user.email,
-      'Vérifiez votre adresse email',
-      `Bienvenue sur la plateforme. Vérifiez votre email : ${this.config.get('frontendUrl', { infer: true })}/auth/verify-email/${verifyToken}`,
-    );
+    if (dto.email) {
+      const verifyToken = this.jwt.sign(
+        { sub: result.user.id, purpose: VERIFY_TOKEN_PURPOSE },
+        { secret: this.config.get('jwt.accessSecret', { infer: true }), expiresIn: '24h' },
+      );
+      logStubEmail(
+        result.user.email,
+        'Vérifiez votre adresse email',
+        `Bienvenue sur la plateforme. Vérifiez votre email : ${this.config.get('frontendUrl', { infer: true })}/auth/verify-email/${verifyToken}`,
+      );
+    }
 
     const permissions = ROLE_PERMISSIONS.GESTIONNAIRE;
     const accessToken = this.signAccessToken({
@@ -161,17 +178,28 @@ export class AuthService {
   // ---------------------------------------------------------------------
   // Login / credential validation (spec §14.1: bcrypt, account lockout)
   // ---------------------------------------------------------------------
-  async validateUser(email: string, password: string) {
-    const normalizedEmail = email.toLowerCase().trim();
+  async validateUser(identifier: string, password: string) {
+    const trimmedIdentifier = identifier.trim();
     // NOTE: email uniqueness is enforced per-organization (@@unique([organizationId, email])),
-    // not globally. LoginDto (per spec §6.1) only carries an email, so we resolve the first
+    // not globally. LoginDto (per spec §6.1) only carries one identifier, so we resolve the first
     // matching active account across organizations. A real multi-org-per-email deployment
     // would need an organization selector on the login form; documented as a known MVP
     // simplification.
-    const user = await this.prisma.user.findFirst({
-      where: { email: normalizedEmail, deletedAt: null },
-      include: { role: { include: { permissions: { include: { permission: true } } } } },
-    });
+    //
+    // Phone-activated tenants/owners (invitation + OTP flow, see TenantInvitationsService /
+    // OwnerInvitationsService) never type or see an email - their User.email is a synthetic
+    // placeholder generated at activation time. So a bare "@"-less identifier is looked up
+    // against User.phone instead of User.email, letting them log back in with the same phone
+    // number they activated with.
+    const user = isEmailContact(trimmedIdentifier)
+      ? await this.prisma.user.findFirst({
+          where: { email: trimmedIdentifier.toLowerCase(), deletedAt: null },
+          include: { role: { include: { permissions: { include: { permission: true } } } } },
+        })
+      : await this.prisma.user.findFirst({
+          where: { phone: trimmedIdentifier, deletedAt: null },
+          include: { role: { include: { permissions: { include: { permission: true } } } } },
+        });
 
     if (!user) {
       throw new UnauthorizedException('Identifiants invalides.');

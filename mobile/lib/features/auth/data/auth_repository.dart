@@ -34,7 +34,8 @@ class AuthRepository {
   /// session is persisted and applied the same way.
   Future<UserModel> register({
     String? organizationName,
-    required String email,
+    String? email,
+    String? phone,
     required String password,
     required String firstName,
     required String lastName,
@@ -43,7 +44,8 @@ class AuthRepository {
       final response = await _dio.post<Map<String, dynamic>>('/auth/register', data: {
         if (organizationName != null && organizationName.isNotEmpty)
           'organizationName': organizationName,
-        'email': email,
+        if (email != null && email.isNotEmpty) 'email': email,
+        if (phone != null && phone.isNotEmpty) 'phone': phone,
         'password': password,
         'firstName': firstName,
         'lastName': lastName,
