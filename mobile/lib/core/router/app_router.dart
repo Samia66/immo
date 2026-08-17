@@ -229,14 +229,17 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) =>
             PropertyDetailScreen(propertyId: state.pathParameters['id']!),
       ),
-      GoRoute(
-        path: AppRoutes.agentVisitDetail,
-        builder: (context, state) => VisitDetailScreen(visitId: state.pathParameters['id']!),
-      ),
+      // Static "new" path must be registered before the ":id" detail route below — same
+      // ordering pitfall as the manager property routes (go_router matches in declaration
+      // order and does not prioritize static segments over parameterized ones).
       GoRoute(
         path: AppRoutes.agentVisitNew,
         builder: (context, state) =>
             NewVisitScreen(initialPropertyId: state.extra as String?),
+      ),
+      GoRoute(
+        path: AppRoutes.agentVisitDetail,
+        builder: (context, state) => VisitDetailScreen(visitId: state.pathParameters['id']!),
       ),
 
       // --- Manager (GESTIONNAIRE) -----------------------------------------
@@ -310,14 +313,17 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: AppRoutes.managerOwnerDetail,
         builder: (context, state) => OwnerDetailScreen(ownerId: state.pathParameters['id']!),
       ),
+      // Static "new" path must be registered before the ":id" detail route below — go_router
+      // matches routes in declaration order and does not prioritize static segments over
+      // parameterized ones (unlike Angular), so ":id" would otherwise greedily match "new" too.
+      GoRoute(
+        path: AppRoutes.managerPropertyNew,
+        builder: (context, state) => const NewPropertyScreen(),
+      ),
       GoRoute(
         path: AppRoutes.managerPropertyDetail,
         builder: (context, state) =>
             ManagerPropertyDetailScreen(propertyId: state.pathParameters['id']!),
-      ),
-      GoRoute(
-        path: AppRoutes.managerPropertyNew,
-        builder: (context, state) => const NewPropertyScreen(),
       ),
       GoRoute(
         path: AppRoutes.managerTenants,
