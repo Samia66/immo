@@ -44,6 +44,29 @@ export function daysBetween(a: Date, b: Date): number {
   return Math.round((startOfDay(b).getTime() - startOfDay(a).getTime()) / msPerDay);
 }
 
+/** Adds `months` calendar months to `date`, then pins the result to day-of-month `day`. Assumes
+ * `day` <= 28 (see CreateLeaseDto.rentDueDay validation), so it's always a valid date regardless
+ * of the resulting month's length. */
+export function addMonthsSnapToDay(date: Date, months: number, day: number): Date {
+  const result = addMonths(date, months);
+  result.setDate(day);
+  return result;
+}
+
+/** The first occurrence of day-of-month `day` on or after `date`: same month if `day` hasn't
+ * passed yet, otherwise the next month. Used to align a lease's first rent payment to its
+ * `rentDueDay` regardless of which day of the month the lease actually starts on. */
+export function firstDueDateOnOrAfter(date: Date, day: number): Date {
+  const result = new Date(date);
+  if (result.getDate() <= day) {
+    result.setDate(day);
+  } else {
+    result.setMonth(result.getMonth() + 1);
+    result.setDate(day);
+  }
+  return result;
+}
+
 export function monthKey(date: Date): string {
   const y = date.getFullYear();
   const m = `${date.getMonth() + 1}`.padStart(2, '0');

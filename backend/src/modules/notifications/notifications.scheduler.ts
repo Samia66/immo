@@ -2,7 +2,13 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { PrismaService } from '../../prisma/prisma.service';
 import { NotificationsService } from './notifications.service';
-import { addDays, addMonths, endOfDay, frequencyToMonths, startOfDay } from '../../common/utils/date-helpers.util';
+import {
+  addDays,
+  addMonthsSnapToDay,
+  endOfDay,
+  frequencyToMonths,
+  startOfDay,
+} from '../../common/utils/date-helpers.util';
 
 /**
  * Platform-wide scheduled jobs (spec §8.5). These run OUTSIDE any HTTP request, so no
@@ -19,10 +25,10 @@ export class NotificationsScheduler {
     private readonly notifications: NotificationsService,
   ) {}
 
-  /** Rappels loyers à J-5 — quotidien 08:00 */
+  /** Rappels loyers à J-2 — quotidien 08:00 */
   @Cron('0 8 * * *')
   async rentReminderJob() {
-    const target = addDays(new Date(), 5);
+    const target = addDays(new Date(), 2);
     const payments = await this.prisma.payment.findMany({
       where: { status: 'EN_ATTENTE', dueDate: { gte: startOfDay(target), lte: endOfDay(target) } },
       include: { lease: { include: { tenant: true } } },
@@ -39,6 +45,28 @@ export class NotificationsScheduler {
       });
     }
     this.logger.log(`rentReminderJob: ${payments.length} rappel(s) envoyé(s).`);
+  }
+
+  /** Rappel le jour même de l'échéance, si le loyer n'est toujours pas payé — quotidien 08:15 */
+  @Cron('15 8 * * *')
+  async dueTodayReminderJob() {
+    const today = new Date();
+    const payments = await this.prisma.payment.findMany({
+      where: { status: 'EN_ATTENTE', dueDate: { gte: startOfDay(today), lte: endOfDay(today) } },
+      include: { lease: { include: { tenant: true } } },
+    });
+
+    for (const payment of payments) {
+      if (!payment.lease.tenant.userId) continue;
+      await this.notifications.notify({
+        organizationId: payment.organizationId,
+        userId: payment.lease.tenant.userId,
+        type: 'RAPPEL_LOYER',
+        title: "Loyer à régler aujourd'hui",
+        message: `Votre loyer de ${payment.amountDue} est dû aujourd'hui.`,
+      });
+    }
+    this.logger.log(`dueTodayReminderJob: ${payments.length} rappel(s) envoyé(s).`);
   }
 
   /** Marque EN_RETARD les paiements échus non payés — quotidien 09:00 */
@@ -161,7 +189,7 @@ export class NotificationsScheduler {
     for (const lease of activeLeases) {
       const lastPayment = lease.payments[0];
       const nextDueDate = lastPayment
-        ? addMonths(lastPayment.dueDate, frequencyToMonths(lease.paymentFrequency))
+        ? addMonthsSnapToDay(lastPayment.dueDate, frequencyToMonths(lease.paymentFrequency), lease.rentDueDay)
         : lease.startDate;
 
       if (nextDueDate > monthEnd) continue;

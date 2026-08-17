@@ -1,6 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { PaymentFrequency } from '@prisma/client';
-import { IsDateString, IsEnum, IsNumber, IsOptional, IsUUID, Min } from 'class-validator';
+import { IsDateString, IsEnum, IsInt, IsNumber, IsOptional, IsUUID, Max, Min } from 'class-validator';
 
 export class CreateLeaseDto {
   @ApiProperty()
@@ -33,6 +33,16 @@ export class CreateLeaseDto {
   @ApiProperty({ enum: PaymentFrequency })
   @IsEnum(PaymentFrequency)
   paymentFrequency: PaymentFrequency;
+
+  @ApiPropertyOptional({
+    description: 'Jour du mois (1-28) où le loyer est dû. Par défaut le 5 de chaque mois.',
+    default: 5,
+  })
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  @Max(28)
+  rentDueDay?: number;
 
   @ApiProperty({ required: false })
   @IsOptional()

@@ -33,6 +33,7 @@ class _NewLeaseScreenState extends ConsumerState<NewLeaseScreen> {
   final _rentController = TextEditingController();
   final _depositController = TextEditingController();
   final _indexationController = TextEditingController();
+  final _rentDueDayController = TextEditingController(text: '5');
 
   PropertyModel? _property;
   PropertyUnitModel? _unit;
@@ -48,6 +49,7 @@ class _NewLeaseScreenState extends ConsumerState<NewLeaseScreen> {
     _rentController.dispose();
     _depositController.dispose();
     _indexationController.dispose();
+    _rentDueDayController.dispose();
     super.dispose();
   }
 
@@ -142,6 +144,7 @@ class _NewLeaseScreenState extends ConsumerState<NewLeaseScreen> {
       'rentAmount': num.parse(_rentController.text.trim()),
       'depositAmount': num.parse(_depositController.text.trim()),
       'paymentFrequency': _frequency.name,
+      'rentDueDay': int.parse(_rentDueDayController.text.trim()),
       'indexationRate': ?indexationRate,
     };
 
@@ -268,6 +271,20 @@ class _NewLeaseScreenState extends ConsumerState<NewLeaseScreen> {
                     DropdownMenuItem(value: f, child: Text(f.label)),
                 ],
                 onChanged: (value) => setState(() => _frequency = value ?? _frequency),
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _rentDueDayController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: 'Jour d\'échéance du loyer (1-28)',
+                  helperText: 'Ex. 5 = le loyer est dû le 5 de chaque mois.',
+                ),
+                validator: (value) {
+                  final day = int.tryParse((value ?? '').trim());
+                  if (day == null || day < 1 || day > 28) return 'Jour invalide (1 à 28)';
+                  return null;
+                },
               ),
               const SizedBox(height: 16),
               TextFormField(

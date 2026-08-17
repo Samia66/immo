@@ -275,6 +275,11 @@ class _ManagerLeaseDetailScreenState extends ConsumerState<ManagerLeaseDetailScr
                           '${Formatters.amount(lease.rentAmount)} · ${lease.paymentFrequency.label}'),
                   const SizedBox(height: 8),
                   _InfoRow(
+                      icon: Icons.event_repeat_outlined,
+                      label: "Jour d'échéance",
+                      value: 'Le ${lease.rentDueDay} de chaque mois'),
+                  const SizedBox(height: 8),
+                  _InfoRow(
                       icon: Icons.savings_outlined,
                       label: 'Dépôt de garantie',
                       value: Formatters.amount(lease.depositAmount)),

@@ -156,6 +156,9 @@ class _LeaseScreenState extends ConsumerState<LeaseScreen> {
                           _InfoRow(label: 'Loyer mensuel', value: Formatters.amount(lease.rentAmount)),
                           _InfoRow(label: 'Dépôt de garantie', value: Formatters.amount(lease.depositAmount)),
                           _InfoRow(label: 'Fréquence de paiement', value: lease.paymentFrequency.label),
+                          _InfoRow(
+                              label: "Jour d'échéance",
+                              value: 'Le ${lease.rentDueDay} de chaque mois'),
                           _InfoRow(label: 'Date de début', value: Formatters.date(lease.startDate)),
                           _InfoRow(
                             label: 'Date de fin',

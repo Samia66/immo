@@ -105,6 +105,7 @@ class LeaseModel with _$LeaseModel {
     required num rentAmount,
     required num depositAmount,
     required PaymentFrequency paymentFrequency,
+    @Default(5) int rentDueDay,
     double? indexationRate,
     required LeaseStatus status,
     required DateTime createdAt,

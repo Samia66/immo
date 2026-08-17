@@ -30,6 +30,7 @@ export class LeasesMapper {
       rentAmount: Number(lease.rentAmount),
       depositAmount: Number(lease.depositAmount),
       paymentFrequency: lease.paymentFrequency,
+      rentDueDay: lease.rentDueDay,
       indexationRate: lease.indexationRate,
       status: lease.status,
       documents: lease.documents?.map((d) => ({ id: d.id, type: d.type, url: d.url, createdAt: d.createdAt })),

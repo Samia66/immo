@@ -775,6 +775,7 @@ mixin _$LeaseModel {
   num get rentAmount => throw _privateConstructorUsedError;
   num get depositAmount => throw _privateConstructorUsedError;
   PaymentFrequency get paymentFrequency => throw _privateConstructorUsedError;
+  int get rentDueDay => throw _privateConstructorUsedError;
   double? get indexationRate => throw _privateConstructorUsedError;
   LeaseStatus get status => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
@@ -812,6 +813,7 @@ abstract class $LeaseModelCopyWith<$Res> {
     num rentAmount,
     num depositAmount,
     PaymentFrequency paymentFrequency,
+    int rentDueDay,
     double? indexationRate,
     LeaseStatus status,
     DateTime createdAt,
@@ -851,6 +853,7 @@ class _$LeaseModelCopyWithImpl<$Res, $Val extends LeaseModel>
     Object? rentAmount = null,
     Object? depositAmount = null,
     Object? paymentFrequency = null,
+    Object? rentDueDay = null,
     Object? indexationRate = freezed,
     Object? status = null,
     Object? createdAt = null,
@@ -914,6 +917,10 @@ class _$LeaseModelCopyWithImpl<$Res, $Val extends LeaseModel>
                 ? _value.paymentFrequency
                 : paymentFrequency // ignore: cast_nullable_to_non_nullable
                       as PaymentFrequency,
+            rentDueDay: null == rentDueDay
+                ? _value.rentDueDay
+                : rentDueDay // ignore: cast_nullable_to_non_nullable
+                      as int,
             indexationRate: freezed == indexationRate
                 ? _value.indexationRate
                 : indexationRate // ignore: cast_nullable_to_non_nullable
@@ -990,6 +997,7 @@ abstract class _$$LeaseModelImplCopyWith<$Res>
     num rentAmount,
     num depositAmount,
     PaymentFrequency paymentFrequency,
+    int rentDueDay,
     double? indexationRate,
     LeaseStatus status,
     DateTime createdAt,
@@ -1030,6 +1038,7 @@ class __$$LeaseModelImplCopyWithImpl<$Res>
     Object? rentAmount = null,
     Object? depositAmount = null,
     Object? paymentFrequency = null,
+    Object? rentDueDay = null,
     Object? indexationRate = freezed,
     Object? status = null,
     Object? createdAt = null,
@@ -1093,6 +1102,10 @@ class __$$LeaseModelImplCopyWithImpl<$Res>
             ? _value.paymentFrequency
             : paymentFrequency // ignore: cast_nullable_to_non_nullable
                   as PaymentFrequency,
+        rentDueDay: null == rentDueDay
+            ? _value.rentDueDay
+            : rentDueDay // ignore: cast_nullable_to_non_nullable
+                  as int,
         indexationRate: freezed == indexationRate
             ? _value.indexationRate
             : indexationRate // ignore: cast_nullable_to_non_nullable
@@ -1132,6 +1145,7 @@ class _$LeaseModelImpl implements _LeaseModel {
     required this.rentAmount,
     required this.depositAmount,
     required this.paymentFrequency,
+    this.rentDueDay = 5,
     this.indexationRate,
     required this.status,
     required this.createdAt,
@@ -1170,6 +1184,9 @@ class _$LeaseModelImpl implements _LeaseModel {
   @override
   final PaymentFrequency paymentFrequency;
   @override
+  @JsonKey()
+  final int rentDueDay;
+  @override
   final double? indexationRate;
   @override
   final LeaseStatus status;
@@ -1180,7 +1197,7 @@ class _$LeaseModelImpl implements _LeaseModel {
 
   @override
   String toString() {
-    return 'LeaseModel(id: $id, organizationId: $organizationId, reference: $reference, propertyUnitId: $propertyUnitId, propertyUnit: $propertyUnit, ownerId: $ownerId, managerId: $managerId, tenantId: $tenantId, tenant: $tenant, startDate: $startDate, endDate: $endDate, rentAmount: $rentAmount, depositAmount: $depositAmount, paymentFrequency: $paymentFrequency, indexationRate: $indexationRate, status: $status, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'LeaseModel(id: $id, organizationId: $organizationId, reference: $reference, propertyUnitId: $propertyUnitId, propertyUnit: $propertyUnit, ownerId: $ownerId, managerId: $managerId, tenantId: $tenantId, tenant: $tenant, startDate: $startDate, endDate: $endDate, rentAmount: $rentAmount, depositAmount: $depositAmount, paymentFrequency: $paymentFrequency, rentDueDay: $rentDueDay, indexationRate: $indexationRate, status: $status, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -1212,6 +1229,8 @@ class _$LeaseModelImpl implements _LeaseModel {
                 other.depositAmount == depositAmount) &&
             (identical(other.paymentFrequency, paymentFrequency) ||
                 other.paymentFrequency == paymentFrequency) &&
+            (identical(other.rentDueDay, rentDueDay) ||
+                other.rentDueDay == rentDueDay) &&
             (identical(other.indexationRate, indexationRate) ||
                 other.indexationRate == indexationRate) &&
             (identical(other.status, status) || other.status == status) &&
@@ -1223,7 +1242,7 @@ class _$LeaseModelImpl implements _LeaseModel {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
+  int get hashCode => Object.hashAll([
     runtimeType,
     id,
     organizationId,
@@ -1239,11 +1258,12 @@ class _$LeaseModelImpl implements _LeaseModel {
     rentAmount,
     depositAmount,
     paymentFrequency,
+    rentDueDay,
     indexationRate,
     status,
     createdAt,
     updatedAt,
-  );
+  ]);
 
   /// Create a copy of LeaseModel
   /// with the given fields replaced by the non-null parameter values.
@@ -1275,6 +1295,7 @@ abstract class _LeaseModel implements LeaseModel {
     required final num rentAmount,
     required final num depositAmount,
     required final PaymentFrequency paymentFrequency,
+    final int rentDueDay,
     final double? indexationRate,
     required final LeaseStatus status,
     required final DateTime createdAt,
@@ -1312,6 +1333,8 @@ abstract class _LeaseModel implements LeaseModel {
   num get depositAmount;
   @override
   PaymentFrequency get paymentFrequency;
+  @override
+  int get rentDueDay;
   @override
   double? get indexationRate;
   @override
