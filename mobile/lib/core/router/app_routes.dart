@@ -25,6 +25,7 @@ class AppRoutes {
   static const String tenantMaintenanceDetail = '/tenant/maintenance/:id';
   static const String tenantNotifications = '/tenant/notifications';
   static const String tenantProfile = '/tenant/profile';
+  static const String tenantWorkers = '/tenant/workers';
 
   static String tenantPaymentDetailPath(String id) => '/tenant/payments/$id';
   static String tenantMaintenanceDetailPath(String id) => '/tenant/maintenance/$id';
@@ -68,6 +69,9 @@ class AppRoutes {
   static const String managerAssigned = '/manager/assigned';
   static const String managerAssignedDetail = '/manager/assigned/:id';
   static const String managerAssignedComplete = '/manager/assigned/:id/complete';
+  static const String managerWorkers = '/manager/workers';
+  static const String managerWorkerNew = '/manager/workers/new';
+  static const String managerWorkerDetail = '/manager/workers/:id';
   static const String managerNotifications = '/manager/notifications';
   static const String managerProfile = '/manager/profile';
 
@@ -76,4 +80,5 @@ class AppRoutes {
   static String managerLeaseDetailPath(String id) => '/manager/leases/$id';
   static String managerAssignedDetailPath(String id) => '/manager/assigned/$id';
   static String managerAssignedCompletePath(String id) => '/manager/assigned/$id/complete';
+  static String managerWorkerDetailPath(String id) => '/manager/workers/$id';
 }

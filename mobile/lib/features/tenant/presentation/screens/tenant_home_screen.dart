@@ -165,6 +165,20 @@ class TenantHomeScreen extends ConsumerWidget {
                           ],
                         ),
                       ),
+                      const SizedBox(height: 12),
+                      AppCard(
+                        onTap: () => context.push(AppRoutes.tenantWorkers),
+                        child: Row(
+                          children: [
+                            Icon(Icons.engineering_outlined, color: theme.colorScheme.primary),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Text('Ouvriers utiles', style: theme.textTheme.titleMedium),
+                            ),
+                            const Icon(Icons.chevron_right),
+                          ],
+                        ),
+                      ),
                       const SizedBox(height: 20),
                       Text('Actions rapides', style: theme.textTheme.titleSmall),
                       const SizedBox(height: 8),

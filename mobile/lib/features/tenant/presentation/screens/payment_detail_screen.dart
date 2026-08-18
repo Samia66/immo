@@ -32,6 +32,9 @@ class _PaymentDetailScreenState extends ConsumerState<PaymentDetailScreen> {
       if (!mounted) return;
       switch (result) {
         case ReceiptFileReady(:final filePath):
+          // filePath is null on web: the browser's own download UI already
+          // handled it, there's nothing left to open here.
+          if (filePath == null) break;
           final opened = await launchUrl(Uri.file(filePath));
           if (!mounted) return;
           if (!opened) {

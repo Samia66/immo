@@ -54,7 +54,7 @@ export class PropertiesController {
   }
 
   @Get(':id')
-  @Permissions('properties:read')
+  @Permissions('properties:read', 'properties:read_own')
   findOne(@CurrentUser() user: AuthenticatedUser, @Param('id', ParseUuidPipe) id: string) {
     return this.service.findOne(id, user);
   }

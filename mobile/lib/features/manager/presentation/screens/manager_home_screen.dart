@@ -49,6 +49,11 @@ class ManagerHomeScreen extends ConsumerWidget {
                   onTap: () => context.push(AppRoutes.managerMaintenanceQueue),
                 ),
                 AccountSheetMenuItem(
+                  icon: Icons.engineering_outlined,
+                  label: 'Ouvriers',
+                  onTap: () => context.push(AppRoutes.managerWorkers),
+                ),
+                AccountSheetMenuItem(
                   icon: Icons.notifications_outlined,
                   label: 'Notifications',
                   onTap: () => context.push(AppRoutes.managerNotifications),

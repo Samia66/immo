@@ -5,12 +5,14 @@ import '../../../../core/models/maintenance_model.dart';
 import '../../../../core/models/paginated_result.dart';
 import '../../../../core/models/payment_model.dart';
 import '../../../../core/models/tenant_dashboard_model.dart';
+import '../../../../core/models/worker_model.dart';
 import '../../../../core/providers/core_providers.dart';
 import '../../../../shared/pagination/paginated_notifier.dart';
 import '../../data/lease_repository.dart';
 import '../../data/payment_repository.dart';
 import '../../data/tenant_dashboard_repository.dart';
 import '../../data/tenant_maintenance_repository.dart';
+import '../../data/worker_repository.dart';
 
 // --- Repositories -----------------------------------------------------
 
@@ -28,6 +30,10 @@ final paymentRepositoryProvider = Provider<PaymentRepository>((ref) {
 
 final tenantMaintenanceRepositoryProvider = Provider<TenantMaintenanceRepository>((ref) {
   return TenantMaintenanceRepository(ref.watch(dioProvider));
+});
+
+final workerRepositoryProvider = Provider<WorkerRepository>((ref) {
+  return WorkerRepository(ref.watch(dioProvider));
 });
 
 // --- Dashboard ----------------------------------------------------------
@@ -118,4 +124,10 @@ final tenantMaintenanceProvider = StateNotifierProvider<TenantMaintenanceNotifie
 final maintenanceDetailProvider =
     FutureProvider.family<MaintenanceRequestModel, String>((ref, id) async {
   return ref.watch(tenantMaintenanceRepositoryProvider).getDetail(id);
+});
+
+// --- Workers ------------------------------------------------------------
+
+final myWorkersProvider = FutureProvider<List<WorkerModel>>((ref) async {
+  return ref.watch(workerRepositoryProvider).myWorkers();
 });

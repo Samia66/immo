@@ -196,6 +196,7 @@ model Organization {
   managerOwners       ManagerOwner[]
   propertyManagements PropertyManagement[]
   receipts            Receipt[]
+  workers             Worker[]
 
   @@index([isActive])
 }
@@ -238,6 +239,7 @@ model User {
   ownerInvitationsSent OwnerInvitation[]    @relation("OwnerInvitationManager")
   leasesManaged        Lease[]              @relation("LeaseManager")
   tenantsCreated       Tenant[]             @relation("TenantCreatedByManager")
+  workersCreated       Worker[]             @relation("WorkerCreatedByManager")
 
   @@unique([organizationId, email])
   @@index([organizationId])
@@ -325,6 +327,7 @@ model Property {
   expenses        Expense[]
   visits          Visit[]
   managementLinks PropertyManagement[]
+  workers         Worker[]
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -826,6 +829,37 @@ model Receipt {
   generatedAt DateTime @default(now())
 
   @@index([organizationId])
+}
+
+// -------------------- V2 : ouvriers/prestataires --------------------
+
+// Carnet d'adresses des ouvriers/prestataires (plombier, électricien, serrurier, ...) tenu par le
+// gestionnaire. Un locataire peut consulter ceux rattachés à son propre bien (ou les ouvriers
+// "généraux" sans bien précis) en cas de problème - voir workers.service.ts `myWorkers()`.
+model Worker {
+  id             String       @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+
+  fullName String
+  trade    String // texte libre, ex: "Plomberie", "Électricité", "Serrurerie"
+  phone    String
+  email    String?
+  notes    String?
+  isActive Boolean @default(true)
+
+  propertyId String? // facultatif : rattaché à un bien précis, ou null = visible sur tous les biens gérés
+  property   Property? @relation(fields: [propertyId], references: [id])
+
+  createdById String?
+  createdBy   User?   @relation("WorkerCreatedByManager", fields: [createdById], references: [id])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@index([organizationId])
+  @@index([propertyId])
 }
 
 model OtpCode {

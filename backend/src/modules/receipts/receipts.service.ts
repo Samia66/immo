@@ -5,7 +5,7 @@ import { ReceiptsMapper } from './receipts.mapper';
 import { QueryReceiptDto } from './dto';
 import { PaginatedResponseDto } from '../../common/dto';
 import { AuthenticatedUser } from '../../common/interfaces';
-import { generatePdfStub } from '../../common/utils/pdf-generator.util';
+import { generatePaymentReceiptPdf } from '../../common/utils/pdf-generator.util';
 
 @Injectable()
 export class ReceiptsService {
@@ -24,16 +24,22 @@ export class ReceiptsService {
     return new PaginatedResponseDto(items.map(ReceiptsMapper.toResponse), total, query.page, query.limit);
   }
 
-  /** Mirrors PaymentsService.receipt(): a logged/stubbed PDF stand-in (see pdf-generator.util.ts). */
-  async download(id: string, user: AuthenticatedUser) {
+  /** Mirrors PaymentsService.receipt() - same PDF renderer, see pdf-generator.util.ts. */
+  async download(id: string, user: AuthenticatedUser): Promise<Buffer> {
     const receipt = await this.getOwnedOrThrow(id, user);
-    return generatePdfStub('payment-receipt', {
-      receiptId: receipt.id,
-      paymentId: receipt.paymentId,
-      period: receipt.period,
-      amount: Number(receipt.amount),
-      lease: receipt.payment?.lease,
-      generatedAt: receipt.generatedAt,
+    const payment = receipt.payment;
+    return generatePaymentReceiptPdf({
+      reference: receipt.id,
+      organizationName: receipt.organization.name,
+      tenantName: payment.lease.tenant.fullName,
+      propertyTitle: payment.lease.propertyUnit.property.title,
+      unitLabel: payment.lease.propertyUnit.label ?? payment.lease.propertyUnit.reference,
+      amountDue: Number(payment.amountDue),
+      amountPaid: Number(payment.amountPaid),
+      dueDate: payment.dueDate,
+      paidAt: payment.paidAt,
+      method: payment.method,
+      status: payment.status,
     });
   }
 

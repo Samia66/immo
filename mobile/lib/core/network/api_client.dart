@@ -1,17 +1,40 @@
 import 'package:dio/dio.dart';
+import 'package:dio/browser.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:logger/logger.dart';
 
 import '../constants/app_constants.dart';
 import '../storage/secure_storage_service.dart';
 import 'auth_event_bus.dart';
 
+/// On Flutter Web, browsers never expose `Set-Cookie` response headers to
+/// JavaScript (a platform security restriction, unrelated to CORS or
+/// httpOnly) and never let JS set a `Cookie` request header either - so the
+/// manual "read Set-Cookie, store it, replay it as a Cookie header" dance
+/// this app uses for the refresh-token cookie is a native-only trick that
+/// silently no-ops on web. Without `withCredentials`, the browser won't even
+/// store/send the httpOnly refresh cookie automatically in its place, so a
+/// stale cookie from whichever account first logged in in this browser tab
+/// (or none at all) sticks around indefinitely: a later login as a
+/// different account never actually rotates it, and the next silent
+/// 401-triggered refresh mints a new access token for the *wrong* account.
+/// Enabling withCredentials lets the browser manage the httpOnly cookie
+/// itself instead - see the web-specific branch in [_AuthInterceptor].
+void _enableWebCredentials(Dio dio) {
+  if (kIsWeb) {
+    dio.httpClientAdapter = BrowserHttpClientAdapter(withCredentials: true);
+  }
+}
+
 /// Central Dio-based HTTP client.
 ///
 /// Responsibilities:
 /// - attaches `Authorization: Bearer <accessToken>` to every request,
 /// - on a 401 (other than from `/auth/login` or `/auth/refresh` themselves),
-///   attempts exactly one refresh-and-retry via the manually-managed
-///   `refreshToken` cookie, then retries the original request,
+///   attempts exactly one refresh-and-retry - via the manually-managed
+///   `refreshToken` cookie on native, or via the browser's own httpOnly
+///   cookie jar (`withCredentials`) on web - then retries the original
+///   request,
 /// - on refresh failure, clears local storage and broadcasts a force-logout
 ///   event via [AuthEventBus] so the app can route back to login.
 class ApiClient {
@@ -27,10 +50,12 @@ class ApiClient {
         headers: const {'Accept': 'application/json'},
       ),
     );
+    _enableWebCredentials(_dio);
 
     // Separate, interceptor-free Dio used only for refresh calls, so the
     // refresh request itself never re-enters the auth interceptor below.
     _refreshDio = Dio(BaseOptions(baseUrl: AppConfig.apiBaseUrl));
+    _enableWebCredentials(_refreshDio);
 
     _dio.interceptors.add(_AuthInterceptor(
       secureStorage: _secureStorage,
@@ -104,6 +129,7 @@ class _AuthInterceptor extends QueuedInterceptor {
       retryOptions.extra[_retriedFlag] = true;
 
       final retryDio = Dio(BaseOptions(baseUrl: requestOptions.baseUrl));
+      _enableWebCredentials(retryDio);
       final response = await retryDio.fetch(retryOptions);
       handler.resolve(response);
     } catch (refreshError) {
@@ -114,15 +140,24 @@ class _AuthInterceptor extends QueuedInterceptor {
   }
 
   Future<bool> _refreshAccessToken() async {
-    final cookie = await _secureStorage.readRefreshCookie();
-    if (cookie == null || cookie.isEmpty) {
-      return false;
+    // On web the browser owns the httpOnly refreshToken cookie entirely - it
+    // was never readable to store in the first place, and `withCredentials`
+    // (see _enableWebCredentials) makes the browser attach it automatically.
+    // Manually setting a `Cookie` header, which the native branch below
+    // relies on, is silently ignored by browsers, so there's nothing to read
+    // or gate on here.
+    String? cookie;
+    if (!kIsWeb) {
+      cookie = await _secureStorage.readRefreshCookie();
+      if (cookie == null || cookie.isEmpty) {
+        return false;
+      }
     }
 
     try {
       final response = await _refreshDio.post<Map<String, dynamic>>(
         '/auth/refresh',
-        options: Options(headers: {'Cookie': cookie}),
+        options: kIsWeb ? null : Options(headers: {'Cookie': cookie}),
       );
 
       final data = response.data;
@@ -132,10 +167,12 @@ class _AuthInterceptor extends QueuedInterceptor {
 
       await _secureStorage.saveAccessToken(data['accessToken'] as String);
 
-      final setCookie = response.headers.map['set-cookie'];
-      final newCookie = SecureStorageService.extractRefreshCookie(setCookie);
-      if (newCookie != null) {
-        await _secureStorage.saveRefreshCookie(newCookie);
+      if (!kIsWeb) {
+        final setCookie = response.headers.map['set-cookie'];
+        final newCookie = SecureStorageService.extractRefreshCookie(setCookie);
+        if (newCookie != null) {
+          await _secureStorage.saveRefreshCookie(newCookie);
+        }
       }
       return true;
     } on DioException catch (e) {

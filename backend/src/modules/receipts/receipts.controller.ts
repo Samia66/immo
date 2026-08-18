@@ -1,4 +1,5 @@
-import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Query, Res, UseGuards } from '@nestjs/common';
+import type { Response } from 'express';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ReceiptsService } from './receipts.service';
 import { QueryReceiptDto } from './dto';
@@ -22,7 +23,16 @@ export class ReceiptsController {
 
   @Get(':id/download')
   @Permissions('payments:read_receipt')
-  download(@CurrentUser() user: AuthenticatedUser, @Param('id', ParseUuidPipe) id: string) {
-    return this.service.download(id, user);
+  async download(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('id', ParseUuidPipe) id: string,
+    @Res() res: Response,
+  ) {
+    const pdf = await this.service.download(id, user);
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `attachment; filename="quittance-${id}.pdf"`,
+    });
+    res.send(pdf);
   }
 }

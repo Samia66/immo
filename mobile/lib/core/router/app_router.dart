@@ -39,6 +39,8 @@ import '../../features/manager/presentation/screens/owners/owner_detail_screen.d
 import '../../features/manager/presentation/screens/payments/manager_payments_screen.dart';
 import '../../features/manager/presentation/screens/tenants/manager_tenants_screen.dart';
 import '../../features/manager/presentation/screens/tenants/new_tenant_screen.dart';
+import '../../features/manager/presentation/screens/workers/manager_workers_screen.dart';
+import '../../features/manager/presentation/screens/workers/worker_form_screen.dart';
 import '../../features/notifications/presentation/providers/notifications_provider.dart';
 import '../../features/notifications/presentation/screens/notifications_screen.dart';
 import '../../features/owner/presentation/screens/owner_home_screen.dart';
@@ -52,6 +54,7 @@ import '../../features/tenant/presentation/screens/payment_detail_screen.dart';
 import '../../features/tenant/presentation/screens/payments_screen.dart';
 import '../../features/tenant/presentation/screens/tenant_home_screen.dart';
 import '../../features/tenant/presentation/screens/tenant_profile_screen.dart';
+import '../../features/tenant/presentation/screens/workers_screen.dart';
 import '../../shared/widgets/role_shell_scaffold.dart';
 import '../constants/app_constants.dart';
 import 'app_routes.dart';
@@ -188,6 +191,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.tenantNotifications,
         builder: (context, state) => const NotificationsScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.tenantWorkers,
+        builder: (context, state) => const WorkersScreen(),
       ),
 
       // --- Agent -----------------------------------------------------------
@@ -360,6 +367,22 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: AppRoutes.managerAssignedComplete,
         builder: (context, state) =>
             MaintenanceCompletionScreen(requestId: state.pathParameters['id']!),
+      ),
+      GoRoute(
+        path: AppRoutes.managerWorkers,
+        builder: (context, state) => const ManagerWorkersScreen(),
+      ),
+      // Static /workers/new MUST be registered before the /workers/:id
+      // sibling below - go_router (unlike Angular) doesn't auto-prioritize
+      // static segments, so a "new" request would otherwise be captured as
+      // id="new" by the parameterized route if that one came first.
+      GoRoute(
+        path: AppRoutes.managerWorkerNew,
+        builder: (context, state) => const WorkerFormScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.managerWorkerDetail,
+        builder: (context, state) => WorkerFormScreen(workerId: state.pathParameters['id']!),
       ),
       GoRoute(
         path: AppRoutes.managerNotifications,

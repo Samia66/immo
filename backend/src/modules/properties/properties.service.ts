@@ -61,6 +61,11 @@ export class PropertiesService {
       if (!link) throw new NotFoundException('Bien introuvable.');
     }
 
+    if (user.roleName === RoleName.PROPRIETAIRE) {
+      const owner = await this.prisma.owner.findFirst({ where: { userId: user.id } });
+      if (!owner || property.ownerId !== owner.id) throw new NotFoundException('Bien introuvable.');
+    }
+
     const [mapped] = await this.mapWithUnits([property]);
     return mapped;
   }

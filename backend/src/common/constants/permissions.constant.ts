@@ -106,6 +106,13 @@ export const PERMISSIONS: PermissionDefinition[] = [
   { code: 'maintenance:manage_attachments', module: 'maintenance', description: 'Gérer les photos avant/après' },
   { code: 'maintenance:read_own', module: 'maintenance', description: 'Consulter ses propres demandes' },
 
+  // workers
+  { code: 'workers:read', module: 'workers', description: 'Lister les ouvriers/prestataires' },
+  { code: 'workers:create', module: 'workers', description: 'Ajouter un ouvrier/prestataire' },
+  { code: 'workers:update', module: 'workers', description: 'Modifier un ouvrier/prestataire' },
+  { code: 'workers:delete', module: 'workers', description: 'Supprimer un ouvrier/prestataire' },
+  { code: 'workers:read_own', module: 'workers', description: 'Consulter les ouvriers de son propre bien (locataire)' },
+
   // visits
   { code: 'visits:read', module: 'visits', description: "Lister toutes les visites de l'organisation" },
   { code: 'visits:read_own', module: 'visits', description: 'Lister ses propres visites (agent)' },
@@ -192,6 +199,10 @@ export const ROLE_PERMISSIONS: Record<Exclude<RoleName, 'SUPER_ADMIN'>, string[]
     'maintenance:assign',
     'maintenance:update_status',
     'maintenance:manage_attachments',
+    'workers:read',
+    'workers:create',
+    'workers:update',
+    'workers:delete',
     'visits:read',
     'visits:create',
     'visits:update',
@@ -242,6 +253,10 @@ export const ROLE_PERMISSIONS: Record<Exclude<RoleName, 'SUPER_ADMIN'>, string[]
     'maintenance:assign',
     'maintenance:update_status',
     'maintenance:manage_attachments',
+    'workers:read',
+    'workers:create',
+    'workers:update',
+    'workers:delete',
     'visits:read',
     'visits:create',
     'visits:update',
@@ -277,6 +292,7 @@ export const ROLE_PERMISSIONS: Record<Exclude<RoleName, 'SUPER_ADMIN'>, string[]
     'maintenance:create',
     'maintenance:read_own',
     'maintenance:manage_attachments',
+    'workers:read_own',
     'notifications:read',
     'notifications:manage',
     'dashboard:tenant',

@@ -1,11 +1,9 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
-import 'package:path_provider/path_provider.dart';
 
 import '../../../core/models/paginated_result.dart';
 import '../../../core/models/payment_model.dart';
 import '../../../core/network/api_exception.dart';
+import '../../../core/utils/receipt_saver.dart';
 
 /// Result of a receipt download attempt - see [PaymentRepository.downloadReceipt].
 sealed class ReceiptResult {
@@ -14,7 +12,10 @@ sealed class ReceiptResult {
 
 class ReceiptFileReady extends ReceiptResult {
   const ReceiptFileReady(this.filePath);
-  final String filePath;
+
+  /// Null on web: the browser's own download UI was already triggered
+  /// directly, there's no local file path left to open.
+  final String? filePath;
 }
 
 /// The backend's PDF generator is currently a stub (per the task brief) and
@@ -73,10 +74,8 @@ class PaymentRepository {
       if (bytes == null || !contentType.contains('pdf')) {
         return const ReceiptNotAvailable();
       }
-      final dir = await getTemporaryDirectory();
-      final file = File('${dir.path}/receipt_$paymentId.pdf');
-      await file.writeAsBytes(bytes);
-      return ReceiptFileReady(file.path);
+      final filePath = await saveReceiptBytes(bytes, 'quittance_$paymentId.pdf');
+      return ReceiptFileReady(filePath);
     } on DioException catch (e) {
       throw ApiException.fromDioException(e);
     }

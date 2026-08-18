@@ -30,6 +30,12 @@ void showAccountSheet(
   final user = ref.read(authNotifierProvider).user;
   showModalBottomSheet(
     context: context,
+    // Without this the sheet is capped at a fixed fraction of the screen
+    // height regardless of content, so it silently overflows once there are
+    // enough menu items (as happened adding a 5th one) instead of growing or
+    // scrolling - isScrollControlled + the inner SingleChildScrollView below
+    // let it do either.
+    isScrollControlled: true,
     builder: (context) =>
         _AccountSheetContent(user: user, roleLabel: roleLabel, menuItems: menuItems),
   );
@@ -48,7 +54,8 @@ class _AccountSheetContent extends ConsumerWidget {
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(20),
-        child: Column(
+        child: SingleChildScrollView(
+          child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -104,6 +111,7 @@ class _AccountSheetContent extends ConsumerWidget {
               style: OutlinedButton.styleFrom(foregroundColor: theme.colorScheme.error),
             ),
           ],
+          ),
         ),
       ),
     );

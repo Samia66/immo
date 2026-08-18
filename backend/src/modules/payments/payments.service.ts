@@ -12,7 +12,7 @@ import { CreatePaymentDto, RecordPaymentDto, QueryPaymentDto } from './dto';
 import { PaginatedResponseDto } from '../../common/dto';
 import { PrismaService } from '../../prisma/prisma.service';
 import { AuthenticatedUser } from '../../common/interfaces';
-import { generatePdfStub } from '../../common/utils/pdf-generator.util';
+import { generatePaymentReceiptPdf } from '../../common/utils/pdf-generator.util';
 import { monthKey } from '../../common/utils/date-helpers.util';
 import { NotificationsService } from '../notifications/notifications.service';
 
@@ -114,18 +114,23 @@ export class PaymentsService {
     return PaymentsMapper.toResponse(updated);
   }
 
-  async receipt(id: string, user: AuthenticatedUser) {
+  async receipt(id: string, user: AuthenticatedUser): Promise<Buffer> {
     const payment = await this.getOwnedOrThrow(id, user);
     if (payment.status !== 'PAYE' && payment.status !== 'PARTIEL') {
       throw new BadRequestException("Aucune quittance disponible: le paiement n'a pas encore été enregistré.");
     }
-    return generatePdfStub('payment-receipt', {
-      paymentId: payment.id,
-      lease: payment.lease,
+    return generatePaymentReceiptPdf({
+      reference: payment.id,
+      organizationName: payment.organization.name,
+      tenantName: payment.lease.tenant.fullName,
+      propertyTitle: payment.lease.propertyUnit.property.title,
+      unitLabel: payment.lease.propertyUnit.label ?? payment.lease.propertyUnit.reference,
       amountDue: Number(payment.amountDue),
       amountPaid: Number(payment.amountPaid),
+      dueDate: payment.dueDate,
       paidAt: payment.paidAt,
       method: payment.method,
+      status: payment.status,
     });
   }
 

@@ -3,6 +3,7 @@ import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 
 const includeLease = {
+  organization: { select: { name: true } },
   lease: {
     include: {
       propertyUnit: {

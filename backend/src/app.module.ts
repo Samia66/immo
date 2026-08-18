@@ -30,6 +30,7 @@ import { AuditLogModule } from './modules/audit-log/audit-log.module';
 import { TenantInvitationsModule } from './modules/tenant-invitations/tenant-invitations.module';
 import { OwnerInvitationsModule } from './modules/owners/owner-invitations/owner-invitations.module';
 import { ReceiptsModule } from './modules/receipts/receipts.module';
+import { WorkersModule } from './modules/workers/workers.module';
 
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { PrismaExceptionFilter } from './common/filters/prisma-exception.filter';
@@ -77,6 +78,7 @@ import { AuditInterceptor } from './common/interceptors/audit.interceptor';
     TenantInvitationsModule,
     OwnerInvitationsModule,
     ReceiptsModule,
+    WorkersModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: ThrottlerGuard },

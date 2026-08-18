@@ -25,6 +25,7 @@ const TENANT_SCOPED_MODELS = new Set<string>([
   'ManagerOwner',
   'PropertyManagement',
   'Receipt',
+  'Worker',
 ]);
 
 /**
